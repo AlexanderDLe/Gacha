@@ -21,6 +21,6 @@ public class FootstepAudio : MonoBehaviour
     // Unity Triggered Events
     private void Footstep()
     {
-        PlayRandomFootstepClip();
+        // PlayRandomFootstepClip();
     }
 }
