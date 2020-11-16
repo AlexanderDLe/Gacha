@@ -8,7 +8,7 @@ namespace RPG.Combat
     {
         Animator animator = null;
 
-        [SerializeField] LayerMask enemyLayers;
+        [SerializeField] LayerMask enemyLayers = default;
         [SerializeField] Transform attackHitBoxPoint = default;
         [Range(0f, 2f)]
         [SerializeField] public float attackRange = .5f;

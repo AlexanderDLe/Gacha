@@ -1,6 +1,6 @@
-﻿using RPG.Core;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
+using RPG.Core;
 
 namespace RPG.Movement
 {
@@ -8,14 +8,14 @@ namespace RPG.Movement
     {
         Animator animator = null;
         private float speed = 0f;
-        private GameObject gameObjectOwner = null;
+        private GameObject gameObject = null;
         private NavMeshAgent navMeshAgent;
 
         public SDasher(GameObject gameObjectOwner, NavMeshAgent navMeshAgent, Animator animator, float dashSpeed)
         {
             this.speed = dashSpeed;
             this.animator = animator;
-            this.gameObjectOwner = gameObjectOwner;
+            this.gameObject = gameObjectOwner;
             this.navMeshAgent = navMeshAgent;
         }
 
@@ -31,11 +31,11 @@ namespace RPG.Movement
 
             // Detect movement input
             bool shouldMove = Mathf.Abs(movement.x) > Mathf.Epsilon || Mathf.Abs(movement.z) > Mathf.Epsilon;
-            if (!shouldMove) movement = gameObjectOwner.transform.forward;
+            if (!shouldMove) movement = gameObject.transform.forward;
 
 
             // If there is input, then move
-            StartMoveAction(gameObjectOwner.transform.position + movement, 1f);
+            StartMoveAction(gameObject.transform.position + movement, 1f);
         }
 
         public void StartMoveAction(Vector3 destination, float speedFraction)

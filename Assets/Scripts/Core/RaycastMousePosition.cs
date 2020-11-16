@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace RPG.Core
 {
     public class RaycastMousePosition : MonoBehaviour
     {
         public static Camera cam = null;
-        RaycastHit ray = default;
 
         private void Awake()
         {

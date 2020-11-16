@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FootstepAudio : MonoBehaviour
 {
-    [SerializeField] AudioClip[] clips;
+    [SerializeField] AudioClip[] clips = default;
     private AudioSource audioSource = null;
 
     private void Awake()

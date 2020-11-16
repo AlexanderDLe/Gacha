@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace RPG.Core
 {
@@ -6,10 +7,14 @@ namespace RPG.Core
     {
         private IState CurrentState;
         private IState PreviousState;
+        private StateEnum CurrentStateEnum;
 
-        public void changeState(IState newState)
+        public void changeState(IState newState, StateEnum newStateEnum)
         {
+            if (CurrentStateEnum == newStateEnum) return;
             if (CurrentState != null) CurrentState.Exit();
+
+            CurrentStateEnum = newStateEnum;
             PreviousState = CurrentState;
             CurrentState = newState;
             CurrentState.Enter();
@@ -18,7 +23,7 @@ namespace RPG.Core
         public void ExecuteStateUpdate()
         {
             var RunningState = CurrentState;
-            if (RunningState != null) CurrentState.Execute();
+            if (CurrentState != null) CurrentState.Execute();
         }
 
         public void SwitchToPreviousState()

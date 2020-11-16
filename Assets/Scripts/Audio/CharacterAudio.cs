@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class CharacterAudio : MonoBehaviour
 {
-    [SerializeField] AudioClip[] dashClips;
-    [SerializeField] AudioClip[] weakAttackClips;
-    [SerializeField] AudioClip[] strongAttackClips;
-    [SerializeField] AudioClip[] ultimateSkillClips;
+    // [SerializeField] AudioClip[] dashClips = default;
+    // [SerializeField] AudioClip[] weakAttackClips = default;
+    // [SerializeField] AudioClip[] strongAttackClips = default;
+    // [SerializeField] AudioClip[] ultimateSkillClips = default;
     private AudioSource audioSource = null;
 
     private void Awake()
@@ -23,14 +23,14 @@ public class CharacterAudio : MonoBehaviour
 
     private void StartDash()
     {
-        audioSource.PlayOneShot(GenerateRandomNum(dashClips));
+        // audioSource.PlayOneShot(GenerateRandomNum(dashClips));
     }
     private void Attack1()
     {
-        audioSource.PlayOneShot(GenerateRandomNum(weakAttackClips));
+        // audioSource.PlayOneShot(GenerateRandomNum(weakAttackClips));
     }
     private void Attack2()
     {
-        audioSource.PlayOneShot(GenerateRandomNum(strongAttackClips));
+        // audioSource.PlayOneShot(GenerateRandomNum(strongAttackClips));
     }
 }
