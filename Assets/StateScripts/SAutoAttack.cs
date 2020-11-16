@@ -51,8 +51,6 @@ namespace RPG.Combat
                 }
                 if (stateManager.GetComboNum() == autoAttackArray.Length)
                 {
-                    Debug.Log(autoAttackArray.Length);
-                    Debug.Log(stateManager.GetComboNum());
                     stateManager.SetComboNum(0);
                 }
             }
@@ -61,8 +59,10 @@ namespace RPG.Combat
         private void TriggerAutoAttack()
         {
             if (!stateManager.GetCanTriggerNextAutoAttack()) return;
+
             RaycastHit hit = raycaster.GetRaycastMousePoint();
             gameObject.transform.LookAt(hit.point);
+
             int currentComboNum = stateManager.GetComboNum();
             animator.SetTrigger(autoAttackArray[currentComboNum]);
             stateManager.SetComboNum(currentComboNum + 1);

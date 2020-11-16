@@ -52,6 +52,7 @@ namespace RPG.Control
         private void HandleLeftMouseClick()
         {
             if (!stateManager.CanAutoAttack()) return;
+            Debug.Log("<color=red>Should be occur once.</color>");
             stateManager.SetIsInAutoAttackState(true);
             stateMachine.changeState(new SAutoAttack(gameObject, animator, raycaster,
             stateManager), StateEnum.AutoAttack);
@@ -61,7 +62,8 @@ namespace RPG.Control
         {
             if (!stateManager.CanDash()) return;
             stateManager.TriggerDash();
-            stateMachine.changeState(new SDasher(gameObject, navMeshAgent, animator, stateManager.GetDashSpeed()), StateEnum.Dash);
+            stateMachine.changeState(new SDasher(gameObject, navMeshAgent, animator,
+            stateManager), StateEnum.Dash);
         }
 
         private bool DetectMovementInput()
@@ -72,11 +74,11 @@ namespace RPG.Control
                 Input.GetKey(KeyCode.S) ||
                 Input.GetKey(KeyCode.D))
             {
-                print("Detected movement input.");
                 return true;
             }
             return false;
         }
+
         private void UpdateAnimator()
         {
             Vector3 velocity = navMeshAgent.velocity;
@@ -85,14 +87,9 @@ namespace RPG.Control
             animator.SetFloat("forwardSpeed", speed);
         }
 
-        public void StartDash() { }
         public void EndDash()
         {
-            stateManager.SetIsDashing(false);
             stateMachine.changeState(new SMover(gameObject, navMeshAgent), StateEnum.Move);
         }
-        public void AttackStart() { }
-        public void Attack1() { }
-        public void Attack2() { }
     }
 }

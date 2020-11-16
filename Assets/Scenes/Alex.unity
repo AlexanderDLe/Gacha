@@ -829,6 +829,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4958420385664778060, guid: 256eba409f8f4e143a9b2fc8cc824077,
+        type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: f8d83cbfa8251964bb34122b6152b786, type: 3}
+    - target: {fileID: 4958420385664778060, guid: 256eba409f8f4e143a9b2fc8cc824077,
+        type: 3}
+      propertyPath: m_CullingMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4958420385664778060, guid: 256eba409f8f4e143a9b2fc8cc824077,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 037fe5fceeba4b1478a37dcc606c2764, type: 2}
     - target: {fileID: 4958420385984795271, guid: 256eba409f8f4e143a9b2fc8cc824077,
         type: 3}
       propertyPath: m_Volume

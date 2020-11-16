@@ -1,22 +1,27 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 using RPG.Core;
+using RPG.Control;
 
 namespace RPG.Movement
 {
     public class SDasher : IState
     {
         Animator animator = null;
-        private float speed = 0f;
         private GameObject gameObject = null;
         private NavMeshAgent navMeshAgent;
+        private StateManager stateManager = null;
 
-        public SDasher(GameObject gameObjectOwner, NavMeshAgent navMeshAgent, Animator animator, float dashSpeed)
+        public SDasher(
+            GameObject gameObject,
+            NavMeshAgent navMeshAgent,
+            Animator animator,
+            StateManager stateManager)
         {
-            this.speed = dashSpeed;
-            this.animator = animator;
-            this.gameObject = gameObjectOwner;
+            this.gameObject = gameObject;
             this.navMeshAgent = navMeshAgent;
+            this.animator = animator;
+            this.stateManager = stateManager;
         }
 
         public void Enter()
@@ -47,12 +52,13 @@ namespace RPG.Movement
         {
             navMeshAgent.isStopped = false;
             navMeshAgent.destination = destination;
-            navMeshAgent.speed = speed * Mathf.Clamp01(speedFraction);
+            navMeshAgent.speed = stateManager.GetDashSpeed() * Mathf.Clamp01(speedFraction);
         }
 
         public void Exit()
         {
             navMeshAgent.isStopped = true;
+            stateManager.SetIsDashing(false);
         }
     }
 }

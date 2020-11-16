@@ -576,7 +576,6 @@ GameObject:
   - component: {fileID: 4958420385664778060}
   - component: {fileID: 4958420385664778052}
   - component: {fileID: 4958420385664778106}
-  - component: {fileID: 4958420385664778105}
   - component: {fileID: 4958420385664778050}
   - component: {fileID: 1249718380822981914}
   m_Layer: 0
@@ -791,19 +790,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a020439021acb948ac5b21276a16235, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4958420385664778105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4958420385664778053}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bc5c282f7091c44a9dc1e9f98804331, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clips: []
 --- !u!114 &4958420385664778050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -823,11 +809,9 @@ MonoBehaviour:
   maxDashCharges: 100
   currentDashCharges: 3
   dashRegenRate: 3
-  autoAttackAnimList:
-  - attack1
-  - attack2
   isInAutoAttackState: 0
   canTriggerNextAutoAttack: 1
+  comboNum: 0
 --- !u!114 &1249718380822981914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -840,6 +824,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 273a6025058ea9c4b994fb17bb347ee2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  footstepClips: []
+  autoAttackClips: []
   autoAttackVFX: []
 --- !u!1 &4958420385777285285
 GameObject:

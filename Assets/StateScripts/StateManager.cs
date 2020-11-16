@@ -26,6 +26,12 @@ namespace RPG.Control
         #endregion
 
         #region Permissions
+        public bool CanMove()
+        {
+            if (isDashing) return false;
+            if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
+            return true;
+        }
         public bool CanDash()
         {
             if (currentDashCharges > 0 && !isDashing) return true;
@@ -35,14 +41,10 @@ namespace RPG.Control
         {
             if (isDashing) return false;
             if (isInAutoAttackState) return false;
+            if (IsInAutoAttackAnimation()) return false;
             return true;
         }
-        public bool CanMove()
-        {
-            if (isDashing) return false;
-            if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
-            return true;
-        }
+
         // public bool CanUsePrimarySkill()
         // {
         //     if (isDashing) return false;
@@ -65,6 +67,7 @@ namespace RPG.Control
             When instantiating a prefab, it won't be connected to Animator
             unless you SectActive off and on again (weird). */
             Instantiate(character.characterPrefab, transform);
+            fxManager.InitializeCharacterFX(character);
             gameObject.SetActive(false);
             gameObject.SetActive(true);
         }
@@ -80,6 +83,7 @@ namespace RPG.Control
         }
         private void UpdateAnimationOverride(CharacterScriptableObject character)
         {
+            if (!character.animatorOverride) return;
             animator.runtimeAnimatorController = character.animatorOverride;
         }
         #endregion
@@ -109,15 +113,15 @@ namespace RPG.Control
             isDashing = value;
         }
 
+        public float GetDashSpeed()
+        {
+            return dashSpeed;
+        }
+
         public void TriggerDash()
         {
             isDashing = true;
             StartCoroutine(RegenDashCharge());
-        }
-
-        public float GetDashSpeed()
-        {
-            return dashSpeed;
         }
 
         IEnumerator RegenDashCharge()
@@ -212,16 +216,10 @@ namespace RPG.Control
         public int GetComboNum() => comboNum;
 
         // Auto Attack Animator Events
+
         public void AttackStart()
         {
             SetCanTriggerNextAutoAttack(false);
-        }
-        public void Attack1()
-        {
-        }
-        public void Attack2()
-        {
-
         }
         public void AttackEnd()
         {

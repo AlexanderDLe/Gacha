@@ -14,7 +14,7 @@ namespace RPG.Core
 
         [Header("Auto Attack")]
         public int numberOfAutoAttackHits;
-        public GameObject[] autoAttackFX;
+        public GameObject[] autoAttackVFX;
         public AudioClip[] weakAttackAudio;
         public AudioClip[] mediumAttackAudio;
 
@@ -23,5 +23,15 @@ namespace RPG.Core
         public bool useRangeShot;
         public GameObject primarySkillFX;
         public AudioClip[] primarySkillAudio;
+
+        /* [Header("Audio Clips")]
+        public AudioClipClass[] AudioClips = null;
+
+        [System.Serializable]
+        public class AudioClipClass
+        {
+            public string stat;
+            public AudioClip[] levels;
+        } */
     }
 }
