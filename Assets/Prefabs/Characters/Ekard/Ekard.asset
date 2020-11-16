@@ -13,13 +13,11 @@ MonoBehaviour:
   m_Name: Ekard
   m_EditorClassIdentifier: 
   characterName: Ekard
-  characterPrefab: {fileID: 712008246207615703, guid: b0938dc7d6e7f4d448d7ab049598e0e0,
+  characterPrefab: {fileID: 919132149155446097, guid: c1602156643d09b43af8b8b251b87649,
     type: 3}
   animatorOverride: {fileID: 22100000, guid: d2d661cf0e91ab741a64581805038767, type: 2}
   dashAudio: []
-  autoAttackAnimList:
-  - attack1
-  - attack2
+  numberOfAutoAttackHits: 2
   autoAttackFX: []
   weakAttackAudio: []
   mediumAttackAudio: []

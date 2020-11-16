@@ -13,7 +13,7 @@ namespace RPG.Core
         public AudioClip[] dashAudio;
 
         [Header("Auto Attack")]
-        public int NumberOfAutoAttackHits;
+        public int numberOfAutoAttackHits;
         public GameObject[] autoAttackFX;
         public AudioClip[] weakAttackAudio;
         public AudioClip[] mediumAttackAudio;

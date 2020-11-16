@@ -9,7 +9,7 @@ namespace RPG.Combat
         private GameObject gameObject = null;
         private Animator animator = null;
         private RaycastMousePosition raycaster;
-        private string[] animList = null;
+        private int numberOfAutoAttackHits = 0;
 
         [Tooltip("The current index of the combo.")]
         [SerializeField] int comboNum = 0;
@@ -24,7 +24,7 @@ namespace RPG.Combat
             GameObject gameObject,
             Animator animator,
             RaycastMousePosition raycaster,
-            string[] animList,
+            int NumberOfAutoAttackHits,
             GetCanAutoAttackDelegate getCanAutoAttackDelegate,
             SetCanAutoAttackDelegate setCanAutoAttackDelegate,
             SetIsInAutoAttackDelegate setIsInAutoAttackDelegate
@@ -32,8 +32,8 @@ namespace RPG.Combat
         {
             this.gameObject = gameObject;
             this.animator = animator;
-            this.animList = animList;
             this.raycaster = raycaster;
+            this.numberOfAutoAttackHits = NumberOfAutoAttackHits;
             this.getCanAutoAttackDelegate = getCanAutoAttackDelegate;
             this.setCanAutoAttackDelegate = setCanAutoAttackDelegate;
             this.setIsInAutoAttackDelegate = setIsInAutoAttackDelegate;
@@ -57,7 +57,7 @@ namespace RPG.Combat
                     ResetAutoAttack();
                     comboNum = 0;
                 }
-                if (comboNum == animList.Length)
+                if (comboNum == numberOfAutoAttackHits)
                 {
                     comboNum = 0;
                 }
@@ -68,17 +68,27 @@ namespace RPG.Combat
         {
             if (!getCanAutoAttackDelegate()) return;
             RaycastHit hit = raycaster.GetRaycastMousePoint();
+            Debug.Log(hit.point);
             gameObject.transform.LookAt(hit.point);
-            animator.SetTrigger(animList[comboNum]);
+            animator.SetTrigger(GenerateAttackString(comboNum));
             comboNum++;
             comboResetTimer = 0;
         }
 
+        private string GenerateAttackString(int numInCombo)
+        {
+            /* 
+                We add 1 to comboNum because comboNum starts at 0
+                while Animator attack triggers start at 1.
+             */
+            return "attack" + (numInCombo + 1).ToString();
+        }
+
         private void ResetAutoAttack()
         {
-            foreach (string anim in animList)
+            for (int i = 0; i < numberOfAutoAttackHits; i++)
             {
-                animator.ResetTrigger(anim);
+                animator.ResetTrigger(GenerateAttackString(i));
             }
             animator.SetTrigger("resetAttack");
         }

@@ -55,7 +55,7 @@ namespace RPG.Control
             stateManager.SetIsInAutoAttackState(true);
             stateMachine.changeState(
                 new SAutoAttack(gameObject, animator, raycaster,
-                stateManager.GetAutoAttackAnimList(),
+                stateManager.GetNumberOfAutoAttackHits(),
                 stateManager.getCanTriggerNextAutoAttackDelegate,
                 stateManager.setCanTriggerAutoAttackDelegate,
                 stateManager.setIsInAutoAttackStateDelegate

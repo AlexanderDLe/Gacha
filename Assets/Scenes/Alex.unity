@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2035111234}
-  m_IndirectSpecularColor: {r: 131.16855, g: 162.52502, b: 215.10977, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1671,6 +1671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentCharacter: {fileID: 11400000, guid: 4374901d27a667e41b44f67605ca5c68, type: 2}
+  numberOfAutoAttacksHits: 0
   dashSpeed: 20
   isDashing: 0
   maxDashCharges: 100
@@ -1744,7 +1745,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5605697787432900260}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 94410aaceef4afa468a1d6575c8bbc2a, type: 3}
+  m_Avatar: {fileID: 9000000, guid: c1602156643d09b43af8b8b251b87649, type: 3}
   m_Controller: {fileID: 9100000, guid: 037fe5fceeba4b1478a37dcc606c2764, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0

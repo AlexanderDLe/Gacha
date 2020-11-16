@@ -17,16 +17,11 @@ namespace RPG.Control
         }
         private void Start()
         {
-            /*  Character Intializations
-
-            Summary: Characters must be swapped in and out of 
-
-            When instantiating a prefab, it won't be connected to Animator
-            unless you SectActive off and on again (weird). */
             IntializeCharacter(currentCharacter);
             UpdateAnimationOverride(currentCharacter);
-            currentDashCharges = maxDashCharges;
+            SetCurrentCharacterStats(currentCharacter);
             InitializeDelegates();
+            currentDashCharges = maxDashCharges;
         }
 
         private void InitializeDelegates()
@@ -65,13 +60,38 @@ namespace RPG.Control
         #region Character Swap Mechanics
         public void IntializeCharacter(CharacterScriptableObject character)
         {
+            /*  Character Intializations
+
+            Summary: Characters must be swapped in and out during runtime.
+
+            When instantiating a prefab, it won't be connected to Animator
+            unless you SectActive off and on again (weird). */
             Instantiate(character.characterPrefab, transform);
             gameObject.SetActive(false);
             gameObject.SetActive(true);
         }
+        public void SetCurrentCharacterStats(CharacterScriptableObject character)
+        {
+            /*  Update Character Stats
+            
+            With the ability to swap between character, player stats must
+            update dynamically during runtime. */
+            currentCharacterName = character.characterName;
+            numberOfAutoAttacksHits = character.numberOfAutoAttackHits;
+        }
         private void UpdateAnimationOverride(CharacterScriptableObject character)
         {
             animator.runtimeAnimatorController = character.animatorOverride;
+        }
+        #endregion
+
+        #region Attributes
+        string currentCharacterName;
+        public int numberOfAutoAttacksHits;
+
+        public int GetNumberOfAutoAttackHits()
+        {
+            return numberOfAutoAttacksHits;
         }
         #endregion
 
