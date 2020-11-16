@@ -53,13 +53,8 @@ namespace RPG.Control
         {
             if (!stateManager.CanAutoAttack()) return;
             stateManager.SetIsInAutoAttackState(true);
-            stateMachine.changeState(
-                new SAutoAttack(gameObject, animator, raycaster,
-                stateManager.GetNumberOfAutoAttackHits(),
-                stateManager.getCanTriggerNextAutoAttackDelegate,
-                stateManager.setCanTriggerAutoAttackDelegate,
-                stateManager.setIsInAutoAttackStateDelegate
-                ), StateEnum.AutoAttack);
+            stateMachine.changeState(new SAutoAttack(gameObject, animator, raycaster,
+            stateManager), StateEnum.AutoAttack);
         }
 
         private void HandleLeftShift()

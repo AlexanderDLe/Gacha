@@ -1,4 +1,5 @@
-﻿using RPG.Core;
+﻿using RPG.Control;
+using RPG.Core;
 using UnityEngine;
 using static RPG.Control.StateManager;
 
@@ -9,34 +10,25 @@ namespace RPG.Combat
         private GameObject gameObject = null;
         private Animator animator = null;
         private RaycastMousePosition raycaster;
-        private int numberOfAutoAttackHits = 0;
+        private string[] autoAttackArray = null;
+        private StateManager stateManager = null;
 
         [Tooltip("The current index of the combo.")]
-        [SerializeField] int comboNum = 0;
         private float comboResetTimer = 0;
         private float timeUntilComboReset = 1;
-
-        GetCanAutoAttackDelegate getCanAutoAttackDelegate;
-        SetCanAutoAttackDelegate setCanAutoAttackDelegate;
-        SetIsInAutoAttackDelegate setIsInAutoAttackDelegate;
 
         public SAutoAttack(
             GameObject gameObject,
             Animator animator,
             RaycastMousePosition raycaster,
-            int NumberOfAutoAttackHits,
-            GetCanAutoAttackDelegate getCanAutoAttackDelegate,
-            SetCanAutoAttackDelegate setCanAutoAttackDelegate,
-            SetIsInAutoAttackDelegate setIsInAutoAttackDelegate
+            StateManager stateManager
         )
         {
             this.gameObject = gameObject;
             this.animator = animator;
             this.raycaster = raycaster;
-            this.numberOfAutoAttackHits = NumberOfAutoAttackHits;
-            this.getCanAutoAttackDelegate = getCanAutoAttackDelegate;
-            this.setCanAutoAttackDelegate = setCanAutoAttackDelegate;
-            this.setIsInAutoAttackDelegate = setIsInAutoAttackDelegate;
+            this.stateManager = stateManager;
+            this.autoAttackArray = stateManager.GetAutoAttackArray();
         }
 
         public void Enter() { }
@@ -49,56 +41,48 @@ namespace RPG.Combat
 
         private void UpdateAutoAttackCycle()
         {
-            if (comboNum > 0)
+            if (stateManager.GetComboNum() > 0)
             {
                 comboResetTimer += Time.deltaTime;
                 if (comboResetTimer >= timeUntilComboReset)
                 {
                     ResetAutoAttack();
-                    comboNum = 0;
+                    stateManager.SetComboNum(0);
                 }
-                if (comboNum == numberOfAutoAttackHits)
+                if (stateManager.GetComboNum() == autoAttackArray.Length)
                 {
-                    comboNum = 0;
+                    Debug.Log(autoAttackArray.Length);
+                    Debug.Log(stateManager.GetComboNum());
+                    stateManager.SetComboNum(0);
                 }
             }
         }
 
         private void TriggerAutoAttack()
         {
-            if (!getCanAutoAttackDelegate()) return;
+            if (!stateManager.GetCanTriggerNextAutoAttack()) return;
             RaycastHit hit = raycaster.GetRaycastMousePoint();
-            Debug.Log(hit.point);
             gameObject.transform.LookAt(hit.point);
-            animator.SetTrigger(GenerateAttackString(comboNum));
-            comboNum++;
+            int currentComboNum = stateManager.GetComboNum();
+            animator.SetTrigger(autoAttackArray[currentComboNum]);
+            stateManager.SetComboNum(currentComboNum + 1);
             comboResetTimer = 0;
-        }
-
-        private string GenerateAttackString(int numInCombo)
-        {
-            /* 
-                We add 1 to comboNum because comboNum starts at 0
-                while Animator attack triggers start at 1.
-             */
-            return "attack" + (numInCombo + 1).ToString();
         }
 
         private void ResetAutoAttack()
         {
-            for (int i = 0; i < numberOfAutoAttackHits; i++)
+            for (int i = 0; i < autoAttackArray.Length; i++)
             {
-                animator.ResetTrigger(GenerateAttackString(i));
+                animator.ResetTrigger(autoAttackArray[i]);
             }
             animator.SetTrigger("resetAttack");
         }
 
         public void Exit()
         {
-            // Debug.Log("<color=red>Auto Attack Exiting...</color>");
-            comboNum = 0;
-            setCanAutoAttackDelegate(true);
-            setIsInAutoAttackDelegate(false);
+            stateManager.SetComboNum(0);
+            stateManager.SetCanTriggerNextAutoAttack(true);
+            stateManager.SetIsInAutoAttackState(false);
             ResetAutoAttack();
         }
     }
