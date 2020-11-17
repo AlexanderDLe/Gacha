@@ -31,51 +31,51 @@ namespace RPG.Core
 
         private void Start()
         {
-            // animator = stateManager.animator;
-            stateMachine.changeState(new Mover(gameObject, navMeshAgent), StateEnum.Move);
+            EnterMovementState();
         }
 
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.LeftShift)) HandleLeftShift();
             if (Input.GetMouseButtonDown(0)) HandleLeftMouseClick();
+            if (Input.GetMouseButtonDown(1)) HandleRightMouseClick();
             if (Input.GetKeyDown(KeyCode.E)) HandlePressE();
             if (DetectMovementInput()) HandleMovementInput();
             stateMachine.ExecuteStateUpdate();
             UpdateAnimator();
         }
 
+        private void HandleRightMouseClick()
+        {
+            if (!stateManager.CanUseMovementSkill()) return;
+            stateManager.MovementSkillTriggered();
+            stateMachine.changeState(new MovementSkill(gameObject, animator, raycaster,
+            navMeshAgent, stateManager), StateEnum.MovementSkill);
+        }
+
         private void HandlePressE()
         {
+            if (!stateManager.CanUsePrimarySkill()) return;
             if (stateManager.PrimarySkillRequiresAim() &&
-               !stateManager.GetPrimaryAimingEnabled() &&
-               !stateManager.IsPrimarySkillInCooldown())
+               !stateManager.GetPrimaryAimingEnabled())
             {
                 stateManager.SetPrimaryAimingEnabled(true);
                 return;
             }
-            if (!stateManager.CanUsePrimarySkill()) return;
-            TriggerPrimarySkill();
+            EnterPrimarySkillState();
         }
 
         private void HandleLeftMouseClick()
         {
             if (stateManager.GetPrimaryAimingEnabled())
             {
-                TriggerPrimarySkill();
+                EnterPrimarySkillState();
                 return;
             }
             if (!stateManager.CanAutoAttack()) return;
             stateManager.SetIsInAutoAttackState(true);
             stateMachine.changeState(new AutoAttack(gameObject, animator, raycaster,
             stateManager), StateEnum.AutoAttack);
-        }
-
-        private void TriggerPrimarySkill()
-        {
-            stateManager.PrimarySkillTriggered();
-            stateMachine.changeState(new PrimarySkill(gameObject, animator, raycaster,
-            stateManager), StateEnum.PrimarySkill);
         }
 
         private void HandleMovementInput()
@@ -90,6 +90,18 @@ namespace RPG.Core
             stateManager.TriggerDash();
             stateMachine.changeState(new Dasher(gameObject, navMeshAgent, animator,
             stateManager), StateEnum.Dash);
+        }
+
+        private void EnterPrimarySkillState()
+        {
+            stateManager.PrimarySkillTriggered();
+            stateMachine.changeState(new PrimarySkill(gameObject, animator, raycaster,
+            stateManager), StateEnum.PrimarySkill);
+        }
+
+        private void EnterMovementState()
+        {
+            stateMachine.changeState(new Mover(gameObject, navMeshAgent), StateEnum.Move);
         }
 
         private bool DetectMovementInput()
@@ -115,11 +127,15 @@ namespace RPG.Core
 
         public void DashEnd()
         {
-            stateMachine.changeState(new Mover(gameObject, navMeshAgent), StateEnum.Move);
+            EnterMovementState();
+        }
+        public void MovementSkillEnd()
+        {
+            EnterMovementState();
         }
         public void PrimarySkillEnd()
         {
-            stateMachine.changeState(new Mover(gameObject, navMeshAgent), StateEnum.Move);
+            EnterMovementState();
         }
     }
 }

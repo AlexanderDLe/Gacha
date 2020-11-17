@@ -6,6 +6,7 @@
         Move,
         Dash,
         AutoAttack,
+        MovementSkill,
         PrimarySkill
     }
 }

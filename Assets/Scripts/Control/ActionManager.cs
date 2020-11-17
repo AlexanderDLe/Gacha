@@ -20,9 +20,13 @@ namespace RPG.Core
         {
             this.dashAudio = character.dashAudio;
             this.autoAttackVFX = character.autoAttackVFX;
-            this.primarySkillFX = character.primarySkillFX;
+            this.primarySkillFX = character.primarySkillVFX;
             this.primarySkillVocalAudio = character.primarySkillVocalAudio;
             this.primarySkillActionAudio = character.primarySkillActionAudio;
+            this.weakAttackAudio = character.weakAttackAudio;
+            this.mediumAttackAudio = character.mediumAttackAudio;
+            this.movementSkillVFX = character.movementSkillVFX;
+            this.movementSkillVocalAudio = character.movementSkillVocalAudio;
         }
         #endregion
 
@@ -65,15 +69,32 @@ namespace RPG.Core
         #region Auto Attack
         // [SerializeField] AudioClip[] autoAttackClips = default;
         public GameObject[] autoAttackVFX = null;
+        public AudioClip[] weakAttackAudio = null;
+        public AudioClip[] mediumAttackAudio = null;
 
         public void Attack1()
         {
+
+            SelectAndPlayCharacterClip(weakAttackAudio);
             Instantiate(autoAttackVFX[0], transform.position, transform.rotation);
         }
         public void Attack2()
         {
+            SelectAndPlayCharacterClip(mediumAttackAudio);
             Instantiate(autoAttackVFX[1], transform.position, transform.rotation);
         }
+        #endregion
+
+        #region Movement Skill
+        AudioClip movementSkillVocalAudio;
+        GameObject movementSkillVFX = null;
+        public void MovementSkillStart()
+        {
+            Debug.Log("Testing movement skill start");
+            characterAudioSource.PlayOneShot(movementSkillVocalAudio);
+            Instantiate(movementSkillVFX, transform.position, transform.rotation);
+        }
+        public void MovementSkillEnd() { }
         #endregion
 
         #region Primary Skill

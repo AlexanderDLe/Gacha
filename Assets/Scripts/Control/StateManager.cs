@@ -22,6 +22,8 @@ namespace RPG.Core
         public Image rangeImage = null;
         public Image reticleImage = null;
 
+        public Test test;
+
         private void Awake()
         {
             animator = GetComponent<Animator>();
@@ -47,6 +49,7 @@ namespace RPG.Core
             if (isDashing) return false;
             if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
             if (isUsingPrimarySkill || IsInPrimarySkillAnimation()) return false;
+            if (isUsingMovementSkill || IsInMovementSkillAnimation()) return false;
             return true;
         }
         public bool CanDash()
@@ -54,28 +57,42 @@ namespace RPG.Core
             if (isDashing) return false;
             if (currentDashCharges == 0) return false;
             if (isUsingPrimarySkill) return false;
+            if (isUsingMovementSkill) return false;
             return true;
         }
         public bool CanAutoAttack()
         {
             if (isDashing) return false;
             if (isInAutoAttackState) return false;
-            if (isUsingPrimarySkill) return false;
+            if (IsUsingAnySkill()) return false;
             if (IsInAutoAttackAnimation()) return false;
             return true;
         }
-
+        public bool CanUseMovementSkill()
+        {
+            if (isDashing) return false;
+            if (movementSkillInCooldown) return false;
+            if (IsUsingAnySkill()) return false;
+            return true;
+        }
         public bool CanUsePrimarySkill()
         {
             if (isDashing) return false;
-            if (isUsingPrimarySkill) return false;
             if (primarySkillInCooldown) return false;
-            if (PrimarySkillRequiresAim())
-            {
-                if (GetPrimaryAimingEnabled()) return true;
-                else return false;
-            }
+            if (IsUsingAnySkill()) return false;
             return true;
+        }
+        public bool IsUsingAnySkill()
+        {
+            if (GetIsUsingMovementSkill()) return true;
+            if (GetIsUsingPrimarySkill()) return true;
+            return false;
+        }
+        public bool IsInAnySkillAnimation()
+        {
+            if (IsInMovementSkillAnimation()) return true;
+            if (IsInPrimarySkillAnimation()) return true;
+            return false;
         }
         #endregion
 
@@ -270,6 +287,55 @@ namespace RPG.Core
         }
         #endregion
 
+        #region Movement Skill Mechanics
+        [Header("Movement Skill Cooldown")]
+        [SerializeField] bool isUsingMovementSkill = false;
+        [SerializeField] bool movementSkillInCooldown = false;
+        [SerializeField] float movementSkillResetTime = 3f;
+        [SerializeField] float movementSkillCountdownTimer = 3f;
+
+        public bool IsMovementSkillInCooldown()
+        {
+            return movementSkillInCooldown;
+        }
+        public void SetIsUsingMovementSkill(bool value)
+        {
+            isUsingMovementSkill = value;
+        }
+        public bool GetIsUsingMovementSkill()
+        {
+            return isUsingMovementSkill;
+        }
+        public bool IsInMovementSkillAnimation()
+        {
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("movementSkill"))
+            {
+                return true;
+            }
+            return false;
+        }
+        public void MovementSkillTriggered()
+        {
+            SetIsUsingMovementSkill(true);
+            StartCoroutine(MovementSkillCountdown());
+        }
+        IEnumerator MovementSkillCountdown()
+        {
+            movementSkillInCooldown = true;
+            movementSkillCountdownTimer = movementSkillResetTime;
+            while (movementSkillCountdownTimer > 0)
+            {
+                movementSkillCountdownTimer -= Time.deltaTime;
+                yield return null;
+            }
+            movementSkillInCooldown = false;
+        }
+        public void MovementSkillActivate()
+        {
+            SetIsUsingMovementSkill(false);
+        }
+        #endregion
+
         #region Primary Skill Mechanics
         [Header("Primary Skill Cooldown")]
         [SerializeField] bool isUsingPrimarySkill = false;
@@ -285,11 +351,9 @@ namespace RPG.Core
         {
             isUsingPrimarySkill = value;
         }
-        public void PrimarySkillTriggered()
+        public bool GetIsUsingPrimarySkill()
         {
-            SetIsUsingPrimarySkill(true);
-            SetPrimaryAimingEnabled(false);
-            StartCoroutine(PrimarySkillCountdown());
+            return isUsingPrimarySkill;
         }
         public bool IsInPrimarySkillAnimation()
         {
@@ -298,6 +362,12 @@ namespace RPG.Core
                 return true;
             }
             return false;
+        }
+        public void PrimarySkillTriggered()
+        {
+            SetIsUsingPrimarySkill(true);
+            SetPrimaryAimingEnabled(false);
+            StartCoroutine(PrimarySkillCountdown());
         }
         IEnumerator PrimarySkillCountdown()
         {
@@ -376,5 +446,12 @@ namespace RPG.Core
             reticleCanvas.transform.position = newHitPos;
         }
         #endregion
+    }
+
+    [System.Serializable]
+    public class Test
+    {
+        public int num = 1;
+        public string greetings = "hello";
     }
 }

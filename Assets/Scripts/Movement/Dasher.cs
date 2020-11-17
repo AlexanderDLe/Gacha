@@ -37,7 +37,6 @@ namespace RPG.Movement
             bool shouldMove = Mathf.Abs(movement.x) > Mathf.Epsilon || Mathf.Abs(movement.z) > Mathf.Epsilon;
             if (!shouldMove) movement = gameObject.transform.forward;
 
-
             // If there is input, then move
             StartMoveAction(gameObject.transform.position + movement, 1f);
         }

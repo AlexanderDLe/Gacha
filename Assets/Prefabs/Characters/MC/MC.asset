@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577ce5c4adddce54da27e137906398b3, type: 3}
   m_Name: MC
   m_EditorClassIdentifier: 
-  characterName: Ekard
+  characterName: MC
   characterPrefab: {fileID: 1684900974663898214, guid: f8f6f8e0fc98a964295d46d819471eae,
     type: 3}
   animatorOverride: {fileID: 0}
@@ -29,6 +29,12 @@ MonoBehaviour:
   mediumAttackAudio:
   - {fileID: 8300000, guid: a32717dc56565154e975b057dee5304b, type: 3}
   - {fileID: 8300000, guid: 8022360c05ad2af4989b17ee0dc700f7, type: 3}
+  movementSkillCooldownTime: 3
+  movementSkillVFX: {fileID: 1934977346563538, guid: 95bce127e4c29554499840ffd8ec9c40,
+    type: 3}
+  movementSkillActionAudio: {fileID: 0}
+  movementSkillVocalAudio: {fileID: 8300000, guid: f71496aebb400c341b6c1f2528ef9a14,
+    type: 3}
   primarySkillCooldownTime: 3
   primaryUsesSkillShot: 1
   primarySkillShotImage: {fileID: 21300000, guid: bb1ec69d19687aa4e87879f0aff1ff9d,
@@ -38,7 +44,7 @@ MonoBehaviour:
     type: 3}
   primarySkillReticleImage: {fileID: 21300000, guid: d0f4f45c3e531e44f945d47d855a63c8,
     type: 3}
-  primarySkillFX: {fileID: 1949624779417528, guid: 5a9d92790b4dfd64284553d68fe6f0cd,
+  primarySkillVFX: {fileID: 1949624779417528, guid: 5a9d92790b4dfd64284553d68fe6f0cd,
     type: 3}
   primarySkillActionAudio: {fileID: 8300000, guid: d142106998c21e64e883bb28274a68f2,
     type: 3}

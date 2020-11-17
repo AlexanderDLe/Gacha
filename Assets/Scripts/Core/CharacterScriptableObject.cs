@@ -20,6 +20,12 @@ namespace RPG.Core
         public AudioClip[] weakAttackAudio;
         public AudioClip[] mediumAttackAudio;
 
+        [Header("Movement Skill")]
+        public float movementSkillCooldownTime;
+        public GameObject movementSkillVFX;
+        public AudioClip movementSkillActionAudio;
+        public AudioClip movementSkillVocalAudio;
+
         [Header("Primary Skill")]
         public float primarySkillCooldownTime;
         [Header("Pick One Aim Mechanic At Most")]
@@ -33,7 +39,7 @@ namespace RPG.Core
 
         [Space]
         [Header("Primary FX")]
-        public GameObject primarySkillFX;
+        public GameObject primarySkillVFX;
         public AudioClip primarySkillActionAudio;
         public AudioClip primarySkillVocalAudio;
 
