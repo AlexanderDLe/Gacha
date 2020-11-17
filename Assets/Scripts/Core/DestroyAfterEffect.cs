@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestroyAfterEffect : MonoBehaviour
+namespace RPG.Core
 {
-    [SerializeField] float timeToDestroy = 3f;
-    private float timer = 0f;
-
-    void Update()
+    public class DestroyAfterEffect : MonoBehaviour
     {
-        timer += Time.deltaTime;
-        if (timer >= timeToDestroy)
+        [SerializeField] float timeToDestroy = 3f;
+        private float timer = 0f;
+
+        void Update()
         {
-            // print("Destroying: " + gameObject.name);
-            Destroy(gameObject);
+            timer += Time.deltaTime;
+            if (timer >= timeToDestroy)
+            {
+                // print("Destroying: " + gameObject.name);
+                Destroy(gameObject);
+            }
         }
     }
 }

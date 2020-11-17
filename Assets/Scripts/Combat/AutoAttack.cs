@@ -1,148 +1,86 @@
-﻿using RPG.Attributes;
-using RPG.Core;
+﻿using RPG.Core;
 using UnityEngine;
 
 namespace RPG.Combat
 {
-    public class AutoAttack : MonoBehaviour
+    public class AutoAttack : IState
     {
-        Animator animator = null;
-
-        [SerializeField] LayerMask enemyLayers = default;
-        [SerializeField] Transform attackHitBoxPoint = default;
-        [Range(0f, 2f)]
-        [SerializeField] public float attackRange = .5f;
-
-        [Space]
-        [Header("Particle Effects")]
-        [SerializeField] GameObject[] attackFX = null;
-
-        [Space]
-        [Header("Combo Cycle")]
-        [SerializeField] string[] animList = { "attack1", "attack2" };
-        [SerializeField] float[] damageList = { 5f, 7f };
-        [Tooltip("The full time it takes to reset auto attack combo after each attack.")]
-        [SerializeField] float comboResetTime = 1f;
-        [SerializeField] bool isAutoAttacking = false;
-
-        [Tooltip("The current time in each attack cycle until it reaches reset time.")]
-        [SerializeField] float comboTimer = 0f;
+        private GameObject gameObject = null;
+        private Animator animator = null;
+        private RaycastMousePosition raycaster;
+        private string[] autoAttackArray = null;
+        private StateManager stateManager = null;
 
         [Tooltip("The current index of the combo.")]
-        [SerializeField] int comboNum = 0;
+        private float comboResetTimer = 0;
+        private float timeUntilComboReset = 1;
 
-        private void Awake()
+        public AutoAttack(
+            GameObject gameObject,
+            Animator animator,
+            RaycastMousePosition raycaster,
+            StateManager stateManager
+        )
         {
-            animator = GetComponent<Animator>();
+            this.gameObject = gameObject;
+            this.animator = animator;
+            this.raycaster = raycaster;
+            this.stateManager = stateManager;
+            this.autoAttackArray = stateManager.GetAutoAttackArray();
         }
 
-        private void OnDrawGizmos()
-        {
-            if (!attackHitBoxPoint) return;
-            Gizmos.color = new Color(1, 0, 0, .3f);
-            Gizmos.DrawWireSphere(attackHitBoxPoint.position, attackRange);
-        }
+        public void Enter() { }
 
-        private void Update()
+        public void Execute()
         {
+            if (Input.GetMouseButtonDown(0)) TriggerAutoAttack();
             UpdateAutoAttackCycle();
         }
 
-        public void TriggerAutoAttack(Vector3 target)
+        private void UpdateAutoAttackCycle()
         {
-            transform.LookAt(target);
-            if (Input.GetButtonDown("Fire1") && comboNum < animList.Length)
+            if (stateManager.GetComboNum() > 0)
             {
-                // If there is an active attack animation and the countdown is still active, you can't attack
-                if (isAutoAttacking) return;
-                // GetComponent<ActionScheduler>().StartAction(this);
-                animator.SetTrigger(animList[comboNum]);
-                comboNum++;
-                comboTimer = 0f;
-            }
-        }
-
-        public void UpdateAutoAttackCycle()
-        {
-            if (comboNum > 0)
-            {
-                comboTimer += Time.deltaTime;
-                if (comboTimer > comboResetTime)
+                comboResetTimer += Time.deltaTime;
+                if (comboResetTimer >= timeUntilComboReset)
                 {
-                    ResetAttacks();
-                    comboNum = 0;
+                    ResetAutoAttack();
+                    stateManager.SetComboNum(0);
                 }
-                if (comboNum == animList.Length)
+                if (stateManager.GetComboNum() == autoAttackArray.Length)
                 {
-                    comboNum = 0;
+                    stateManager.SetComboNum(0);
                 }
             }
         }
 
-        public void CancelAutoAttack()
+        private void TriggerAutoAttack()
         {
-            ResetAttacks();
-            isAutoAttacking = false;
+            if (!stateManager.GetCanTriggerNextAutoAttack()) return;
+            stateManager.SetCanTriggerNextAutoAttack(false);
+            RaycastHit hit = raycaster.GetRaycastMousePoint();
+            gameObject.transform.LookAt(hit.point);
+
+            int currentComboNum = stateManager.GetComboNum();
+            animator.SetTrigger(autoAttackArray[currentComboNum]);
+            stateManager.SetComboNum(currentComboNum + 1);
+            comboResetTimer = 0;
         }
 
-        private void ResetAttacks()
+        private void ResetAutoAttack()
         {
-            foreach (string anim in animList)
+            for (int i = 0; i < autoAttackArray.Length; i++)
             {
-                animator.ResetTrigger(anim);
+                animator.ResetTrigger(autoAttackArray[i]);
             }
             animator.SetTrigger("resetAttack");
         }
 
-        public string[] GetAnimList()
+        public void Exit()
         {
-            return animList;
-        }
-
-        public bool IsAutoAttacking()
-        {
-            return isAutoAttacking;
-        }
-
-        public bool IsInAutoAttackAnimation()
-        {
-            foreach (string anim in animList)
-            {
-                if (animator.GetCurrentAnimatorStateInfo(0).IsName(anim))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private void InflictDamageHitbox(int comboIndex)
-        {
-            Collider[] hitEnemies = Physics.OverlapSphere(attackHitBoxPoint.position, attackRange, enemyLayers);
-
-            foreach (Collider enemy in hitEnemies)
-            {
-                enemy.GetComponent<Health>().TakeDamage(damageList[comboIndex]);
-            }
-            isAutoAttacking = false;
-        }
-
-        // Animator Triggered Events
-        private void AttackStart()
-        {
-            isAutoAttacking = true;
-        }
-
-        private void Attack1()
-        {
-            InflictDamageHitbox(0);
-            Instantiate(attackFX[0], attackHitBoxPoint.position, gameObject.transform.rotation);
-        }
-
-        private void Attack2()
-        {
-            InflictDamageHitbox(1);
-            Instantiate(attackFX[1], attackHitBoxPoint.position, gameObject.transform.rotation);
+            stateManager.SetCanTriggerNextAutoAttack(true);
+            stateManager.SetIsInAutoAttackState(false);
+            ResetAutoAttack();
         }
     }
 }

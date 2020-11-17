@@ -1,38 +1,30 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using RPG.Core;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
+using RPG.Core;
 
 namespace RPG.Movement
 {
-    public class Mover : MonoBehaviour, IAction
+    public class Mover : IState
     {
-        [SerializeField] float currentSpeed = 6f;
-        [SerializeField] float maxNavPathLength = 50f;
+        public string StateName = "Mover";
+        private GameObject gameObject = null;
+        private NavMeshAgent navMeshAgent;
+        private float speed = 6f;
 
-        NavMeshAgent navMeshAgent = null;
-        Animator animator = null;
-        Dasher dasher = null;
-
-        void Awake()
+        public Mover(GameObject gameObjectOwner, NavMeshAgent navMeshAgent)
         {
-            navMeshAgent = GetComponent<NavMeshAgent>();
-            animator = GetComponent<Animator>();
-            dasher = GetComponent<Dasher>();
+            this.gameObject = gameObjectOwner;
+            this.navMeshAgent = navMeshAgent;
         }
 
-        public void InteractWithMovement()
+        public void Enter()
         {
-            if (dasher.InteractWithDasher())
-            {
-                currentSpeed = dasher.GetDashSpeed();
-            }
-            else
-            {
-                currentSpeed = 6f;
-            }
+            // Debug.Log("<color>Enter Move State</color>");
+        }
+
+        public void Execute()
+        {
+            // Debug.Log("In Movement State");
 
             // Get movement Input
             Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
@@ -42,7 +34,7 @@ namespace RPG.Movement
             if (!shouldMove) return;
 
             // If there is input, then move
-            StartMoveAction(transform.position + movement, 1f);
+            StartMoveAction(gameObject.transform.position + movement, 1f);
         }
 
         public void StartMoveAction(Vector3 destination, float speedFraction)
@@ -54,52 +46,19 @@ namespace RPG.Movement
         {
             navMeshAgent.isStopped = false;
             navMeshAgent.destination = destination;
-            navMeshAgent.speed = currentSpeed * Mathf.Clamp01(speedFraction);
+            navMeshAgent.speed = speed * Mathf.Clamp01(speedFraction);
         }
 
-        public bool CanDash()
-        {
-            return dasher.GetCanDash();
-        }
-
-        public bool IsDashing()
-        {
-            return dasher.isDashing;
-        }
-
-        public bool CanMoveTo(Vector3 destination)
-        {
-            NavMeshPath path = new NavMeshPath();
-
-            // Returns if there is no possible path to destination
-            bool hasPath = NavMesh.CalculatePath(transform.position, destination, NavMesh.AllAreas, path);
-            if (!hasPath) return false;
-
-            // Returns if there is no possible SINGLE path to destination
-            if (path.status != NavMeshPathStatus.PathComplete) return false;
-
-            // Returns if path is TOO long
-            if (GetPathLength(path) > maxNavPathLength) return false;
-            return true;
-        }
-
-        private float GetPathLength(NavMeshPath path)
-        {
-            // Returns total path distance
-            float total = 0;
-            if (path.corners.Length < 2) return total;
-            for (int i = 0; i < path.corners.Length - 1; i++)
-            {
-                total += Vector3.Distance(path.corners[i], path.corners[i + 1]);
-            }
-            return total;
-        }
-
-        public void Cancel()
+        public void Exit()
         {
             navMeshAgent.speed = 0f;
             navMeshAgent.velocity = Vector3.zero;
             navMeshAgent.isStopped = true;
+        }
+
+        public void Footsteps()
+        {
+            Debug.Log("Anim Triggered Footsteps");
         }
     }
 }

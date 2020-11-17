@@ -1,93 +1,63 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine;
+using UnityEngine.AI;
 using RPG.Core;
-using UnityEngine;
 
 namespace RPG.Movement
 {
-    public class Dasher : MonoBehaviour, IAction
+    public class Dasher : IState
     {
         Animator animator = null;
-        [SerializeField] GameObject dashParticleFX = null;
-        [SerializeField] float dashSpeed = 10f;
-        [SerializeField] bool canDash = true;
-        public bool isDashing = false;
+        private GameObject gameObject = null;
+        private NavMeshAgent navMeshAgent;
+        private StateManager stateManager = null;
 
-        [Header("Dash Charges")]
-        [SerializeField] int maxDashCharges = 3;
-        [SerializeField] int currentDashCharges = 3;
-
-        [Header("Dash Regen")]
-        [SerializeField] float dashRegenRate = 3f;
-        [SerializeField] float dashRegenTimer = 0;
-
-        // [Space]
-        // [Tooltip("The dash length.")]
-        // [SerializeField] float dashLengthTime = .5f;
-        // [Tooltip("The current time in the dash cycle.")]
-        // [SerializeField] float dashTimer = 0f;
-
-        private void Awake()
+        public Dasher(
+            GameObject gameObject,
+            NavMeshAgent navMeshAgent,
+            Animator animator,
+            StateManager stateManager)
         {
-            animator = GetComponent<Animator>();
-            currentDashCharges = maxDashCharges;
+            this.gameObject = gameObject;
+            this.navMeshAgent = navMeshAgent;
+            this.animator = animator;
+            this.stateManager = stateManager;
         }
 
-        void Update()
+        public void Enter()
         {
-            if (currentDashCharges < maxDashCharges)
-            {
-                dashRegenTimer += Time.deltaTime;
-                if (dashRegenTimer >= dashRegenRate)
-                {
-                    dashRegenTimer = 0;
-                    currentDashCharges++;
-                }
-            }
-            if (!isDashing && currentDashCharges > 0)
-            {
-                canDash = true;
-            }
-        }
-
-        public bool InteractWithDasher()
-        {
-            if (Input.GetKeyDown(KeyCode.LeftShift) && !isDashing) TriggerDash();
-            if (isDashing) return true;
-            return false;
-        }
-
-        private void TriggerDash()
-        {
-            if (currentDashCharges == 0) return;
-            // Debug.Log("<color=yellow>Should Dash</color>");
-            currentDashCharges--;
-            isDashing = true;
-            canDash = false;
             animator.SetTrigger("dash");
         }
 
-        public float GetDashSpeed()
+        public void Execute()
         {
-            return dashSpeed;
-        }
-        public bool GetCanDash()
-        {
-            return canDash;
-        }
+            // Get movement Input
+            Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
-        public void Cancel() { }
-        private void StartDash()
-        {
-            Debug.Log("<color=white>Start Dash.</color>");
-            if (dashParticleFX) Instantiate(dashParticleFX, transform.position, transform.rotation);
-        }
-        private void EndDash()
-        {
-            Debug.Log("<color=green>End Dash.</color>");
-            isDashing = false;
-        }
+            // Detect movement input
+            bool shouldMove = Mathf.Abs(movement.x) > Mathf.Epsilon || Mathf.Abs(movement.z) > Mathf.Epsilon;
+            if (!shouldMove) movement = gameObject.transform.forward;
 
 
+            // If there is input, then move
+            StartMoveAction(gameObject.transform.position + movement, 1f);
+        }
+
+        public void StartMoveAction(Vector3 destination, float speedFraction)
+        {
+            MoveTo(destination, speedFraction);
+        }
+
+        public void MoveTo(Vector3 destination, float speedFraction)
+        {
+            navMeshAgent.isStopped = false;
+            navMeshAgent.destination = destination;
+            navMeshAgent.speed = stateManager.GetDashSpeed() * Mathf.Clamp01(speedFraction);
+        }
+
+        public void Exit()
+        {
+            navMeshAgent.isStopped = true;
+            stateManager.SetIsDashing(false);
+        }
     }
 }

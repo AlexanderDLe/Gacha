@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 577ce5c4adddce54da27e137906398b3, type: 3}
+  m_Name: MC
+  m_EditorClassIdentifier: 
+  characterName: Ekard
+  characterPrefab: {fileID: 1684900974663898214, guid: f8f6f8e0fc98a964295d46d819471eae,
+    type: 3}
+  animatorOverride: {fileID: 0}
+  dashAudio:
+  - {fileID: 8300000, guid: 82dbcb26c195a3640a883dbe979cbad2, type: 3}
+  - {fileID: 8300000, guid: cd75db6c69d471642b49c020a3da9ce9, type: 3}
+  numberOfAutoAttackHits: 2
+  autoAttackVFX:
+  - {fileID: 1819066416490906, guid: 38c92f637b04dc1419efcde39fde5c66, type: 3}
+  - {fileID: 1107296871017770, guid: 4b91df529222fb945b2b8cebe790f720, type: 3}
+  weakAttackAudio:
+  - {fileID: 8300000, guid: 82dbcb26c195a3640a883dbe979cbad2, type: 3}
+  - {fileID: 8300000, guid: abed00d46aaed794eb28cfebad267866, type: 3}
+  mediumAttackAudio:
+  - {fileID: 8300000, guid: a32717dc56565154e975b057dee5304b, type: 3}
+  - {fileID: 8300000, guid: 8022360c05ad2af4989b17ee0dc700f7, type: 3}
+  useSkillShot: 1
+  useRangeShot: 0
+  primarySkillFX: {fileID: 1949624779417528, guid: 5a9d92790b4dfd64284553d68fe6f0cd,
+    type: 3}
+  primarySkillAudio:
+  - {fileID: 8300000, guid: cd4be5dd4d0b3ff438208d37f39255b0, type: 3}
