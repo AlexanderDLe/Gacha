@@ -5,6 +5,7 @@
         Start,
         Move,
         Dash,
-        AutoAttack
+        AutoAttack,
+        PrimarySkill
     }
 }

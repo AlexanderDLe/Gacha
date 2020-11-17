@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace RPG.Core
 {
@@ -20,13 +21,21 @@ namespace RPG.Core
         public AudioClip[] mediumAttackAudio;
 
         [Header("Primary Skill")]
-        public float cooldownTime;
-        [Header("Pick One At Most")]
-        public bool useSkillShot;
-        public bool useRangeShot;
+        public float primarySkillCooldownTime;
+        [Header("Pick One Aim Mechanic At Most")]
+        public bool primaryUsesSkillShot;
+        public Sprite primarySkillShotImage;
+
+        [Space]
+        public bool primaryUsesRangeShot;
+        public Sprite primarySkillRangeImage;
+        public Sprite primarySkillReticleImage;
+
+        [Space]
         [Header("Primary FX")]
         public GameObject primarySkillFX;
-        public AudioClip primarySkillAudio;
+        public AudioClip primarySkillActionAudio;
+        public AudioClip primarySkillVocalAudio;
 
         /* [Header("Audio Clips")]
         public AudioClipClass[] AudioClips = null;

@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using System.Drawing;
+using UnityEngine.UI;
 
 namespace RPG.Core
 {
@@ -7,18 +10,34 @@ namespace RPG.Core
     {
         #region Intializations
         Animator animator = null;
-        FXManager fxManager = null;
+        ActionManager actionManager = null;
+        RaycastMousePosition raycaster = null;
+        Vector3 mousePosition = Vector3.zero;
         public CharacterScriptableObject currentCharacter = null;
+
+        [Header("Aiming Asset References")]
+        public Canvas skillshotCanvas = null;
+        public Canvas reticleCanvas = null;
+        public Image skillshotImage = null;
+        public Image rangeImage = null;
+        public Image reticleImage = null;
+
         private void Awake()
         {
             animator = GetComponent<Animator>();
-            fxManager = GetComponent<FXManager>();
+            actionManager = GetComponent<ActionManager>();
+            raycaster = GetComponent<RaycastMousePosition>();
         }
         private void Start()
         {
             IntializeCharacter(currentCharacter);
-            SetCurrentCharacterStats(currentCharacter);
             currentDashCharges = maxDashCharges;
+        }
+
+        private void Update()
+        {
+            if (skillshotAimingActive) AimWithSkillshot();
+            if (rangeshotAimingActive) AimWithRangeshot();
         }
         #endregion
 
@@ -27,17 +46,21 @@ namespace RPG.Core
         {
             if (isDashing) return false;
             if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
+            if (isUsingPrimarySkill || IsInPrimarySkillAnimation()) return false;
             return true;
         }
         public bool CanDash()
         {
-            if (currentDashCharges > 0 && !isDashing) return true;
-            return false;
+            if (isDashing) return false;
+            if (currentDashCharges == 0) return false;
+            if (isUsingPrimarySkill) return false;
+            return true;
         }
         public bool CanAutoAttack()
         {
             if (isDashing) return false;
             if (isInAutoAttackState) return false;
+            if (isUsingPrimarySkill) return false;
             if (IsInAutoAttackAnimation()) return false;
             return true;
         }
@@ -45,6 +68,13 @@ namespace RPG.Core
         public bool CanUsePrimarySkill()
         {
             if (isDashing) return false;
+            if (isUsingPrimarySkill) return false;
+            if (primarySkillInCooldown) return false;
+            if (PrimarySkillRequiresAim())
+            {
+                if (GetPrimaryAimingEnabled()) return true;
+                else return false;
+            }
             return true;
         }
         #endregion
@@ -63,21 +93,43 @@ namespace RPG.Core
             When instantiating a prefab, it won't be connected to Animator
             unless you SectActive off and on again (weird). */
             Instantiate(character.characterPrefab, transform);
-            fxManager.InitializeCharacterFX(character);
+            InitializeCharacterStats(character);
+            InitializeCanvas(character);
+            actionManager.InitializeCharacterFX(character);
             gameObject.SetActive(false);
             gameObject.SetActive(true);
         }
-        public void SetCurrentCharacterStats(CharacterScriptableObject character)
+
+        public void InitializeCharacterStats(CharacterScriptableObject character)
         {
             /*  Update Character Stats
-            
+
             With the ability to swap between character, player stats must
             update dynamically during runtime. */
             this.currentCharacterName = character.characterName;
             this.numberOfAutoAttacksHits = character.numberOfAutoAttackHits;
+            this.primarySkillResetTime = character.primarySkillCooldownTime;
             GenerateAutoAttackArray(numberOfAutoAttacksHits);
+            this.primaryRequiresSkillShot = character.primaryUsesSkillShot;
+            this.primaryRequiresRangeShot = character.primaryUsesRangeShot;
             if (!character.animatorOverride) return;
             else animator.runtimeAnimatorController = character.animatorOverride;
+        }
+
+        private void InitializeCanvas(CharacterScriptableObject character)
+        {
+            if (character.primaryUsesSkillShot)
+            {
+                skillshotImage.sprite = character.primarySkillShotImage;
+            }
+            if (character.primaryUsesRangeShot)
+            {
+                rangeImage.sprite = character.primarySkillRangeImage;
+                reticleImage.sprite = character.primarySkillReticleImage;
+            }
+            skillshotImage.enabled = false;
+            rangeImage.enabled = false;
+            reticleImage.enabled = false;
         }
         #endregion
 
@@ -155,7 +207,7 @@ namespace RPG.Core
             Summary: Upon attacking, you should not be allowed to override the current attack
             until the current attack is complete. We use a delegated function to get/set a
             bool to prevent this from occurring.
-            
+
             Combo Scenario: To prevent the override, we use the canTriggerNextAutoAttack bool.
             During an attack animation, we set the bool to FALSE so the player
             is unable to override. When the animation is complete, we set the
@@ -219,16 +271,110 @@ namespace RPG.Core
         #endregion
 
         #region Primary Skill Mechanics
-        [Header("Primary Skill")]
-        [Tooltip("The time it takes to reset primary skill use.")]
-        [SerializeField] float cooldownResetTime = 0f;
-        [SerializeField] bool primaryRequireSkillShot = false;
-        [SerializeField] bool primaryRequireRangeShot = false;
-
         [Header("Primary Skill Cooldown")]
-        [SerializeField] bool skillInCooldown = false;
-        [Tooltip("The current time in the cooldown cycle.")]
-        [SerializeField] float cooldownTimer = 0f;
+        [SerializeField] bool isUsingPrimarySkill = false;
+        [SerializeField] bool primarySkillInCooldown = false;
+        [SerializeField] float primarySkillResetTime = 3f;
+        [SerializeField] float primarySkillCountdownTimer = 0f;
+
+        public bool IsPrimarySkillInCooldown()
+        {
+            return primarySkillInCooldown;
+        }
+        public void SetIsUsingPrimarySkill(bool value)
+        {
+            isUsingPrimarySkill = value;
+        }
+        public void PrimarySkillTriggered()
+        {
+            SetIsUsingPrimarySkill(true);
+            SetPrimaryAimingEnabled(false);
+            StartCoroutine(PrimarySkillCountdown());
+        }
+        public bool IsInPrimarySkillAnimation()
+        {
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("primarySkill"))
+            {
+                return true;
+            }
+            return false;
+        }
+        IEnumerator PrimarySkillCountdown()
+        {
+            primarySkillInCooldown = true;
+            primarySkillCountdownTimer = primarySkillResetTime;
+            while (primarySkillCountdownTimer > 0)
+            {
+                primarySkillCountdownTimer -= Time.deltaTime;
+                yield return null;
+            }
+            primarySkillInCooldown = false;
+        }
+        public void PrimarySkillStart() { }
+        public void PrimarySkillActivate()
+        {
+            SetIsUsingPrimarySkill(false);
+        }
+        public void PrimarySkillEnd() { }
+        #endregion
+
+        #region Primary Aiming Mechanics
+        [Header("Primary Skill")]
+        [SerializeField] bool primaryRequiresSkillShot = false;
+        [SerializeField] bool primaryRequiresRangeShot = false;
+        [SerializeField] bool isAimingPrimarySkill = false;
+        private float rangeShotMaxDistance = 3f;
+        private bool skillshotAimingActive = false;
+        private bool rangeshotAimingActive = false;
+
+        public bool PrimarySkillRequiresAim()
+        {
+            return primaryRequiresSkillShot || primaryRequiresRangeShot;
+        }
+        public bool GetPrimaryAimingEnabled()
+        {
+            return isAimingPrimarySkill;
+        }
+        public void SetPrimaryAimingEnabled(bool value)
+        {
+            isAimingPrimarySkill = value;
+            if (primaryRequiresSkillShot)
+            {
+                skillshotImage.enabled = value;
+                skillshotAimingActive = value;
+            }
+            if (primaryRequiresRangeShot)
+            {
+                rangeImage.enabled = value;
+                reticleImage.enabled = value;
+                rangeshotAimingActive = value;
+            }
+        }
+
+        public void AimWithSkillshot()
+        {
+            mousePosition = raycaster.GetRaycastMousePoint().point;
+            Quaternion transRot = Quaternion.LookRotation(mousePosition - transform.position);
+            transRot.eulerAngles = new Vector3(0, transRot.eulerAngles.y, transRot.eulerAngles.z);
+            skillshotCanvas.transform.rotation = Quaternion.Lerp(transRot, skillshotCanvas.transform.rotation, 0f);
+        }
+        public void AimWithRangeshot()
+        {
+            RaycastHit hit = raycaster.GetRaycastMousePoint();
+
+            // if (hit.collider.gameObject != this.gameObject)
+            // {
+            //     posUp = new Vector3(hit.point.x, 10f, hit.point.z);
+            //     mousePosition = hit.point;
+            // }
+
+            var hitPosDir = (hit.point - transform.position).normalized;
+            float distance = Vector3.Distance(hit.point, transform.position);
+            distance = Mathf.Min(distance, rangeShotMaxDistance);
+
+            var newHitPos = transform.position + hitPosDir * distance;
+            reticleCanvas.transform.position = newHitPos;
+        }
         #endregion
     }
 }

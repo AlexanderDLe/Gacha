@@ -29,9 +29,18 @@ MonoBehaviour:
   mediumAttackAudio:
   - {fileID: 8300000, guid: a32717dc56565154e975b057dee5304b, type: 3}
   - {fileID: 8300000, guid: 8022360c05ad2af4989b17ee0dc700f7, type: 3}
-  useSkillShot: 1
-  useRangeShot: 0
+  primarySkillCooldownTime: 3
+  primaryUsesSkillShot: 1
+  primarySkillShotImage: {fileID: 21300000, guid: bb1ec69d19687aa4e87879f0aff1ff9d,
+    type: 3}
+  primaryUsesRangeShot: 0
+  primarySkillRangeImage: {fileID: 21300000, guid: d0f4f45c3e531e44f945d47d855a63c8,
+    type: 3}
+  primarySkillReticleImage: {fileID: 21300000, guid: d0f4f45c3e531e44f945d47d855a63c8,
+    type: 3}
   primarySkillFX: {fileID: 1949624779417528, guid: 5a9d92790b4dfd64284553d68fe6f0cd,
     type: 3}
-  primarySkillAudio:
-  - {fileID: 8300000, guid: cd4be5dd4d0b3ff438208d37f39255b0, type: 3}
+  primarySkillActionAudio: {fileID: 8300000, guid: d142106998c21e64e883bb28274a68f2,
+    type: 3}
+  primarySkillVocalAudio: {fileID: 8300000, guid: 4732cfc266ced3d4fa6143e1d236d02a,
+    type: 3}

@@ -47,21 +47,41 @@ namespace RPG.Core
 
         private void HandlePressE()
         {
+            if (stateManager.PrimarySkillRequiresAim() &&
+               !stateManager.GetPrimaryAimingEnabled() &&
+               !stateManager.IsPrimarySkillInCooldown())
+            {
+                stateManager.SetPrimaryAimingEnabled(true);
+                return;
+            }
             if (!stateManager.CanUsePrimarySkill()) return;
+            TriggerPrimarySkill();
+        }
+
+        private void HandleLeftMouseClick()
+        {
+            if (stateManager.GetPrimaryAimingEnabled())
+            {
+                TriggerPrimarySkill();
+                return;
+            }
+            if (!stateManager.CanAutoAttack()) return;
+            stateManager.SetIsInAutoAttackState(true);
+            stateMachine.changeState(new AutoAttack(gameObject, animator, raycaster,
+            stateManager), StateEnum.AutoAttack);
+        }
+
+        private void TriggerPrimarySkill()
+        {
+            stateManager.PrimarySkillTriggered();
+            stateMachine.changeState(new PrimarySkill(gameObject, animator, raycaster,
+            stateManager), StateEnum.PrimarySkill);
         }
 
         private void HandleMovementInput()
         {
             if (!stateManager.CanMove()) return;
             stateMachine.changeState(new Mover(gameObject, navMeshAgent), StateEnum.Move);
-        }
-
-        private void HandleLeftMouseClick()
-        {
-            if (!stateManager.CanAutoAttack()) return;
-            stateManager.SetIsInAutoAttackState(true);
-            stateMachine.changeState(new AutoAttack(gameObject, animator, raycaster,
-            stateManager), StateEnum.AutoAttack);
         }
 
         private void HandleLeftShift()
@@ -94,6 +114,10 @@ namespace RPG.Core
         }
 
         public void DashEnd()
+        {
+            stateMachine.changeState(new Mover(gameObject, navMeshAgent), StateEnum.Move);
+        }
+        public void PrimarySkillEnd()
         {
             stateMachine.changeState(new Mover(gameObject, navMeshAgent), StateEnum.Move);
         }

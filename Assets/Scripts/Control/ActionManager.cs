@@ -3,33 +3,43 @@ using System.Collections;
 
 namespace RPG.Core
 {
-    public class FXManager : MonoBehaviour
+    public class ActionManager : MonoBehaviour
     {
         AudioSource audioSource = null;
         AudioSource characterAudioSource = null;
+        AudioSource actionAudioSource = null;
 
         #region Initializations
         private void Awake()
         {
             audioSource = GetComponent<AudioSource>();
             characterAudioSource = gameObject.AddComponent<AudioSource>();
+            actionAudioSource = gameObject.AddComponent<AudioSource>();
         }
         public void InitializeCharacterFX(CharacterScriptableObject character)
         {
-            this.autoAttackVFX = character.autoAttackVFX;
             this.dashAudio = character.dashAudio;
+            this.autoAttackVFX = character.autoAttackVFX;
+            this.primarySkillFX = character.primarySkillFX;
+            this.primarySkillVocalAudio = character.primarySkillVocalAudio;
+            this.primarySkillActionAudio = character.primarySkillActionAudio;
         }
         #endregion
 
-        #region Methods
+        #region Utility
         private bool RandomlyDecideIfPlay()
         {
             return Random.Range(0f, 10f) > 5f;
         }
-        private void SelectAndPlayClip(AudioClip[] audioClips)
+        private void SelectAndPlayCharacterClip(AudioClip[] audioClips)
         {
             int clipNumber = Random.Range(0, audioClips.Length);
-            audioSource.PlayOneShot(audioClips[clipNumber]);
+            characterAudioSource.PlayOneShot(audioClips[clipNumber]);
+        }
+        private void SelectAndPlayActionClip(AudioClip[] audioClips)
+        {
+            int clipNumber = Random.Range(0, audioClips.Length);
+            actionAudioSource.PlayOneShot(audioClips[clipNumber]);
         }
         #endregion
 
@@ -41,7 +51,7 @@ namespace RPG.Core
         {
             if (!RandomlyDecideIfPlay()) return;
             if (characterAudioSource.isPlaying || dashAudioJustPlayed) return;
-            SelectAndPlayClip(dashAudio);
+            SelectAndPlayCharacterClip(dashAudio);
             StartCoroutine(TriggerDashAudio());
         }
         IEnumerator TriggerDashAudio()
@@ -52,9 +62,8 @@ namespace RPG.Core
         }
         #endregion
 
-        #region Auto Attack FX
-        [SerializeField] AudioClip[] autoAttackClips = default;
-        // int numberOfAutoAttackHits = 0;
+        #region Auto Attack
+        // [SerializeField] AudioClip[] autoAttackClips = default;
         public GameObject[] autoAttackVFX = null;
 
         public void Attack1()
@@ -65,6 +74,25 @@ namespace RPG.Core
         {
             Instantiate(autoAttackVFX[1], transform.position, transform.rotation);
         }
+        #endregion
+
+        #region Primary Skill
+        public GameObject primarySkillFX = null;
+        public AudioClip primarySkillActionAudio = null;
+        public AudioClip primarySkillVocalAudio = null;
+        public void PrimarySkillStart()
+        {
+            characterAudioSource.PlayOneShot(primarySkillVocalAudio);
+        }
+        public void PrimarySkillActivate()
+        {
+            Instantiate(primarySkillFX, transform.position, transform.rotation);
+            actionAudioSource.PlayOneShot(primarySkillActionAudio);
+        }
+        #endregion
+
+        #region Primary Skill Shot
+
         #endregion
 
         #region Footsteps
