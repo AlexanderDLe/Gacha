@@ -40,29 +40,10 @@ namespace RPG.Core
             if (Input.GetMouseButtonDown(0)) HandleLeftMouseClick();
             if (Input.GetMouseButtonDown(1)) HandleRightMouseClick();
             if (Input.GetKeyDown(KeyCode.E)) HandlePressE();
+            if (Input.GetKeyDown(KeyCode.Q)) HandlePressQ();
             if (DetectMovementInput()) HandleMovementInput();
             stateMachine.ExecuteStateUpdate();
             UpdateAnimator();
-        }
-
-        private void HandleRightMouseClick()
-        {
-            if (!stateManager.CanUseMovementSkill()) return;
-            stateManager.MovementSkillTriggered();
-            stateMachine.changeState(new MovementSkill(gameObject, animator, raycaster,
-            navMeshAgent, stateManager), StateEnum.MovementSkill);
-        }
-
-        private void HandlePressE()
-        {
-            if (!stateManager.CanUsePrimarySkill()) return;
-            if (stateManager.PrimarySkillRequiresAim() &&
-               !stateManager.GetPrimaryAimingEnabled())
-            {
-                stateManager.SetPrimaryAimingEnabled(true);
-                return;
-            }
-            EnterPrimarySkillState();
         }
 
         private void HandleLeftMouseClick()
@@ -78,32 +59,68 @@ namespace RPG.Core
             stateManager), StateEnum.AutoAttack);
         }
 
+        private void HandleRightMouseClick()
+        {
+            if (!stateManager.CanUseMovementSkill()) return;
+            stateManager.MovementSkillTriggered();
+            stateMachine.changeState(new MovementSkill(gameObject, animator, raycaster,
+            navMeshAgent, stateManager), StateEnum.MovementSkill);
+        }
+        private void HandlePressE()
+        {
+            if (!stateManager.CanUsePrimarySkill()) return;
+            if (stateManager.PrimarySkillRequiresAim() &&
+               !stateManager.GetPrimaryAimingEnabled())
+            {
+                stateManager.ActivatePrimarySkillAim();
+                return;
+            }
+            EnterPrimarySkillState();
+        }
+        private void HandlePressQ()
+        {
+            if (!stateManager.CanUseUltimateSkill()) return;
+            if (stateManager.UltimateSkillRequiresAim() &&
+               !stateManager.GetUltimateAimingEnabled())
+            {
+                stateManager.ActivateUltimateSkillAim();
+                return;
+            }
+            EnterUltimateSkillState();
+        }
         private void HandleMovementInput()
         {
             if (!stateManager.CanMove()) return;
-            stateMachine.changeState(new Mover(gameObject, navMeshAgent), StateEnum.Move);
+            EnterMovementState();
         }
-
         private void HandleLeftShift()
         {
             if (!stateManager.CanDash()) return;
             stateManager.TriggerDash();
-            stateMachine.changeState(new Dasher(gameObject, navMeshAgent, animator,
-            stateManager), StateEnum.Dash);
+            EnterDashState();
         }
 
+        private void EnterDashState()
+        {
+            stateMachine.changeState(new Dasher(gameObject, navMeshAgent, animator,
+                        stateManager), StateEnum.Dash);
+        }
         private void EnterPrimarySkillState()
         {
             stateManager.PrimarySkillTriggered();
             stateMachine.changeState(new PrimarySkill(gameObject, animator, raycaster,
             stateManager), StateEnum.PrimarySkill);
         }
-
+        private void EnterUltimateSkillState()
+        {
+            stateManager.UltimateSkillTriggered();
+            stateMachine.changeState(new UltimateSkill(gameObject, animator, raycaster,
+            stateManager), StateEnum.UltimateSkill);
+        }
         private void EnterMovementState()
         {
             stateMachine.changeState(new Mover(gameObject, navMeshAgent), StateEnum.Move);
         }
-
         private bool DetectMovementInput()
         {
             if (
@@ -116,7 +133,6 @@ namespace RPG.Core
             }
             return false;
         }
-
         private void UpdateAnimator()
         {
             Vector3 velocity = navMeshAgent.velocity;
@@ -125,6 +141,7 @@ namespace RPG.Core
             animator.SetFloat("forwardSpeed", speed);
         }
 
+        #region Animator Events
         public void DashEnd()
         {
             EnterMovementState();
@@ -137,5 +154,6 @@ namespace RPG.Core
         {
             EnterMovementState();
         }
+        #endregion
     }
 }

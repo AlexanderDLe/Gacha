@@ -39,15 +39,5 @@ namespace RPG.Combat
             animator.ResetTrigger("primarySkill");
             animator.SetTrigger("resetAttack");
         }
-
-        // Animator Triggered Events
-        private void PrimarySkillStart()
-        {
-        }
-
-        private void PrimarySkillAttack()
-        {
-        }
-
     }
 }

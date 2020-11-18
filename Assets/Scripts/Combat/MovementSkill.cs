@@ -11,6 +11,7 @@ namespace RPG.Combat
         NavMeshAgent navMeshAgent;
         Animator animator = null;
         RaycastMousePosition raycaster = null;
+        Vector3 movement;
 
         public MovementSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, NavMeshAgent navMeshAgent, StateManager stateManager)
         {
@@ -35,7 +36,7 @@ namespace RPG.Combat
 
         public void Execute()
         {
-            Vector3 movement = gameObject.transform.forward;
+            movement = gameObject.transform.forward;
             StartMoveAction(gameObject.transform.position + movement, 1f);
         }
         public void StartMoveAction(Vector3 destination, float speedFraction)
@@ -46,10 +47,9 @@ namespace RPG.Combat
         public void MoveTo(Vector3 destination, float speedFraction)
         {
             navMeshAgent.isStopped = false;
+            navMeshAgent.speed = 10000f;
             navMeshAgent.destination = destination;
-            navMeshAgent.speed = 10000f * Mathf.Clamp01(speedFraction);
         }
-
 
         public void Exit()
         {
@@ -57,15 +57,5 @@ namespace RPG.Combat
             animator.ResetTrigger("movementSkill");
             animator.SetTrigger("resetAttack");
         }
-
-        // Animator Triggered Events
-        private void MovementSkillStart()
-        {
-        }
-
-        private void MovementSkillAttack()
-        {
-        }
-
     }
 }

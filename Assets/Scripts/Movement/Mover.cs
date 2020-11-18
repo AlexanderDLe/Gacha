@@ -17,15 +17,10 @@ namespace RPG.Movement
             this.navMeshAgent = navMeshAgent;
         }
 
-        public void Enter()
-        {
-            // Debug.Log("<color>Enter Move State</color>");
-        }
+        public void Enter() { }
 
         public void Execute()
         {
-            // Debug.Log("In Movement State");
-
             // Get movement Input
             Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
@@ -54,11 +49,6 @@ namespace RPG.Movement
             navMeshAgent.speed = 0f;
             navMeshAgent.velocity = Vector3.zero;
             navMeshAgent.isStopped = true;
-        }
-
-        public void Footsteps()
-        {
-            Debug.Log("Anim Triggered Footsteps");
         }
     }
 }

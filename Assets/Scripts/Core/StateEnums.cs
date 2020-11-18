@@ -7,6 +7,7 @@
         Dash,
         AutoAttack,
         MovementSkill,
-        PrimarySkill
+        PrimarySkill,
+        UltimateSkill
     }
 }

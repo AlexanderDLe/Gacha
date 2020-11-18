@@ -801,7 +801,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 311
 --- !u!114 &810502881712842522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1140,9 +1140,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoAttackVFX: []
+  weakAttackAudio: []
+  mediumAttackAudio: []
   primarySkillFX: {fileID: 0}
   primarySkillActionAudio: {fileID: 0}
   primarySkillVocalAudio: {fileID: 0}
+  ultimateSkillVFX: {fileID: 0}
+  ultimateSkillActionAudio: {fileID: 0}
+  ultimateSkillVocalAudio: {fileID: 0}
   footstepClips:
   - {fileID: 8300000, guid: 4d11813f5983ce047873c94858e6a6c1, type: 3}
   - {fileID: 8300000, guid: 6154d2d90f91ac743a30a16a58f9fa32, type: 3}
@@ -1494,6 +1499,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentCharacter: {fileID: 11400000, guid: 4374901d27a667e41b44f67605ca5c68, type: 2}
+  characterName: 
   skillshotCanvas: {fileID: 810502881712842523}
   reticleCanvas: {fileID: 1018344888903007259}
   skillshotImage: {fileID: 810502882286394598}
@@ -1508,13 +1514,30 @@ MonoBehaviour:
   isInAutoAttackState: 0
   canTriggerNextAutoAttack: 1
   comboNum: 0
+  isUsingMovementSkill: 0
+  movementSkillInCooldown: 0
+  movementSkillResetTime: 3
+  movementSkillCountdownTimer: 3
   isUsingPrimarySkill: 0
   primarySkillInCooldown: 0
-  primarySkillResetTime: 3
+  primaryCooldownResetTime: 3
   primarySkillCountdownTimer: 0
+  primarySkillShotImage: {fileID: 0}
+  primaryRangeImage: {fileID: 0}
+  primaryReticleImage: {fileID: 0}
   primaryRequiresSkillShot: 0
   primaryRequiresRangeShot: 0
   isAimingPrimarySkill: 0
+  isUsingUltimateSkill: 0
+  ultimateSkillInCooldown: 0
+  ultimateCooldownResetTime: 3
+  ultimateSkillCountdownTimer: 0
+  ultimateRequiresSkillShot: 0
+  ultimateRequiresRangeShot: 0
+  isAimingUltimateSkill: 0
+  ultimateSkillShotImage: {fileID: 0}
+  ultimateRangeImage: {fileID: 0}
+  ultimateReticleImage: {fileID: 0}
 --- !u!1 &5605697787432900260
 GameObject:
   m_ObjectHideFlags: 0
@@ -1529,10 +1552,10 @@ GameObject:
   - component: {fileID: 5605697787432900250}
   - component: {fileID: 5605697787432900256}
   - component: {fileID: 5605697787432900269}
+  - component: {fileID: 1752829621050655995}
   - component: {fileID: 5605697787432900261}
   - component: {fileID: 5605697787432900251}
   - component: {fileID: 5605697787432900259}
-  - component: {fileID: 1752829621050655995}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged

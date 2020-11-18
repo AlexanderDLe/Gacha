@@ -28,6 +28,9 @@ namespace RPG.Core
             this.movementSkillVFX = character.movementSkillVFX;
             this.movementSkillVocalAudio = character.movementSkillVocalAudio;
             this.movementSkillActionAudio = character.movementSkillActionAudio;
+            this.ultimateSkillVFX = character.ultimateSkillVFX;
+            this.ultimateSkillActionAudio = character.ultimateSkillActionAudio;
+            this.ultimateSkillVocalAudio = character.ultimateSkillVocalAudio;
         }
         #endregion
 
@@ -117,8 +120,19 @@ namespace RPG.Core
         }
         #endregion
 
-        #region Primary Skill Shot
-
+        #region Ultimate Skill
+        public GameObject ultimateSkillVFX = null;
+        public AudioClip ultimateSkillActionAudio = null;
+        public AudioClip ultimateSkillVocalAudio = null;
+        public void UltimateSkillStart()
+        {
+            characterAudioSource.PlayOneShot(ultimateSkillVocalAudio);
+        }
+        public void UltimateSkillActivate()
+        {
+            Instantiate(ultimateSkillVFX, transform.position, transform.rotation);
+            actionAudioSource.PlayOneShot(ultimateSkillActionAudio);
+        }
         #endregion
 
         #region Footsteps

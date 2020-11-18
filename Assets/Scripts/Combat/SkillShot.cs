@@ -91,7 +91,6 @@ namespace RPG.Combat
                 rangeCircle.enabled = false;
                 reticleAim.enabled = false;
                 isUsingCircleAim = false;
-
             }
         }
     }
