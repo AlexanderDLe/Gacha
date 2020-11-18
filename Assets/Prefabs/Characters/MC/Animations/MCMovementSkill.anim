@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MCDash
+  m_Name: MCMovementSkill
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -28906,14 +28906,21 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
-    functionName: DashStart
+    functionName: MovementSkillStart
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.41666666
+    functionName: MovementSkillActivate
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 0.6333333
-    functionName: DashEnd
+    functionName: MovementSkillEnd
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: Eff5_Fire
   m_Shader: {fileID: 4800000, guid: 0b9962fee871d7340b4ad7082c63603f, type: 3}
   m_ShaderKeywords: 
@@ -77,4 +78,4 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _TintColor: {r: 1.3897059, g: 0.45248234, b: 0.07152897, a: 1}
+    - _TintColor: {r: 0, g: 0.552972, b: 1.8553666, a: 1}

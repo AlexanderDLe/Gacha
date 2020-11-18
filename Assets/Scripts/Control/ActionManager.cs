@@ -27,6 +27,7 @@ namespace RPG.Core
             this.mediumAttackAudio = character.mediumAttackAudio;
             this.movementSkillVFX = character.movementSkillVFX;
             this.movementSkillVocalAudio = character.movementSkillVocalAudio;
+            this.movementSkillActionAudio = character.movementSkillActionAudio;
         }
         #endregion
 
@@ -87,12 +88,16 @@ namespace RPG.Core
 
         #region Movement Skill
         AudioClip movementSkillVocalAudio;
+        AudioClip movementSkillActionAudio;
         GameObject movementSkillVFX = null;
         public void MovementSkillStart()
         {
-            Debug.Log("Testing movement skill start");
-            characterAudioSource.PlayOneShot(movementSkillVocalAudio);
             Instantiate(movementSkillVFX, transform.position, transform.rotation);
+            actionAudioSource.PlayOneShot(movementSkillActionAudio);
+            if (RandomlyDecideIfPlay())
+            {
+                characterAudioSource.PlayOneShot(movementSkillVocalAudio);
+            }
         }
         public void MovementSkillEnd() { }
         #endregion
