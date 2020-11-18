@@ -14,18 +14,21 @@ namespace RPG.Combat
         [Tooltip("The current index of the combo.")]
         private float comboResetTimer = 0;
         private float timeUntilComboReset = 1;
+        bool repeatAction = false;
 
         public AutoAttack(
             GameObject gameObject,
             Animator animator,
             RaycastMousePosition raycaster,
-            StateManager stateManager
+            StateManager stateManager,
+            bool repeatAction
         )
         {
             this.gameObject = gameObject;
             this.animator = animator;
             this.raycaster = raycaster;
             this.stateManager = stateManager;
+            this.repeatAction = repeatAction;
             this.autoAttackArray = stateManager.GetAutoAttackArray();
         }
 
@@ -33,7 +36,8 @@ namespace RPG.Combat
 
         public void Execute()
         {
-            if (Input.GetMouseButtonDown(0)) TriggerAutoAttack();
+            // Debug.Log("<color=orange>You are in Auto Attack</color>");
+            if (Input.GetMouseButtonDown(0) || repeatAction) TriggerAutoAttack();
             UpdateAutoAttackCycle();
         }
 
@@ -78,6 +82,7 @@ namespace RPG.Combat
 
         public void Exit()
         {
+            Debug.Log("Exiting Auto Attack.");
             stateManager.SetCanTriggerNextAutoAttack(true);
             stateManager.SetIsInAutoAttackState(false);
             ResetAutoAttack();

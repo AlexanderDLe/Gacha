@@ -29,14 +29,14 @@ MonoBehaviour:
   mediumAttackAudio:
   - {fileID: 8300000, guid: a32717dc56565154e975b057dee5304b, type: 3}
   - {fileID: 8300000, guid: 8022360c05ad2af4989b17ee0dc700f7, type: 3}
-  movementSkillCooldownTime: 3
+  movementSkillCooldownTime: 2
   movementSkillVFX: {fileID: 1934977346563538, guid: 95bce127e4c29554499840ffd8ec9c40,
     type: 3}
   movementSkillActionAudio: {fileID: 8300000, guid: 27313bac3859aee469bcfd5abe09030d,
     type: 3}
   movementSkillVocalAudio: {fileID: 8300000, guid: f71496aebb400c341b6c1f2528ef9a14,
     type: 3}
-  primaryCooldownResetTime: 3
+  primaryCooldownResetTime: 2
   primaryUsesSkillShot: 1
   primarySkillShotImage: {fileID: 21300000, guid: bb1ec69d19687aa4e87879f0aff1ff9d,
     type: 3}

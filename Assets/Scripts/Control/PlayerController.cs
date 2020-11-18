@@ -36,6 +36,8 @@ namespace RPG.Core
 
         void Update()
         {
+            RepeatAction();
+
             if (Input.GetKeyDown(KeyCode.LeftShift)) HandleLeftShift();
             if (Input.GetMouseButtonDown(0)) HandleLeftMouseClick();
             if (Input.GetMouseButtonDown(1)) HandleRightMouseClick();
@@ -46,9 +48,24 @@ namespace RPG.Core
             UpdateAnimator();
         }
 
+        public bool repeatAttack = false;
+        public bool repeatMovement = false;
+        public bool repeatPrimary = false;
+        public bool repeatUltimate = false;
+        public void RepeatAction()
+        {
+            if (repeatAttack || repeatMovement || repeatPrimary || repeatUltimate)
+            {
+                if (repeatAttack) HandleLeftMouseClick();
+                if (repeatMovement) HandleRightMouseClick();
+                if (repeatPrimary) HandlePressE();
+                if (repeatUltimate) HandlePressQ();
+            }
+        }
+
         private void HandleLeftMouseClick()
         {
-            if (stateManager.GetPrimaryAimingEnabled())
+            if (stateManager.GetPrimaryAimingEnabled() && stateManager.CanUsePrimarySkill())
             {
                 EnterPrimarySkillState();
                 return;
@@ -56,7 +73,7 @@ namespace RPG.Core
             if (!stateManager.CanAutoAttack()) return;
             stateManager.SetIsInAutoAttackState(true);
             stateMachine.changeState(new AutoAttack(gameObject, animator, raycaster,
-            stateManager), StateEnum.AutoAttack);
+            stateManager, repeatAttack), StateEnum.AutoAttack);
         }
 
         private void HandleRightMouseClick()
@@ -151,6 +168,10 @@ namespace RPG.Core
             EnterMovementState();
         }
         public void PrimarySkillEnd()
+        {
+            EnterMovementState();
+        }
+        public void UltimateSkillEnd()
         {
             EnterMovementState();
         }

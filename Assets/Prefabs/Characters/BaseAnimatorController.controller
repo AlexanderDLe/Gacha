@@ -158,7 +158,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ultimateSkill
-  m_Speed: 2
+  m_Speed: 2.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -946240768552097235}
@@ -241,9 +241,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.44755673
   m_TransitionOffset: 0
-  m_ExitTime: 0.75
+  m_ExitTime: 0.8326022
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -468,9 +468,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.1438067
-  m_TransitionOffset: 0.0061630737
-  m_ExitTime: 0.80518746
+  m_TransitionDuration: 0.051751405
+  m_TransitionOffset: 0
+  m_ExitTime: 0.8770353
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -788,7 +788,7 @@ AnimatorStateTransition:
   m_IsExit: 0
   serializedVersion: 3
   m_TransitionDuration: 0.053756595
-  m_TransitionOffset: 0.004460214
+  m_TransitionOffset: 0
   m_ExitTime: 0.90241075
   m_HasExitTime: 0
   m_HasFixedDuration: 1
