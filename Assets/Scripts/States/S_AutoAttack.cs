@@ -1,9 +1,10 @@
-﻿using RPG.Core;
+﻿using System;
+using RPG.Core;
 using UnityEngine;
 
 namespace RPG.Combat
 {
-    public class AutoAttack : IState
+    public class S_AutoAttack : IState
     {
         private GameObject gameObject = null;
         private Animator animator = null;
@@ -14,9 +15,12 @@ namespace RPG.Combat
         [Tooltip("The current index of the combo.")]
         private float comboResetTimer = 0;
         private float timeUntilComboReset = 1;
-        bool repeatAction = false;
 
-        public AutoAttack(
+        bool repeatAction = false;
+        // float repeatReset = .5f;
+        // float repeatTimer = 0f;
+
+        public S_AutoAttack(
             GameObject gameObject,
             Animator animator,
             RaycastMousePosition raycaster,
@@ -36,7 +40,6 @@ namespace RPG.Combat
 
         public void Execute()
         {
-            // Debug.Log("<color=orange>You are in Auto Attack</color>");
             if (Input.GetMouseButtonDown(0) || repeatAction) TriggerAutoAttack();
             UpdateAutoAttackCycle();
         }

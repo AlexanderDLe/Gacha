@@ -9,7 +9,7 @@ namespace RPG.Core
 {
     public class StateManager : MonoBehaviour
     {
-        #region Intializations
+        #region Start
         Animator animator = null;
         ActionManager actionManager = null;
         RaycastMousePosition raycaster = null;
@@ -27,7 +27,6 @@ namespace RPG.Core
             IntializeCharacter(currentCharacter);
             currentDashCharges = maxDashCharges;
         }
-
         private void Update()
         {
             if (skillshotAimingActive) AimWithSkillshot();
@@ -110,7 +109,7 @@ namespace RPG.Core
         public Image reticleImage = null;
         #endregion
 
-        #region Character Initializations
+        #region Initializations
         public void IntializeCharacter(CharacterScriptableObject character)
         {
             /*  Character Intializations
@@ -142,19 +141,72 @@ namespace RPG.Core
             rangeImage.enabled = false;
             reticleImage.enabled = false;
 
-            this.primaryCooldownResetTime = character.primaryCooldownResetTime;
-            this.primaryRequiresSkillShot = character.primaryUsesSkillShot;
-            this.primaryRequiresRangeShot = character.primaryUsesRangeShot;
-            this.primarySkillShotImage = character.primarySkillShotImage;
-            this.primaryRangeImage = character.primaryRangeImage;
-            this.primaryReticleImage = character.primaryReticleImage;
+            InitializeMovementSkill(character);
+            InitializePrimarySkill(character);
+            InitializeUltimateSkill(character);
+        }
 
-            this.ultimateCooldownResetTime = character.ultimateCooldownResetTime;
-            this.ultimateRequiresSkillShot = character.ultimateUsesSkillShot;
-            this.ultimateRequiresRangeShot = character.ultimateUsesRangeShot;
-            this.ultimateSkillShotImage = character.ultimateSkillShotImage;
-            this.ultimateRangeImage = character.ultimateRangeImage;
-            this.ultimateReticleImage = character.ultimateReticleImage;
+        private void InitializeMovementSkill(CharacterScriptableObject character)
+        {
+            this.movementSkill = character.movementSkill;
+            movementSkill.Initialize(gameObject, animator, "movementSkill");
+
+            this.movementCountdownResetTime = movementSkill.skillBaseCooldown;
+            if (movementSkill.skillUsesSkillShot)
+            {
+                this.movementRequiresSkillShot = movementSkill.skillUsesSkillShot;
+                this.movementSkillShotImage = movementSkill.skillShotImage;
+            }
+            if (movementSkill.skillUsesRangeShot)
+            {
+                this.movementRequiresRangeShot = movementSkill.skillUsesRangeShot;
+                this.movementRangeImage = movementSkill.skillRangeImage;
+                this.movementReticleImage = movementSkill.skillReticleImage;
+            }
+        }
+
+        private void InitializeUltimateSkill(CharacterScriptableObject character)
+        {
+            this.ultimateSkill = character.ultimateSkill;
+            ultimateSkill.Initialize(gameObject, animator, "ultimateSkill");
+
+            this.ultimateCooldownResetTime = ultimateSkill.skillBaseCooldown;
+            if (ultimateSkill.skillUsesSkillShot)
+            {
+                this.ultimateRequiresSkillShot = ultimateSkill.skillUsesSkillShot;
+                this.ultimateSkillShotImage = ultimateSkill.skillShotImage;
+            }
+            if (ultimateSkill.skillUsesRangeShot)
+            {
+                this.ultimateRequiresRangeShot = ultimateSkill.skillUsesRangeShot;
+                this.ultimateRangeImage = ultimateSkill.skillRangeImage;
+                this.ultimateReticleImage = ultimateSkill.skillReticleImage;
+            }
+        }
+
+        private void InitializePrimarySkill(CharacterScriptableObject character)
+        {
+            this.primarySkill = character.primarySkill;
+            primarySkill.Initialize(gameObject, animator, "primarySkill");
+
+            this.primaryCooldownResetTime = primarySkill.skillBaseCooldown;
+            if (primarySkill.skillUsesSkillShot)
+            {
+                this.primaryRequiresSkillShot = primarySkill.skillUsesSkillShot;
+                this.primarySkillShotImage = primarySkill.skillShotImage;
+            }
+            if (primarySkill.skillUsesRangeShot)
+            {
+                this.primaryRequiresRangeShot = primarySkill.skillUsesRangeShot;
+                this.primaryRangeImage = primarySkill.skillRangeImage;
+                this.primaryReticleImage = primarySkill.skillReticleImage;
+            }
+        }
+
+        CharacterScriptableObject currentChar;
+        public void testAbility()
+        {
+            currentChar.primarySkill.TriggerSkill();
         }
         #endregion
 
@@ -302,14 +354,32 @@ namespace RPG.Core
         #endregion
 
         #region Movement Skill Mechanics
+        [Header("Movement SKill")]
+        SkillScriptableObject movementSkill;
         [FoldoutGroup("Movement Skill Mechanic")]
         [SerializeField] bool isUsingMovementSkill = false;
         [FoldoutGroup("Movement Skill Mechanic")]
         [SerializeField] bool movementSkillInCooldown = false;
         [FoldoutGroup("Movement Skill Mechanic")]
-        [SerializeField] float movementSkillResetTime = 3f;
+        [SerializeField] float movementCountdownResetTime = 3f;
         [FoldoutGroup("Movement Skill Mechanic")]
         [SerializeField] float movementSkillCountdownTimer = 3f;
+
+        [Header("Movement Skill Aiming")]
+        [FoldoutGroup("Movement Skill Mechanics")]
+        [SerializeField] Sprite movementSkillShotImage = null;
+        [FoldoutGroup("Movement Skill Mechanics")]
+        [SerializeField] Sprite movementRangeImage = null;
+        [FoldoutGroup("Movement Skill Mechanics")]
+        [SerializeField] Sprite movementReticleImage = null;
+
+        [FoldoutGroup("Movement Skill Mechanics")]
+        [SerializeField] bool movementRequiresSkillShot = false;
+        [FoldoutGroup("Movement Skill Mechanics")]
+        [SerializeField] bool movementRequiresRangeShot = false;
+        [FoldoutGroup("Movement Skill Mechanics")]
+        [SerializeField] bool isAimingMovementSkill = false;
+        // private float movementRangeShotMaxDistance = 3f;
 
         public bool IsMovementSkillInCooldown()
         {
@@ -331,15 +401,44 @@ namespace RPG.Core
             }
             return false;
         }
-        public void MovementSkillTriggered()
+
+        // Movement Skill Aiming
+        public bool MovementSkillRequiresAim()
         {
+            return movementRequiresSkillShot || movementRequiresRangeShot;
+        }
+        public bool GetMovementAimingEnabled()
+        {
+            return isAimingMovementSkill;
+        }
+        public void SetMovementAimingEnabled(bool value)
+        {
+            isAimingMovementSkill = value;
+        }
+        public void ActivateMovementSkillAim()
+        {
+            SetMovementAimingEnabled(true);
+            InitializeAimImage(MOVEMENT);
+            string skillType = movementRequiresSkillShot ? SKILLSHOT : RANGESHOT;
+            SetAimingEnabled(skillType, true);
+        }
+        public void DeactivateMovementSkillAim()
+        {
+            SetMovementAimingEnabled(false);
+            string skillType = movementRequiresSkillShot ? SKILLSHOT : RANGESHOT;
+            SetAimingEnabled(skillType, false);
+        }
+        public void TriggerMovementSkill()
+        {
+            movementSkill.TriggerSkill();
             SetIsUsingMovementSkill(true);
+            DeactivateMovementSkillAim();
             StartCoroutine(MovementSkillCountdown());
         }
         IEnumerator MovementSkillCountdown()
         {
             movementSkillInCooldown = true;
-            movementSkillCountdownTimer = movementSkillResetTime;
+            movementSkillCountdownTimer = movementCountdownResetTime;
             while (movementSkillCountdownTimer > 0)
             {
                 movementSkillCountdownTimer -= Time.deltaTime;
@@ -354,8 +453,8 @@ namespace RPG.Core
         #endregion
 
         #region Primary Skill Mechanics
-        #region Primary Skill Variables
         [Header("Primary Skill Cooldown")]
+        SkillScriptableObject primarySkill = null;
         [FoldoutGroup("Primary Skill Mechanics")]
         [SerializeField] bool isUsingPrimarySkill = false;
         [FoldoutGroup("Primary Skill Mechanics")]
@@ -379,8 +478,7 @@ namespace RPG.Core
         [SerializeField] bool primaryRequiresRangeShot = false;
         [FoldoutGroup("Primary Skill Mechanics")]
         [SerializeField] bool isAimingPrimarySkill = false;
-        private float primaryRangeShotMaxDistance = 3f;
-        #endregion
+        // private float primaryRangeShotMaxDistance = 3f;
 
         public bool IsPrimarySkillInCooldown()
         {
@@ -430,8 +528,9 @@ namespace RPG.Core
             SetAimingEnabled(skillType, false);
         }
         // Primary Skill Triggers
-        public void PrimarySkillTriggered()
+        public void TriggerPrimarySkill()
         {
+            primarySkill.TriggerSkill();
             SetIsUsingPrimarySkill(true);
             DeactivatePrimarySkillAim();
             StartCoroutine(PrimarySkillCountdown());
@@ -447,17 +546,15 @@ namespace RPG.Core
             }
             primarySkillInCooldown = false;
         }
-        public void PrimarySkillStart() { }
         public void PrimarySkillActivate()
         {
             SetIsUsingPrimarySkill(false);
         }
-        public void PrimarySkillEnd() { }
         #endregion
 
         #region Ultimate Skill Mechanics
-        #region Ultimate Skill Variables
         [Header("Ultimate Skill Cooldown")]
+        SkillScriptableObject ultimateSkill = null;
         [FoldoutGroup("Ultimate Skill Mechanics")]
         [SerializeField] bool isUsingUltimateSkill = false;
         [FoldoutGroup("Ultimate Skill Mechanics")]
@@ -481,8 +578,8 @@ namespace RPG.Core
         [SerializeField] Sprite ultimateRangeImage = null;
         [FoldoutGroup("Ultimate Skill Mechanics")]
         [SerializeField] Sprite ultimateReticleImage = null;
-        private float ultimateRangeShotMaxDistance = 3f;
-        #endregion
+        // private float ultimateRangeShotMaxDistance = 3f;
+
         public bool IsUltimateSkillInCooldown()
         {
             return ultimateSkillInCooldown;
@@ -530,9 +627,11 @@ namespace RPG.Core
             string skillType = ultimateRequiresSkillShot ? SKILLSHOT : RANGESHOT;
             SetAimingEnabled(skillType, false);
         }
+
         // Ultimate Skill Triggers
-        public void UltimateSkillTriggered()
+        public void TriggerUltimateSkill()
         {
+            ultimateSkill.TriggerSkill();
             SetIsUsingUltimateSkill(true);
             DeactivateUltimateSkillAim();
             StartCoroutine(UltimateSkillCountdown());
@@ -548,18 +647,18 @@ namespace RPG.Core
             }
             ultimateSkillInCooldown = false;
         }
-        public void UltimateSkillStart() { }
         public void UltimateSkillActivate()
         {
             SetIsUsingUltimateSkill(false);
         }
-        public void UltimateSkillEnd() { }
         #endregion
 
         #region Aiming Mechanics
         private bool skillshotAimingActive = false;
         private bool rangeshotAimingActive = false;
+        private float maxRangeShotDistance = 5f;
 
+        private string MOVEMENT = "MOVEMENT";
         private string PRIMARY = "PRIMARY";
         private string ULTIMATE = "ULTIMATE";
 
@@ -569,6 +668,18 @@ namespace RPG.Core
 
         private void InitializeAimImage(string skillType)
         {
+            if (skillType == MOVEMENT)
+            {
+                if (movementRequiresSkillShot)
+                {
+                    skillshotImage.sprite = movementSkillShotImage;
+                }
+                if (movementRequiresRangeShot)
+                {
+                    rangeImage.sprite = movementRangeImage;
+                    reticleImage.sprite = movementReticleImage;
+                }
+            }
             if (skillType == PRIMARY)
             {
                 if (primaryRequiresSkillShot)
@@ -621,7 +732,7 @@ namespace RPG.Core
 
             var hitPosDir = (hit.point - transform.position).normalized;
             float distance = Vector3.Distance(hit.point, transform.position);
-            distance = Mathf.Min(distance, primaryRangeShotMaxDistance);
+            distance = Mathf.Min(distance, maxRangeShotDistance);
 
             var newHitPos = transform.position + hitPosDir * distance;
             reticleCanvas.transform.position = newHitPos;

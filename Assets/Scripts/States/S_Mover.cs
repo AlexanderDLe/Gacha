@@ -4,29 +4,20 @@ using RPG.Core;
 
 namespace RPG.Movement
 {
-    public class Dasher : IState
+    public class S_Mover : IState
     {
-        Animator animator = null;
+        public string StateName = "Mover";
         private GameObject gameObject = null;
         private NavMeshAgent navMeshAgent;
-        private StateManager stateManager = null;
+        private float speed = 6f;
 
-        public Dasher(
-            GameObject gameObject,
-            NavMeshAgent navMeshAgent,
-            Animator animator,
-            StateManager stateManager)
+        public S_Mover(GameObject gameObjectOwner, NavMeshAgent navMeshAgent)
         {
-            this.gameObject = gameObject;
+            this.gameObject = gameObjectOwner;
             this.navMeshAgent = navMeshAgent;
-            this.animator = animator;
-            this.stateManager = stateManager;
         }
 
-        public void Enter()
-        {
-            animator.SetTrigger("dash");
-        }
+        public void Enter() { }
 
         public void Execute()
         {
@@ -35,7 +26,7 @@ namespace RPG.Movement
 
             // Detect movement input
             bool shouldMove = Mathf.Abs(movement.x) > Mathf.Epsilon || Mathf.Abs(movement.z) > Mathf.Epsilon;
-            if (!shouldMove) movement = gameObject.transform.forward;
+            if (!shouldMove) return;
 
             // If there is input, then move
             StartMoveAction(gameObject.transform.position + movement, 1f);
@@ -50,13 +41,14 @@ namespace RPG.Movement
         {
             navMeshAgent.isStopped = false;
             navMeshAgent.destination = destination;
-            navMeshAgent.speed = stateManager.GetDashSpeed() * Mathf.Clamp01(speedFraction);
+            navMeshAgent.speed = speed * Mathf.Clamp01(speedFraction);
         }
 
         public void Exit()
         {
+            navMeshAgent.speed = 0f;
+            navMeshAgent.velocity = Vector3.zero;
             navMeshAgent.isStopped = true;
-            stateManager.SetIsDashing(false);
         }
     }
 }

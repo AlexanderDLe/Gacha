@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MC
   m_EditorClassIdentifier: 
   characterName: MC
+  characterHealth: 100
   characterPrefab: {fileID: 1684900974663898214, guid: f8f6f8e0fc98a964295d46d819471eae,
     type: 3}
   animatorOverride: {fileID: 0}
@@ -29,35 +30,6 @@ MonoBehaviour:
   mediumAttackAudio:
   - {fileID: 8300000, guid: a32717dc56565154e975b057dee5304b, type: 3}
   - {fileID: 8300000, guid: 8022360c05ad2af4989b17ee0dc700f7, type: 3}
-  movementSkillCooldownTime: 2
-  movementSkillVFX: {fileID: 1934977346563538, guid: 95bce127e4c29554499840ffd8ec9c40,
-    type: 3}
-  movementSkillActionAudio: {fileID: 8300000, guid: 27313bac3859aee469bcfd5abe09030d,
-    type: 3}
-  movementSkillVocalAudio: {fileID: 8300000, guid: f71496aebb400c341b6c1f2528ef9a14,
-    type: 3}
-  primaryCooldownResetTime: 2
-  primaryUsesSkillShot: 1
-  primarySkillShotImage: {fileID: 21300000, guid: bb1ec69d19687aa4e87879f0aff1ff9d,
-    type: 3}
-  primaryUsesRangeShot: 0
-  primaryRangeImage: {fileID: 0}
-  primaryReticleImage: {fileID: 0}
-  primarySkillVFX: {fileID: 1949624779417528, guid: 5a9d92790b4dfd64284553d68fe6f0cd,
-    type: 3}
-  primarySkillActionAudio: {fileID: 8300000, guid: d142106998c21e64e883bb28274a68f2,
-    type: 3}
-  primarySkillVocalAudio: {fileID: 8300000, guid: 4732cfc266ced3d4fa6143e1d236d02a,
-    type: 3}
-  ultimateCooldownResetTime: 3
-  ultimateUsesSkillShot: 0
-  ultimateSkillShotImage: {fileID: 0}
-  ultimateUsesRangeShot: 0
-  ultimateRangeImage: {fileID: 0}
-  ultimateReticleImage: {fileID: 0}
-  ultimateSkillVFX: {fileID: 1011191742018456, guid: f988294dae7c8064c9b3ba230abe029d,
-    type: 3}
-  ultimateSkillActionAudio: {fileID: 8300000, guid: 202f1bc95c809b44d9b6710a2921038d,
-    type: 3}
-  ultimateSkillVocalAudio: {fileID: 8300000, guid: a1146034d8f08f84baeca9c889e091db,
-    type: 3}
+  movementSkill: {fileID: 11400000, guid: 4eb5743c61a102b4aa5f4c02fd2910ca, type: 2}
+  primarySkill: {fileID: 11400000, guid: 2aef882082b24a44daa0b55adba12774, type: 2}
+  ultimateSkill: {fileID: 11400000, guid: c9999347cf6038849a2cba3344516caf, type: 2}

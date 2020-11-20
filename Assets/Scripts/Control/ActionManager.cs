@@ -19,18 +19,22 @@ namespace RPG.Core
         public void InitializeCharacterFX(CharacterScriptableObject character)
         {
             this.dashAudio = character.dashAudio;
+
             this.autoAttackVFX = character.autoAttackVFX;
-            this.primarySkillFX = character.primarySkillVFX;
-            this.primarySkillVocalAudio = character.primarySkillVocalAudio;
-            this.primarySkillActionAudio = character.primarySkillActionAudio;
             this.weakAttackAudio = character.weakAttackAudio;
             this.mediumAttackAudio = character.mediumAttackAudio;
-            this.movementSkillVFX = character.movementSkillVFX;
-            this.movementSkillVocalAudio = character.movementSkillVocalAudio;
-            this.movementSkillActionAudio = character.movementSkillActionAudio;
-            this.ultimateSkillVFX = character.ultimateSkillVFX;
-            this.ultimateSkillActionAudio = character.ultimateSkillActionAudio;
-            this.ultimateSkillVocalAudio = character.ultimateSkillVocalAudio;
+
+            this.movementSkillVFX = character.movementSkill.skillVFX;
+            this.movementSkillVocalAudio = character.movementSkill.skillVocalAudio;
+            this.movementSkillActionAudio = character.movementSkill.skillActionAudio;
+
+            this.primarySkillVFX = character.primarySkill.skillVFX;
+            this.primarySkillVocalAudio = character.primarySkill.skillVocalAudio;
+            this.primarySkillActionAudio = character.primarySkill.skillActionAudio;
+
+            this.ultimateSkillVFX = character.ultimateSkill.skillVFX;
+            this.ultimateSkillVocalAudio = character.ultimateSkill.skillVocalAudio;
+            this.ultimateSkillActionAudio = character.ultimateSkill.skillActionAudio;
         }
         #endregion
 
@@ -106,7 +110,7 @@ namespace RPG.Core
         #endregion
 
         #region Primary Skill
-        public GameObject primarySkillFX = null;
+        public GameObject primarySkillVFX = null;
         public AudioClip primarySkillActionAudio = null;
         public AudioClip primarySkillVocalAudio = null;
         public void PrimarySkillStart()
@@ -115,7 +119,7 @@ namespace RPG.Core
         }
         public void PrimarySkillActivate()
         {
-            Instantiate(primarySkillFX, transform.position, transform.rotation);
+            Instantiate(primarySkillVFX, transform.position, transform.rotation);
             actionAudioSource.PlayOneShot(primarySkillActionAudio);
         }
         #endregion

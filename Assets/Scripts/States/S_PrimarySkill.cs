@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace RPG.Combat
 {
-    public class UltimateSkill : IState
+    public class S_PrimarySkill : IState
     {
         GameObject gameObject;
         StateManager stateManager;
         Animator animator = null;
         RaycastMousePosition raycaster = null;
 
-        public UltimateSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, StateManager stateManager)
+        public S_PrimarySkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, StateManager stateManager)
         {
             this.gameObject = gameObject;
             this.animator = animator;
@@ -21,22 +21,15 @@ namespace RPG.Combat
 
         public void Enter()
         {
-            TriggerUltimateSkill();
+            stateManager.TriggerPrimarySkill();
         }
 
         public void Execute() { }
 
-        private void TriggerUltimateSkill()
-        {
-            RaycastHit hit = raycaster.GetRaycastMousePoint();
-            gameObject.transform.LookAt(hit.point);
-            animator.SetTrigger("ultimateSkill");
-        }
-
         public void Exit()
         {
-            stateManager.SetIsUsingUltimateSkill(false);
-            animator.ResetTrigger("ultimateSkill");
+            stateManager.SetIsUsingPrimarySkill(false);
+            animator.ResetTrigger("primarySkill");
             animator.SetTrigger("resetAttack");
         }
     }
