@@ -1,4 +1,5 @@
-﻿using RPG.Core;
+﻿using RPG.Control;
+using RPG.Core;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,23 +9,25 @@ namespace RPG.Combat
     {
         GameObject gameObject;
         StateManager stateManager;
+        private readonly SkillManager skill;
         NavMeshAgent navMeshAgent;
         Animator animator = null;
         RaycastMousePosition raycaster = null;
         Vector3 movement;
 
-        public S_MovementSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, NavMeshAgent navMeshAgent, StateManager stateManager)
+        public S_MovementSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, NavMeshAgent navMeshAgent, StateManager stateManager, SkillManager skill)
         {
             this.gameObject = gameObject;
             this.animator = animator;
             this.raycaster = raycaster;
             this.navMeshAgent = navMeshAgent;
             this.stateManager = stateManager;
+            this.skill = skill;
         }
 
         public void Enter()
         {
-            stateManager.TriggerMovementSkill();
+            stateManager.TriggerSkill(skill);
         }
 
         public void Execute()
@@ -38,7 +41,7 @@ namespace RPG.Combat
 
         public void Exit()
         {
-            stateManager.SetIsUsingMovementSkill(false);
+            stateManager.SetIsUsingSkill(skill, false);
             animator.ResetTrigger("movementSkill");
             animator.SetTrigger("resetAttack");
         }

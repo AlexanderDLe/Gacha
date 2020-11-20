@@ -4,6 +4,7 @@ using RPG.Combat;
 using UnityEngine;
 using UnityEngine.AI;
 using System;
+using RPG.Control;
 
 namespace RPG.Core
 {
@@ -18,6 +19,9 @@ namespace RPG.Core
         RaycastMousePosition raycaster = null;
         StateMachine stateMachine = null;
         StateManager stateManager = null;
+        SkillManager primarySkill = null;
+        SkillManager ultimateSkill = null;
+        SkillManager movementSkill = null;
 
         private void Awake()
         {
@@ -30,6 +34,9 @@ namespace RPG.Core
         }
         private void Start()
         {
+            primarySkill = stateManager.primarySkill;
+            ultimateSkill = stateManager.ultimateSkill;
+            movementSkill = stateManager.movementSkill;
             EnterMovementState();
         }
         void Update()
@@ -63,17 +70,20 @@ namespace RPG.Core
 
         private void HandleLeftMouseClick()
         {
-            if (stateManager.GetPrimaryAimingEnabled() && stateManager.CanUsePrimarySkill())
+            if (stateManager.GetAimingEnabled(primarySkill) &&
+                stateManager.CanUsePrimarySkill())
             {
                 EnterPrimarySkillState();
                 return;
             }
-            if (stateManager.GetMovementAimingEnabled() && stateManager.CanUseMovementSkill())
+            if (stateManager.GetAimingEnabled(movementSkill) &&
+                stateManager.CanUseMovementSkill())
             {
                 EnterMovementSkillState();
                 return;
             }
-            if (stateManager.GetUltimateAimingEnabled() && stateManager.CanUseUltimateSkill())
+            if (stateManager.GetAimingEnabled(ultimateSkill) &&
+                stateManager.CanUseUltimateSkill())
             {
                 EnterUltimateSkillState();
                 return;
@@ -86,10 +96,10 @@ namespace RPG.Core
         private void HandleRightMouseClick()
         {
             if (!stateManager.CanUseMovementSkill()) return;
-            if (stateManager.MovementSkillRequiresAim() &&
-               !stateManager.GetMovementAimingEnabled())
+            if (stateManager.GetSkillRequiresAim(movementSkill) &&
+               !!stateManager.GetAimingEnabled(movementSkill))
             {
-                stateManager.ActivateMovementSkillAim();
+                stateManager.ActivateSkillAim(movementSkill, "movementSkill");
                 return;
             }
             EnterMovementSkillState();
@@ -97,10 +107,10 @@ namespace RPG.Core
         private void HandlePressE()
         {
             if (!stateManager.CanUsePrimarySkill()) return;
-            if (stateManager.PrimarySkillRequiresAim() &&
-               !stateManager.GetPrimaryAimingEnabled())
+            if (stateManager.GetSkillRequiresAim(primarySkill) &&
+               !stateManager.GetAimingEnabled(primarySkill))
             {
-                stateManager.ActivatePrimarySkillAim();
+                stateManager.ActivateSkillAim(primarySkill, "primarySkill");
                 return;
             }
             EnterPrimarySkillState();
@@ -108,10 +118,10 @@ namespace RPG.Core
         private void HandlePressQ()
         {
             if (!stateManager.CanUseUltimateSkill()) return;
-            if (stateManager.UltimateSkillRequiresAim() &&
-               !stateManager.GetUltimateAimingEnabled())
+            if (stateManager.GetSkillRequiresAim(ultimateSkill) &&
+               !stateManager.GetAimingEnabled(ultimateSkill))
             {
-                stateManager.ActivateUltimateSkillAim();
+                stateManager.ActivateSkillAim(ultimateSkill, "ultimateSkill");
                 return;
             }
             EnterUltimateSkillState();
@@ -136,17 +146,17 @@ namespace RPG.Core
         private void EnterMovementSkillState()
         {
             stateMachine.changeState(new S_MovementSkill(gameObject, animator, raycaster,
-            navMeshAgent, stateManager), StateEnum.MovementSkill);
+            navMeshAgent, stateManager, movementSkill), StateEnum.MovementSkill);
         }
         private void EnterPrimarySkillState()
         {
             stateMachine.changeState(new S_PrimarySkill(gameObject, animator, raycaster,
-            stateManager), StateEnum.PrimarySkill);
+            stateManager, primarySkill), StateEnum.PrimarySkill);
         }
         private void EnterUltimateSkillState()
         {
             stateMachine.changeState(new S_UltimateSkill(gameObject, animator, raycaster,
-            stateManager), StateEnum.UltimateSkill);
+            stateManager, ultimateSkill), StateEnum.UltimateSkill);
         }
         private void EnterMovementState()
         {

@@ -10,18 +10,18 @@ namespace RPG.Core
         public GameObject skillVFX;
         public AudioClip skillVocalAudio;
         public AudioClip skillActionAudio;
-        public float skillBaseCooldown = 3f;
+        public float baseCooldownTime = 3f;
 
         [Header("Pick Only One Aim Mechanic If Necessary")]
-        public bool skillUsesSkillShot;
-        [ShowIf("skillUsesSkillShot")]
+        public bool requiresSkillShot;
+        [ShowIf("requiresSkillShot")]
         public Sprite skillShotImage;
 
         [Space]
-        public bool skillUsesRangeShot;
-        [ShowIf("skillUsesRangeShot")]
+        public bool requiresRangeShot;
+        [ShowIf("requiresRangeShot")]
         public Sprite skillRangeImage;
-        [ShowIf("skillUsesRangeShot")]
+        [ShowIf("requiresRangeShot")]
         public Sprite skillReticleImage;
 
         public abstract void Initialize(GameObject obj, Animator animator, string str);
