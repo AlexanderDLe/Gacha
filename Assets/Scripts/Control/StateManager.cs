@@ -5,6 +5,7 @@ using System.Drawing;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using RPG.Control;
+using RPG.Characters;
 
 namespace RPG.Core
 {
@@ -15,10 +16,21 @@ namespace RPG.Core
         ActionManager actionManager = null;
         RaycastMousePosition raycaster = null;
         Vector3 mousePosition = Vector3.zero;
-        public CharacterScriptableObject currentCharacter = null;
 
+        public CharacterScriptableObject characterSO_1 = null;
+        public CharacterScriptableObject characterSO_2 = null;
+
+        CharacterManager character1 = null;
+        CharacterManager character2 = null;
+
+        [HideInInspector]
+        public CharacterManager currentCharacter = null;
+
+        [HideInInspector]
         public SkillManager ultimateSkill = null;
+        [HideInInspector]
         public SkillManager primarySkill = null;
+        [HideInInspector]
         public SkillManager movementSkill = null;
 
         private void Awake()
@@ -26,22 +38,85 @@ namespace RPG.Core
             animator = GetComponent<Animator>();
             actionManager = GetComponent<ActionManager>();
             raycaster = GetComponent<RaycastMousePosition>();
-
-            ultimateSkill = gameObject.AddComponent<SkillManager>();
-            primarySkill = gameObject.AddComponent<SkillManager>();
-            movementSkill = gameObject.AddComponent<SkillManager>();
         }
         private void Start()
         {
+            BuildAllCharacters();
+            currentCharacter = character1;
             IntializeCharacter(currentCharacter);
             currentDashCharges = maxDashCharges;
         }
+
         private void Update()
         {
             if (skillshotAimingActive) AimWithSkillshot();
             if (rangeshotAimingActive) AimWithRangeshot();
         }
         #endregion
+
+        #region Initializations
+        public event Action OnCharacterInitialization;
+
+        private void BuildAllCharacters()
+        {
+            character1 = BuildCharacter(characterSO_1);
+            character2 = BuildCharacter(characterSO_2);
+        }
+        private CharacterManager BuildCharacter(CharacterScriptableObject characterSO)
+        {
+            if (characterSO == null)
+            {
+                Debug.Log("<color=orange>Character Script Obj Null</color>");
+                return null;
+            }
+            Debug.Log("<color=green>Character SO Found</color>");
+            CharacterManager charManager = gameObject.AddComponent<CharacterManager>();
+            charManager.Initialize(gameObject, animator, characterSO);
+
+            return charManager;
+        }
+
+        public void IntializeCharacter(CharacterManager character)
+        {
+            Instantiate(character.characterPrefab, transform);
+            InitializeCharacterStats(character);
+            InitializeCharacterSkills(character);
+            actionManager.InitializeCharacterFX(character.charScript);
+            gameObject.SetActive(false);
+            gameObject.SetActive(true);
+            OnCharacterInitialization();
+        }
+        public void InitializeCharacterStats(CharacterManager character)
+        {
+            this.currCharName = character.characterName;
+            this.currCharHealth = character.characterHealth;
+            this.currCharImage = character.characterImage;
+            this.numberOfAutoAttacksHits = character.numberOfAutoAttackHits;
+            GenerateAutoAttackArray(numberOfAutoAttacksHits);
+            if (!character.animatorOverride) return;
+            else animator.runtimeAnimatorController = character.animatorOverride;
+        }
+        public void InitializeCharacterSkills(CharacterManager character)
+        {
+            skillshotImage.enabled = false;
+            rangeImage.enabled = false;
+            reticleImage.enabled = false;
+
+            this.movementSkill = character.movementSkill;
+            this.primarySkill = character.primarySkill;
+            this.ultimateSkill = character.ultimateSkill;
+
+            Debug.Log(character.movementSkill.skillName);
+            Debug.Log(character.primarySkill.skillName);
+            Debug.Log(character.ultimateSkill.skillName);
+
+            movementSprite = character.movementSkillSprite;
+            primarySprite = character.primarySkillSprite;
+            ultimateSprite = character.ultimateSkillSprite;
+        }
+
+        #endregion
+
 
         #region Permissions
         public bool CanMove()
@@ -104,8 +179,17 @@ namespace RPG.Core
         #endregion
 
         #region Player Attributes
-        public string characterName;
-        public string characterHealth;
+        public string currCharName;
+        public float currCharHealth;
+        public Sprite currCharImage;
+
+        [FoldoutGroup("Skill UI Icons")]
+        public Sprite movementSprite = null;
+        [FoldoutGroup("Skill UI Icons")]
+        public Sprite primarySprite = null;
+        [FoldoutGroup("Skill UI Icons")]
+        public Sprite ultimateSprite = null;
+
         [FoldoutGroup("Aiming Asset References")]
         public Canvas skillshotCanvas = null;
         [FoldoutGroup("Aiming Asset References")]
@@ -118,56 +202,6 @@ namespace RPG.Core
         public Image reticleImage = null;
         #endregion
 
-        #region Initializations
-        public void IntializeCharacter(CharacterScriptableObject character)
-        {
-            /*  Character Intializations
-            Summary: Characters must be swapped in and out during runtime.
-            Description: When instantiating a prefab, it won't be connected to 
-            Animator unless you SetActive off and on again (weird). */
-            Instantiate(character.characterPrefab, transform);
-            InitializeCharacterStats(character);
-            InitializeSkillStats(character);
-            actionManager.InitializeCharacterFX(character);
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
-        }
-
-        public void InitializeCharacterStats(CharacterScriptableObject character)
-        {
-            this.characterName = character.characterName;
-            this.numberOfAutoAttacksHits = character.numberOfAutoAttackHits;
-            GenerateAutoAttackArray(numberOfAutoAttacksHits);
-            if (!character.animatorOverride) return;
-            else animator.runtimeAnimatorController = character.animatorOverride;
-        }
-        public void InitializeSkillStats(CharacterScriptableObject character)
-        {
-            skillshotImage.enabled = false;
-            rangeImage.enabled = false;
-            reticleImage.enabled = false;
-
-            InitializeMovementSkill(character);
-            InitializePrimarySkill(character);
-            InitializeUltimateSkill(character);
-        }
-        private void InitializeMovementSkill(CharacterScriptableObject character)
-        {
-            if (!movementSkill) movementSkill = gameObject.AddComponent<SkillManager>();
-            movementSkill.Initialize(gameObject, animator, "movementSkill", character.movementSkill);
-        }
-        private void InitializePrimarySkill(CharacterScriptableObject character)
-        {
-            if (!primarySkill) primarySkill = gameObject.AddComponent<SkillManager>();
-            primarySkill.Initialize(gameObject, animator, "primarySkill", character.primarySkill);
-        }
-        private void InitializeUltimateSkill(CharacterScriptableObject character)
-        {
-            if (!ultimateSkill) ultimateSkill = gameObject.AddComponent<SkillManager>();
-            ultimateSkill.Initialize(gameObject, animator, "ultimateSkill", character.ultimateSkill);
-        }
-        #endregion
-
         #region Dash Mechanics
         [FoldoutGroup("Dash Mechanics")]
         [SerializeField] float dashSpeed = 20f;
@@ -178,7 +212,7 @@ namespace RPG.Core
         [FoldoutGroup("Dash Mechanics")]
         [SerializeField] int maxDashCharges = 3;
         [FoldoutGroup("Dash Mechanics")]
-        [SerializeField] int currentDashCharges = 3;
+        public int currentDashCharges = 3;
         [FoldoutGroup("Dash Mechanics")]
         [SerializeField] float dashRegenRate = 3f;
 

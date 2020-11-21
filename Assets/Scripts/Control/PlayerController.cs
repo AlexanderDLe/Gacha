@@ -19,6 +19,7 @@ namespace RPG.Core
         RaycastMousePosition raycaster = null;
         StateMachine stateMachine = null;
         StateManager stateManager = null;
+
         SkillManager primarySkill = null;
         SkillManager ultimateSkill = null;
         SkillManager movementSkill = null;
@@ -34,10 +35,8 @@ namespace RPG.Core
         }
         private void Start()
         {
-            primarySkill = stateManager.primarySkill;
-            ultimateSkill = stateManager.ultimateSkill;
-            movementSkill = stateManager.movementSkill;
             EnterMovementState();
+            stateManager.OnCharacterInitialization += UpdateCharacterSkills;
         }
         void Update()
         {
@@ -51,6 +50,13 @@ namespace RPG.Core
             if (DetectMovementInput()) HandleMovementInput();
             stateMachine.ExecuteStateUpdate();
             UpdateAnimator();
+        }
+
+        public void UpdateCharacterSkills()
+        {
+            primarySkill = stateManager.primarySkill;
+            ultimateSkill = stateManager.ultimateSkill;
+            movementSkill = stateManager.movementSkill;
         }
 
         public bool repeatAttack = false;

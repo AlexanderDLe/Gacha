@@ -15,12 +15,13 @@ namespace RPG.Control
         SkillScriptableObject skillScriptableObject)
         {
             this.skill = skillScriptableObject;
+            this.skillName = skill.skillName;
             this.animator = animator;
             this.skillType = skillType;
 
             this.cooldownResetTime = skill.baseCooldownTime;
-            this.requiresSkillShot = skill.requiresSkillShot || false;
-            this.requiresRangeShot = skill.requiresRangeShot || false;
+            this.requiresSkillShot = skill.requiresSkillShot;
+            this.requiresRangeShot = skill.requiresRangeShot;
             this.isAimingSkill = false;
 
             if (skill.requiresSkillShot)
@@ -37,6 +38,8 @@ namespace RPG.Control
 
         [Header("Skill Cooldown")]
         public SkillScriptableObject skill = null;
+
+        public string skillName;
         public bool isUsingSkill = false;
         private bool skillInCooldown = false;
         public float cooldownResetTime = 3f;
