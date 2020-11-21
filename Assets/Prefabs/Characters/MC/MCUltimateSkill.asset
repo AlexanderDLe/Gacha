@@ -17,9 +17,9 @@ MonoBehaviour:
   skillVFX: {fileID: 1011191742018456, guid: f988294dae7c8064c9b3ba230abe029d, type: 3}
   skillVocalAudio: {fileID: 8300000, guid: a1146034d8f08f84baeca9c889e091db, type: 3}
   skillActionAudio: {fileID: 8300000, guid: 202f1bc95c809b44d9b6710a2921038d, type: 3}
-  skillBaseCooldown: 3
-  skillUsesSkillShot: 0
-  skillShotImage: {fileID: 0}
-  skillUsesRangeShot: 0
+  baseCooldownTime: 3
+  requiresSkillShot: 0
+  skillShotImage: {fileID: 21300000, guid: bb1ec69d19687aa4e87879f0aff1ff9d, type: 3}
+  requiresRangeShot: 0
   skillRangeImage: {fileID: 0}
   skillReticleImage: {fileID: 0}

@@ -21,7 +21,6 @@ namespace RPG.Core
         public SkillManager primarySkill = null;
         public SkillManager movementSkill = null;
 
-
         private void Awake()
         {
             animator = GetComponent<Animator>();
@@ -106,7 +105,7 @@ namespace RPG.Core
 
         #region Player Attributes
         public string characterName;
-
+        public string characterHealth;
         [FoldoutGroup("Aiming Asset References")]
         public Canvas skillshotCanvas = null;
         [FoldoutGroup("Aiming Asset References")]
@@ -123,11 +122,9 @@ namespace RPG.Core
         public void IntializeCharacter(CharacterScriptableObject character)
         {
             /*  Character Intializations
-
             Summary: Characters must be swapped in and out during runtime.
-
-            When instantiating a prefab, it won't be connected to Animator
-            unless you SetActive off and on again (weird). */
+            Description: When instantiating a prefab, it won't be connected to 
+            Animator unless you SetActive off and on again (weird). */
             Instantiate(character.characterPrefab, transform);
             InitializeCharacterStats(character);
             InitializeSkillStats(character);
@@ -154,7 +151,6 @@ namespace RPG.Core
             InitializePrimarySkill(character);
             InitializeUltimateSkill(character);
         }
-
         private void InitializeMovementSkill(CharacterScriptableObject character)
         {
             if (!movementSkill) movementSkill = gameObject.AddComponent<SkillManager>();
