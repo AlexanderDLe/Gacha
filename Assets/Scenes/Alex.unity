@@ -2769,6 +2769,7 @@ MonoBehaviour:
   char2_SO: {fileID: 11400000, guid: 39b0444cb962c6040b956bb47f75ed67, type: 2}
   char3_SO: {fileID: 0}
   currentCharacter: {fileID: 0}
+  currentCharPrefab: {fileID: 0}
   ultimateSkill: {fileID: 0}
   primarySkill: {fileID: 0}
   movementSkill: {fileID: 0}
@@ -2895,7 +2896,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5605697787432900260}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: f8d83cbfa8251964bb34122b6152b786, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 8181a60873ee9534e8bbaae5f51cd066, type: 2}
   m_Controller: {fileID: 9100000, guid: 037fe5fceeba4b1478a37dcc606c2764, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0

@@ -31,7 +31,7 @@ namespace RPG.Core
         {
             BuildAllCharacters();
             currentCharacter = GetCharacter(currentCharIndex);
-            IntializeCharacter(currentCharacter);
+            InitializeCharacter(currentCharacter);
             currentDashCharges = maxDashCharges;
         }
         private void Update()
@@ -59,29 +59,31 @@ namespace RPG.Core
 
             character_GO = new GameObject();
             character_GO.transform.SetParent(gameObject.transform);
-            character_GO.name = character_SO.characterName;
+            character_GO.name = character_SO.name;
 
             CharacterManager charManager = character_GO.AddComponent<CharacterManager>();
             charManager.Initialize(gameObject, character_GO, animator, character_SO);
 
             return charManager;
         }
-        public void IntializeCharacter(CharacterManager character)
+        public void InitializeCharacter(CharacterManager character)
         {
             // Debug.Log(currentCharIndex);
-            Instantiate(character.characterPrefab, transform);
+            currentCharPrefab = Instantiate(character.prefab, transform);
             InitializeCharacterStats(character);
             InitializeCharacterSkills(character);
-            actionManager.InitializeCharacterFX(character.charScript);
+            actionManager.InitializeCharacterFX(character.charSO);
             gameObject.SetActive(false);
             gameObject.SetActive(true);
+            animator.avatar = character.avatar;
+            animator.Rebind();
             OnCharacterInitialization();
         }
         public void InitializeCharacterStats(CharacterManager character)
         {
-            this.currCharName = character.characterName;
-            this.currCharHealth = character.characterHealth;
-            this.currCharImage = character.characterImage;
+            this.currCharName = character.name;
+            this.currCharHealth = character.health;
+            this.currCharImage = character.image;
             this.numberOfAutoAttacksHits = character.numberOfAutoAttackHits;
 
             GenerateAutoAttackArray(this.numberOfAutoAttacksHits);
@@ -107,6 +109,8 @@ namespace RPG.Core
         #region Current Player Attributes
         [FoldoutGroup("Current Character Info")]
         public CharacterManager currentCharacter = null;
+        [FoldoutGroup("Current Character Info")]
+        public GameObject currentCharPrefab = null;
         [FoldoutGroup("Current Character Info")]
         public SkillManager ultimateSkill = null;
         [FoldoutGroup("Current Character Info")]
@@ -221,7 +225,17 @@ namespace RPG.Core
         {
             return characters[charIndex];
         }
+        public void SwapCharacter(int charIndex)
+        {
+            if (charIndex == currentCharIndex) return;
+            if (charIndex == 1 && !characters[1]) return;
+            if (charIndex == 2 && !characters[2]) return;
 
+            Destroy(currentCharPrefab);
+            currentCharIndex = charIndex;
+            currentCharacter = GetCharacter(charIndex);
+            InitializeCharacter(currentCharacter);
+        }
         #endregion
 
         #region Dash Mechanics

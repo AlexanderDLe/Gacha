@@ -8,11 +8,12 @@ namespace RPG.Core
     {
         #region Character Config
         [Title("Character Config")]
-        public string characterName;
-        public float characterHealth;
-        public GameObject characterPrefab;
-        public Sprite characterImage;
+        public new string name;
+        public float health;
+        public GameObject prefab;
+        public Sprite image;
         public AnimatorOverrideController animatorOverride;
+        public Avatar characterAvatar;
         #endregion
 
         #region Character FX
