@@ -8,10 +8,10 @@ namespace RPG.Core
         Animator animator = null;
         private string skillType;
 
-        public void Initialize(Animator animator, RaycastMousePosition raycaster, string skillType)
+        public void Initialize(GameObject player_GO, string skillType)
         {
-            this.raycaster = raycaster;
-            this.animator = animator;
+            this.raycaster = player_GO.GetComponent<RaycastMousePosition>();
+            this.animator = player_GO.GetComponent<Animator>();
             this.skillType = skillType;
         }
 

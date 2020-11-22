@@ -76,19 +76,19 @@ namespace RPG.Core
 
         private void HandleLeftMouseClick()
         {
-            if (stateManager.GetAimingEnabled(primarySkill) &&
+            if (primarySkill.GetAimingEnabled() &&
                 stateManager.CanUsePrimarySkill())
             {
                 EnterPrimarySkillState();
                 return;
             }
-            if (stateManager.GetAimingEnabled(movementSkill) &&
+            if (movementSkill.GetAimingEnabled() &&
                 stateManager.CanUseMovementSkill())
             {
                 EnterMovementSkillState();
                 return;
             }
-            if (stateManager.GetAimingEnabled(ultimateSkill) &&
+            if (ultimateSkill.GetAimingEnabled() &&
                 stateManager.CanUseUltimateSkill())
             {
                 EnterUltimateSkillState();
@@ -102,8 +102,8 @@ namespace RPG.Core
         private void HandleRightMouseClick()
         {
             if (!stateManager.CanUseMovementSkill()) return;
-            if (stateManager.GetSkillRequiresAim(movementSkill) &&
-               !!stateManager.GetAimingEnabled(movementSkill))
+            if (movementSkill.SkillRequiresAim() &&
+               !movementSkill.GetAimingEnabled())
             {
                 stateManager.ActivateSkillAim(movementSkill, "movementSkill");
                 return;
@@ -113,8 +113,8 @@ namespace RPG.Core
         private void HandlePressE()
         {
             if (!stateManager.CanUsePrimarySkill()) return;
-            if (stateManager.GetSkillRequiresAim(primarySkill) &&
-               !stateManager.GetAimingEnabled(primarySkill))
+            if (primarySkill.SkillRequiresAim() &&
+               !primarySkill.GetAimingEnabled())
             {
                 stateManager.ActivateSkillAim(primarySkill, "primarySkill");
                 return;
@@ -124,8 +124,8 @@ namespace RPG.Core
         private void HandlePressQ()
         {
             if (!stateManager.CanUseUltimateSkill()) return;
-            if (stateManager.GetSkillRequiresAim(ultimateSkill) &&
-               !stateManager.GetAimingEnabled(ultimateSkill))
+            if (ultimateSkill.SkillRequiresAim() &&
+               !ultimateSkill.GetAimingEnabled())
             {
                 stateManager.ActivateSkillAim(ultimateSkill, "ultimateSkill");
                 return;

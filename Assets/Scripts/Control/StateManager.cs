@@ -17,10 +17,9 @@ namespace RPG.Core
         RaycastMousePosition raycaster = null;
         Vector3 mousePosition = Vector3.zero;
 
-        public CharacterScriptableObject characterSO_1 = null;
-        public CharacterScriptableObject characterSO_2 = null;
-
-        
+        public CharacterScriptableObject char1_SO = null;
+        public CharacterScriptableObject char2_SO = null;
+        public CharacterScriptableObject char3_SO = null;
 
         private void Awake()
         {
@@ -31,11 +30,10 @@ namespace RPG.Core
         private void Start()
         {
             BuildAllCharacters();
-            currentCharacter = character1;
+            currentCharacter = GetCharacter(currentCharIndex);
             IntializeCharacter(currentCharacter);
             currentDashCharges = maxDashCharges;
         }
-
         private void Update()
         {
             if (skillshotAimingActive) AimWithSkillshot();
@@ -48,20 +46,29 @@ namespace RPG.Core
 
         private void BuildAllCharacters()
         {
-            character1 = BuildCharacter(characterSO_1);
-            character2 = BuildCharacter(characterSO_2);
+            characters[0] = BuildCharacter(char_gameObjs[0], char1_SO);
+            characters[1] = BuildCharacter(char_gameObjs[1], char2_SO);
+            characters[2] = BuildCharacter(char_gameObjs[2], char3_SO);
         }
-        private CharacterManager BuildCharacter(CharacterScriptableObject characterSO)
+        private CharacterManager BuildCharacter(GameObject character_GO, CharacterScriptableObject character_SO)
         {
-            if (characterSO == null) return null;
+            if (character_SO == null)
+            {
+                return null;
+            }
 
-            CharacterManager charManager = gameObject.AddComponent<CharacterManager>();
-            charManager.Initialize(gameObject, animator, raycaster, characterSO);
+            character_GO = new GameObject();
+            character_GO.transform.SetParent(gameObject.transform);
+            character_GO.name = character_SO.characterName;
+
+            CharacterManager charManager = character_GO.AddComponent<CharacterManager>();
+            charManager.Initialize(gameObject, character_GO, animator, character_SO);
 
             return charManager;
         }
         public void IntializeCharacter(CharacterManager character)
         {
+            // Debug.Log(currentCharIndex);
             Instantiate(character.characterPrefab, transform);
             InitializeCharacterStats(character);
             InitializeCharacterSkills(character);
@@ -76,7 +83,8 @@ namespace RPG.Core
             this.currCharHealth = character.characterHealth;
             this.currCharImage = character.characterImage;
             this.numberOfAutoAttacksHits = character.numberOfAutoAttackHits;
-            GenerateAutoAttackArray(numberOfAutoAttacksHits);
+
+            GenerateAutoAttackArray(this.numberOfAutoAttacksHits);
             if (!character.animatorOverride) return;
             else animator.runtimeAnimatorController = character.animatorOverride;
         }
@@ -97,9 +105,6 @@ namespace RPG.Core
         #endregion
 
         #region Current Player Attributes
-        CharacterManager character1 = null;
-        CharacterManager character2 = null;
-
         [FoldoutGroup("Current Character Info")]
         public CharacterManager currentCharacter = null;
         [FoldoutGroup("Current Character Info")]
@@ -136,6 +141,14 @@ namespace RPG.Core
         #endregion
 
         #region Permissions
+        public bool CanSwapCharacter()
+        {
+            if (isDashing) return false;
+            if (charSwapInCooldown) return false;
+            if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
+            if (IsUsingAnySkill() || IsInAnySkillAnimation()) return false;
+            return true;
+        }
         public bool CanMove()
         {
             if (isDashing) return false;
@@ -193,6 +206,22 @@ namespace RPG.Core
             if (IsInSkillAnimation(ultimateSkill)) return true;
             return false;
         }
+        #endregion
+
+        #region Character Swapping Mechanics
+        CharacterManager[] characters = new CharacterManager[3];
+        GameObject[] char_gameObjs = new GameObject[3];
+
+
+        [SerializeField] float charSwapCooldownTime = 2f;
+        [SerializeField] bool charSwapInCooldown = false;
+        private int currentCharIndex = 1;
+
+        public CharacterManager GetCharacter(int charIndex)
+        {
+            return characters[charIndex];
+        }
+
         #endregion
 
         #region Dash Mechanics
@@ -254,35 +283,22 @@ namespace RPG.Core
 
             Summary: When you attack, you should be able to cancel out of movement.
 
-            Moving Scenario: While moving, the player should be able to cancel into
-            an attack. To do so, we set the isInAutoAttack bool to TRUE. When the attack
-            animation completes, we dash out, we set isInAutoAttack bool to FALSE.
+            Moving Scenario: While moving, the player should be able to cancel into an attack. To do so, we set the isInAutoAttack bool to TRUE. When the attack animation completes, we dash out, we set isInAutoAttack bool to FALSE.
 
-            Implementation: To provide them the ability to read & write to the bool, we
-            give the auto attack state direct access to the manager.
+            Implementation: To provide them the ability to read & write to the bool, we give the auto attack state direct access to the manager.
 
-            We use isInAutoAttackState to prevent override. We do not want the next auto
-            attack to override auto attack nor the next auto attack.
+            We use isInAutoAttackState to prevent override. We do not want the next auto attack to override auto attack nor the next auto attack.
         */
         /*  Auto Attack Override Prevention Mechanics
 
-            Summary: Upon attacking, you should not be allowed to override the current attack
-            until the current attack is complete. We use a delegated function to get/set a
-            bool to prevent this from occurring.
+            Summary: Upon attacking, you should not be allowed to override the current  
+            until the current attack is complete. We use a delegated function to get/set a bool to prevent this from occurring.
 
-            Combo Scenario: To prevent the override, we use the canTriggerNextAutoAttack bool.
-            During an attack animation, we set the bool to FALSE so the player
-            is unable to override. When the animation is complete, we set the
-            bool to TRUE so that the player has permission to continue the combo.
+            Combo Scenario: To prevent the override, we use the canTriggerNextAutoAttack.  an attack animation, we set the bool to FALSE so the player is unable to override. When the animation is complete, we set the bool to TRUE so that the player has permission to continue the combo.
 
-            Dash Cancel Scenario: If the player is in an Auto Attack animation, he
-            must be able to cancel the action with a dash. However, since the animation
-            never completes due to the dash cancel, the canTriggerNextAutoAttack never returns
-            to TRUE. To resolve this, the AutoAttack state must set the bool back to TRUE
-            upon exiting the state machine.
+            Dash Cancel Scenario: If the player is in an Auto Attack animation, he must be able to cancel the action with a dash. However, since the animation completes due to the dash cancel, the canTriggerNextAutoAttack never returns to TRUE. To resolve this, the AutoAttack state must set the bool back to TRUE upon exiting the state machine.
 
-            Implementation: To provide them the ability to read & write to the bool, we
-            give the auto attack state direct access to the manager.
+            Implementation: To provide them the ability to read & write to the bool, we give the auto attack state direct access to the manager.
          */
         [FoldoutGroup("Auto Attack Mechanics")]
         public int numberOfAutoAttacksHits;
@@ -354,19 +370,6 @@ namespace RPG.Core
         public bool IsInSkillAnimation(SkillManager skill)
         {
             return skill.IsInSkillAnimation();
-        }
-        public bool GetSkillRequiresAim(SkillManager skill)
-        {
-            return skill.requiresSkillShot ||
-                   skill.requiresRangeShot;
-        }
-        public bool GetAimingEnabled(SkillManager skill)
-        {
-            return skill.GetAimingEnabled();
-        }
-        public void SetAimingEnabled(SkillManager skill, bool value)
-        {
-            skill.isAimingSkill = value;
         }
         public void ActivateSkillAim(SkillManager skill, string skillType)
         {

@@ -85,7 +85,6 @@ namespace RPG.Combat
 
         public void Exit()
         {
-            Debug.Log("Exiting Auto Attack.");
             stateManager.SetCanTriggerNextAutoAttack(true);
             stateManager.SetIsInAutoAttackState(false);
             ResetAutoAttack();

@@ -24,7 +24,7 @@ namespace RPG.Characters
 
         public CharacterScriptableObject charScript = null;
 
-        public void Initialize(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, CharacterScriptableObject characterSO)
+        public void Initialize(GameObject player_GO, GameObject character_GO, Animator animator, CharacterScriptableObject characterSO)
         {
             this.characterPrefab = characterSO.characterPrefab;
             this.charScript = characterSO;
@@ -38,20 +38,20 @@ namespace RPG.Characters
             this.primarySkillSprite = characterSO.primarySkill.skillSprite;
             this.ultimateSkillSprite = characterSO.ultimateSkill.skillSprite;
 
-            movementSkill = InitializeSkill(gameObject, animator, raycaster,
+            movementSkill = InitializeSkill(player_GO, character_GO, animator,
                 characterSO.movementSkill, "movementSkill");
 
-            primarySkill = InitializeSkill(gameObject, animator, raycaster,
+            primarySkill = InitializeSkill(player_GO, character_GO, animator,
                 characterSO.primarySkill, "primarySkill");
 
-            ultimateSkill = InitializeSkill(gameObject, animator, raycaster,
+            ultimateSkill = InitializeSkill(player_GO, character_GO, animator,
                 characterSO.ultimateSkill, "ultimateSkill");
         }
 
-        private SkillManager InitializeSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, SkillScriptableObject skillSO, string skillType)
+        private SkillManager InitializeSkill(GameObject player_GO, GameObject character_GO, Animator animator, SkillScriptableObject skillSO, string skillType)
         {
-            SkillManager skill = gameObject.AddComponent<SkillManager>();
-            skill.Initialize(gameObject, animator, raycaster, skillType, skillSO);
+            SkillManager skill = character_GO.AddComponent<SkillManager>();
+            skill.Initialize(player_GO, animator, skillType, skillSO);
 
             return skill;
         }

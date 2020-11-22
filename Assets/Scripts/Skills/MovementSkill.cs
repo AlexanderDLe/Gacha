@@ -7,10 +7,10 @@ namespace RPG.Core
     {
         private UseMovementSkill useMovementSkill;
 
-        public override void Initialize(GameObject obj, Animator animator, RaycastMousePosition raycaster, string skillType)
+        public override void Initialize(GameObject player_GO, string skillType)
         {
-            useMovementSkill = obj.GetComponent<UseMovementSkill>();
-            useMovementSkill.Initialize(animator, raycaster, skillType);
+            useMovementSkill = player_GO.GetComponent<UseMovementSkill>();
+            useMovementSkill.Initialize(player_GO, skillType);
         }
 
         public override void TriggerSkill()

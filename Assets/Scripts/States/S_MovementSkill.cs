@@ -9,10 +9,10 @@ namespace RPG.Combat
     {
         GameObject gameObject;
         StateManager stateManager;
-        private readonly SkillManager skill;
         NavMeshAgent navMeshAgent;
         Animator animator = null;
         RaycastMousePosition raycaster = null;
+        SkillManager skill;
         Vector3 movement;
 
         public S_MovementSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, NavMeshAgent navMeshAgent, StateManager stateManager, SkillManager skill)

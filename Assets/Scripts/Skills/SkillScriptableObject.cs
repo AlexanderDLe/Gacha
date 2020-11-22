@@ -24,7 +24,7 @@ namespace RPG.Core
         [ShowIf("requiresRangeShot")]
         public Sprite skillReticleImage;
 
-        public abstract void Initialize(GameObject obj, Animator animator, RaycastMousePosition raycaster, string str);
+        public abstract void Initialize(GameObject playerGameObject, string str);
 
         public abstract void TriggerSkill();
     }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2035111234}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 131.16855, g: 162.52502, b: 215.10977, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2765,8 +2765,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e550dab93791e84bace0693dea4ed3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterSO_1: {fileID: 11400000, guid: 4374901d27a667e41b44f67605ca5c68, type: 2}
-  characterSO_2: {fileID: 11400000, guid: 39b0444cb962c6040b956bb47f75ed67, type: 2}
+  char1_SO: {fileID: 11400000, guid: 4374901d27a667e41b44f67605ca5c68, type: 2}
+  char2_SO: {fileID: 11400000, guid: 39b0444cb962c6040b956bb47f75ed67, type: 2}
+  char3_SO: {fileID: 0}
   currentCharacter: {fileID: 0}
   ultimateSkill: {fileID: 0}
   primarySkill: {fileID: 0}
@@ -2782,6 +2783,8 @@ MonoBehaviour:
   skillshotImage: {fileID: 810502882286394598}
   rangeImage: {fileID: 6864847748183664472}
   reticleImage: {fileID: 1018344888284028161}
+  charSwapCooldownTime: 2
+  charSwapInCooldown: 0
   dashSpeed: 20
   isDashing: 0
   maxDashCharges: 5

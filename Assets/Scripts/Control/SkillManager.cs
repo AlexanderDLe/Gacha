@@ -11,9 +11,8 @@ namespace RPG.Control
         string SKILLSHOT = "SKILLSHOT";
         string RANGESHOT = "RANGESHOT";
 
-        public void Initialize(GameObject gameObject, Animator animator,
-            RaycastMousePosition raycaster, string skillType,
-            SkillScriptableObject skillScriptableObject)
+        public void Initialize(GameObject player_GO, Animator animator,
+            string skillType, SkillScriptableObject skillScriptableObject)
         {
             this.skill = skillScriptableObject;
             this.skillName = skill.skillName;
@@ -34,7 +33,7 @@ namespace RPG.Control
                 this.rangeImage = skill.skillRangeImage;
                 this.reticleImage = skill.skillReticleImage;
             }
-            skill.Initialize(gameObject, animator, raycaster, skillType);
+            skill.Initialize(player_GO, skillType);
         }
 
         [Header("Skill Cooldown")]
