@@ -20,7 +20,7 @@ namespace RPG.Core
         public CharacterScriptableObject characterSO_1 = null;
         public CharacterScriptableObject characterSO_2 = null;
 
-
+        
 
         private void Awake()
         {

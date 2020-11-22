@@ -11,8 +11,9 @@ namespace RPG.Control
         string SKILLSHOT = "SKILLSHOT";
         string RANGESHOT = "RANGESHOT";
 
-        public void Initialize(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, string skillType,
-        SkillScriptableObject skillScriptableObject)
+        public void Initialize(GameObject gameObject, Animator animator,
+            RaycastMousePosition raycaster, string skillType,
+            SkillScriptableObject skillScriptableObject)
         {
             this.skill = skillScriptableObject;
             this.skillName = skill.skillName;

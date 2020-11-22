@@ -46,7 +46,6 @@ namespace RPG.Characters
 
             ultimateSkill = InitializeSkill(gameObject, animator, raycaster,
                 characterSO.ultimateSkill, "ultimateSkill");
-
         }
 
         private SkillManager InitializeSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, SkillScriptableObject skillSO, string skillType)
