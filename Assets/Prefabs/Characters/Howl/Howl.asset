@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577ce5c4adddce54da27e137906398b3, type: 3}
   m_Name: Howl
   m_EditorClassIdentifier: 
-  name: 
+  name: Howl
   health: 0
   prefab: {fileID: 1458085392994294953, guid: 24eaedfc6a3c2db4eb8e3acc4dd3e994, type: 3}
   image: {fileID: 21300000, guid: f216b48aaeff2054eadb3bb27c9a1431, type: 3}

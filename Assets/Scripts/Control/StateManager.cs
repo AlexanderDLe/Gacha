@@ -45,33 +45,34 @@ namespace RPG.Core
 
         private void BuildAllCharacters()
         {
-            characters[0] = BuildCharacter(charGameObjs[0], char1_SO, out charPrefabs[0]);
-            characters[1] = BuildCharacter(charGameObjs[1], char2_SO, out charPrefabs[1]);
-            characters[2] = BuildCharacter(charGameObjs[2], char3_SO, out charPrefabs[2]);
+            chars[0] = BuildCharacter(char_GOs[0], char1_SO, out char_PFs[0]);
+            chars[1] = BuildCharacter(char_GOs[1], char2_SO, out char_PFs[1]);
+            chars[2] = BuildCharacter(char_GOs[2], char3_SO, out char_PFs[2]);
         }
-        private CharacterManager BuildCharacter(GameObject character_GO, CharacterScriptableObject character_SO, out GameObject charPrefab)
+        private CharacterManager BuildCharacter(GameObject char_GO,
+            CharacterScriptableObject char_SO, out GameObject char_PF)
         {
-            if (character_SO == null)
+            if (char_SO == null)
             {
-                charPrefab = null;
+                char_PF = null;
                 return null;
             }
 
-            character_GO = new GameObject();
-            character_GO.transform.SetParent(gameObject.transform);
-            character_GO.name = character_SO.name + " Controller";
+            char_GO = new GameObject();
+            char_GO.transform.SetParent(gameObject.transform);
+            char_GO.name = char_SO.name + " Controller";
 
-            CharacterManager charManager = character_GO.AddComponent<CharacterManager>();
-            charManager.Initialize(gameObject, character_GO, animator, character_SO);
+            CharacterManager charManager = char_GO.AddComponent<CharacterManager>();
+            charManager.Initialize(gameObject, char_GO, animator, char_SO);
 
-            charPrefab = Instantiate(character_SO.prefab, transform);
-            charPrefab.SetActive(false);
+            char_PF = Instantiate(char_SO.prefab, transform);
+            char_PF.SetActive(false);
 
             return charManager;
         }
         public void InitializeCharacter(CharacterManager character)
         {
-            currentCharPrefab = charPrefabs[currentCharIndex];
+            currentCharPrefab = char_PFs[currentCharIndex];
             currentCharPrefab.SetActive(true);
 
             InitializeCharacterStats(character);
@@ -216,9 +217,9 @@ namespace RPG.Core
         #endregion
 
         #region Character Swapping Mechanics
-        CharacterManager[] characters = new CharacterManager[3];
-        GameObject[] charGameObjs = new GameObject[3];
-        GameObject[] charPrefabs = new GameObject[3];
+        CharacterManager[] chars = new CharacterManager[3];
+        GameObject[] char_GOs = new GameObject[3];
+        GameObject[] char_PFs = new GameObject[3];
 
         [SerializeField] float charSwapCooldownTime = 2f;
         [SerializeField] bool charSwapInCooldown = false;
@@ -226,13 +227,13 @@ namespace RPG.Core
 
         public CharacterManager GetCharacter(int charIndex)
         {
-            return characters[charIndex];
+            return chars[charIndex];
         }
         public void SwapCharacter(int charIndex)
         {
             if (charIndex == currentCharIndex) return;
-            if (charIndex == 1 && !characters[1]) return;
-            if (charIndex == 2 && !characters[2]) return;
+            if (charIndex == 1 && !chars[1]) return;
+            if (charIndex == 2 && !chars[2]) return;
 
             currentCharacter.CancelSkillAiming();
             currentCharPrefab.SetActive(false);
@@ -293,13 +294,7 @@ namespace RPG.Core
         }
         #endregion
 
-        #region Auto Attack Mechanics
-        /* On Hold
-        [SerializeField] LayerMask enemyLayers;
-        [SerializeField] Transform attackHitBoxPoint = default;
-        [Range(0f, 2f)]
-        [SerializeField] public float attackRange = .5f;
-        [SerializeField] float[] damageList = { 5f, 7f }; */
+        #region Auto Attack Mechanics        
         /*  Auto Attack State Mechanics
 
             Summary: When you attack, you should be able to cancel out of movement.
@@ -436,7 +431,6 @@ namespace RPG.Core
 
         private string SKILLSHOT = "SKILLSHOT";
         private string RANGESHOT = "RANGESHOT";
-
 
         public bool IsAimingActive()
         {
