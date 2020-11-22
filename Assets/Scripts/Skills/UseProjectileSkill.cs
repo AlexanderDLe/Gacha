@@ -8,9 +8,9 @@ namespace RPG.Core
         Animator animator = null;
         private string skillType;
 
-        public void Initialize(Animator animator, string skillType)
+        public void Initialize(Animator animator, RaycastMousePosition raycaster, string skillType)
         {
-            this.raycaster = GetComponent<RaycastMousePosition>();
+            this.raycaster = raycaster;
             this.animator = animator;
             this.skillType = skillType;
         }

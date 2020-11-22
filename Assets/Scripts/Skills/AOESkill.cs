@@ -9,10 +9,10 @@ namespace RPG.Core
     {
         private UseAOESkill useAOESkill;
 
-        public override void Initialize(GameObject obj, Animator animator, string skillType)
+        public override void Initialize(GameObject obj, Animator animator, RaycastMousePosition raycaster, string skillType)
         {
             useAOESkill = obj.GetComponent<UseAOESkill>();
-            useAOESkill.Initialize(animator, skillType);
+            useAOESkill.Initialize(animator, raycaster, skillType);
         }
 
         public override void TriggerSkill()

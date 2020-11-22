@@ -20,6 +20,8 @@ namespace RPG.Core
         public CharacterScriptableObject characterSO_1 = null;
         public CharacterScriptableObject characterSO_2 = null;
 
+
+
         private void Awake()
         {
             animator = GetComponent<Animator>();
@@ -54,7 +56,7 @@ namespace RPG.Core
             if (characterSO == null) return null;
 
             CharacterManager charManager = gameObject.AddComponent<CharacterManager>();
-            charManager.Initialize(gameObject, animator, characterSO);
+            charManager.Initialize(gameObject, animator, raycaster, characterSO);
 
             return charManager;
         }
