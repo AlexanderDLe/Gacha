@@ -20,19 +20,6 @@ namespace RPG.Core
         public CharacterScriptableObject characterSO_1 = null;
         public CharacterScriptableObject characterSO_2 = null;
 
-        CharacterManager character1 = null;
-        CharacterManager character2 = null;
-
-        [HideInInspector]
-        public CharacterManager currentCharacter = null;
-
-        [HideInInspector]
-        public SkillManager ultimateSkill = null;
-        [HideInInspector]
-        public SkillManager primarySkill = null;
-        [HideInInspector]
-        public SkillManager movementSkill = null;
-
         private void Awake()
         {
             animator = GetComponent<Animator>();
@@ -64,18 +51,13 @@ namespace RPG.Core
         }
         private CharacterManager BuildCharacter(CharacterScriptableObject characterSO)
         {
-            if (characterSO == null)
-            {
-                Debug.Log("<color=orange>Character Script Obj Null</color>");
-                return null;
-            }
-            Debug.Log("<color=green>Character SO Found</color>");
+            if (characterSO == null) return null;
+
             CharacterManager charManager = gameObject.AddComponent<CharacterManager>();
             charManager.Initialize(gameObject, animator, characterSO);
 
             return charManager;
         }
-
         public void IntializeCharacter(CharacterManager character)
         {
             Instantiate(character.characterPrefab, transform);
@@ -106,17 +88,50 @@ namespace RPG.Core
             this.primarySkill = character.primarySkill;
             this.ultimateSkill = character.ultimateSkill;
 
-            Debug.Log(character.movementSkill.skillName);
-            Debug.Log(character.primarySkill.skillName);
-            Debug.Log(character.ultimateSkill.skillName);
-
             movementSprite = character.movementSkillSprite;
             primarySprite = character.primarySkillSprite;
             ultimateSprite = character.ultimateSkillSprite;
         }
-
         #endregion
 
+        #region Current Player Attributes
+        CharacterManager character1 = null;
+        CharacterManager character2 = null;
+
+        [FoldoutGroup("Current Character Info")]
+        public CharacterManager currentCharacter = null;
+        [FoldoutGroup("Current Character Info")]
+        public SkillManager ultimateSkill = null;
+        [FoldoutGroup("Current Character Info")]
+        public SkillManager primarySkill = null;
+        [FoldoutGroup("Current Character Info")]
+        public SkillManager movementSkill = null;
+
+        [FoldoutGroup("Current Character Info")]
+        public string currCharName;
+        [FoldoutGroup("Current Character Info")]
+        public float currCharHealth;
+        [FoldoutGroup("Current Character Info")]
+        public Sprite currCharImage;
+
+        [FoldoutGroup("Skill UI Icons")]
+        public Sprite movementSprite = null;
+        [FoldoutGroup("Skill UI Icons")]
+        public Sprite primarySprite = null;
+        [FoldoutGroup("Skill UI Icons")]
+        public Sprite ultimateSprite = null;
+
+        [FoldoutGroup("Aiming Asset References")]
+        public Canvas skillshotCanvas = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Canvas reticleCanvas = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Image skillshotImage = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Image rangeImage = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Image reticleImage = null;
+        #endregion
 
         #region Permissions
         public bool CanMove()
@@ -176,30 +191,6 @@ namespace RPG.Core
             if (IsInSkillAnimation(ultimateSkill)) return true;
             return false;
         }
-        #endregion
-
-        #region Player Attributes
-        public string currCharName;
-        public float currCharHealth;
-        public Sprite currCharImage;
-
-        [FoldoutGroup("Skill UI Icons")]
-        public Sprite movementSprite = null;
-        [FoldoutGroup("Skill UI Icons")]
-        public Sprite primarySprite = null;
-        [FoldoutGroup("Skill UI Icons")]
-        public Sprite ultimateSprite = null;
-
-        [FoldoutGroup("Aiming Asset References")]
-        public Canvas skillshotCanvas = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Canvas reticleCanvas = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image skillshotImage = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image rangeImage = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image reticleImage = null;
         #endregion
 
         #region Dash Mechanics
