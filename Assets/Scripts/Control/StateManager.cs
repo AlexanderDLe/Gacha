@@ -15,6 +15,7 @@ namespace RPG.Core
         ActionManager actionManager = null;
         RaycastMousePosition raycaster = null;
         Vector3 mousePosition = Vector3.zero;
+        public GameObject Environment = null;
 
         public CharacterScriptableObject char1_SO = null;
         public CharacterScriptableObject char2_SO = null;
@@ -221,8 +222,13 @@ namespace RPG.Core
         GameObject[] char_GOs = new GameObject[3];
         GameObject[] char_PFs = new GameObject[3];
 
+
+        [FoldoutGroup("Character Swap")]
         [SerializeField] float charSwapCooldownTime = 2f;
+        [FoldoutGroup("Character Swap")]
         [SerializeField] bool charSwapInCooldown = false;
+        [FoldoutGroup("Character Swap")]
+        [SerializeField] GameObject swapFX;
         private int currentCharIndex = 0;
 
         public CharacterManager GetCharacter(int charIndex)
@@ -239,7 +245,22 @@ namespace RPG.Core
             currentCharPrefab.SetActive(false);
             currentCharIndex = charIndex;
             currentCharacter = GetCharacter(charIndex);
+
             InitializeCharacter(currentCharacter);
+            SwapFX();
+            StartCoroutine(StartSwapCooldown());
+        }
+        private void SwapFX()
+        {
+            GameObject swapVFX = Instantiate(swapFX, transform);
+            swapVFX.transform.SetParent(Environment.transform);
+        }
+
+        IEnumerator StartSwapCooldown()
+        {
+            charSwapInCooldown = true;
+            yield return new WaitForSeconds(charSwapCooldownTime);
+            charSwapInCooldown = false;
         }
         #endregion
 

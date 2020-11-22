@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;
 using RPG.Control;
+using RPG.States;
 
 namespace RPG.Core
 {
@@ -147,20 +148,24 @@ namespace RPG.Core
             stateManager.TriggerDash();
             EnterDashState();
         }
-        private void HandleCharacterSwap(int num)
+        private void HandleCharacterSwap(int index)
         {
             if (!stateManager.CanSwapCharacter()) return;
-            stateManager.SwapCharacter(num);
+            stateManager.SwapCharacter(index);
         }
         private void HandlePressEscape()
         {
             if (stateManager.IsAimingActive()) stateManager.CancelAiming();
         }
 
+        private void EnterSwapCharacterState(int index)
+        {
+            stateMachine.changeState(new S_SwapCharacter(stateManager, index), StateEnum.SwapCharacter);
+        }
         private void EnterDashState()
         {
             stateMachine.changeState(new S_Dasher(gameObject, navMeshAgent, animator,
-                        stateManager), StateEnum.Dash);
+            stateManager), StateEnum.Dash);
         }
         private void EnterMovementSkillState()
         {

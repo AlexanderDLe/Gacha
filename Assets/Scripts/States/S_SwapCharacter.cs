@@ -1,18 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using RPG.Core;
 
-public class S_SwapCharacter : MonoBehaviour
+namespace RPG.States
 {
-    // Start is called before the first frame update
-    void Start()
+    public class S_SwapCharacter : IState
     {
-        
-    }
+        StateManager stateManager;
+        int index;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public S_SwapCharacter(StateManager stateManager, int index)
+        {
+            this.stateManager = stateManager;
+            this.index = index;
+        }
+
+        public void Enter()
+        {
+            stateManager.SwapCharacter(index);
+        }
+
+        public void Execute()
+        {
+
+        }
+
+        public void Exit()
+        {
+
+        }
     }
 }

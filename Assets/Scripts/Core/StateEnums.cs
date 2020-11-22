@@ -5,6 +5,7 @@
         Start,
         Move,
         Dash,
+        SwapCharacter,
         AutoAttack,
         MovementSkill,
         PrimarySkill,
