@@ -23,12 +23,12 @@ namespace RPG.Characters
         public Sprite primarySkillSprite;
         public Sprite ultimateSkillSprite;
 
-        public CharacterScriptableObject charSO = null;
+        public CharacterScriptableObject char_SO = null;
 
         public void Initialize(GameObject player_GO, GameObject character_GO, Animator animator, CharacterScriptableObject character_SO)
         {
+            this.char_SO = character_SO;
             this.prefab = character_SO.prefab;
-            this.charSO = character_SO;
             this.avatar = character_SO.characterAvatar;
             this.name = character_SO.name;
             this.health = character_SO.health;
@@ -56,6 +56,13 @@ namespace RPG.Characters
             skill.Initialize(player_GO, animator, skillType, skillSO);
 
             return skill;
+        }
+
+        public void CancelSkillAiming()
+        {
+            movementSkill.SetAimingEnabled(false);
+            primarySkill.SetAimingEnabled(false);
+            ultimateSkill.SetAimingEnabled(false);
         }
     }
 }

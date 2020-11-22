@@ -32,20 +32,24 @@ namespace RPG.UI
         public Image primaryMask;
         public Image ultimateMask;
 
-        // private void Start()
-        // {
-        //     InitializeCharacterUI();
-        //     stateManager.OnCharacterInitialization += InitializeCharacterUI;
-        // }
+        private bool Initialized = false;
 
-        // private void Update()
-        // {
-        //     if (!stateManager) return;
-        //     UpdateDashCount();
-        //     PollSkillCountdown(stateManager.movementSkill, movementMask, movementText);
-        //     PollSkillCountdown(stateManager.primarySkill, primaryMask, primaryText);
-        //     PollSkillCountdown(stateManager.ultimateSkill, ultimateMask, ultimateText);
-        // }
+        private void Start()
+        {
+            InitializeCharacterUI();
+            stateManager.OnCharacterInitialization += InitializeCharacterUI;
+            stateManager.OnCharacterInitialization += SetIntialized;
+            stateManager.OnDashUpdate += UpdateDashCount;
+        }
+
+        private void Update()
+        {
+            if (!Initialized) return;
+            UpdateDashCount();
+            PollSkillCountdown(stateManager.movementSkill, movementMask, movementText);
+            PollSkillCountdown(stateManager.primarySkill, primaryMask, primaryText);
+            PollSkillCountdown(stateManager.ultimateSkill, ultimateMask, ultimateText);
+        }
 
         private void UpdateDashCount()
         {
@@ -86,6 +90,11 @@ namespace RPG.UI
             movementSkillImage.sprite = stateManager.movementSprite;
             primarySkillImage.sprite = stateManager.primarySprite;
             ultimateSkillImage.sprite = stateManager.ultimateSprite;
+        }
+
+        public void SetIntialized()
+        {
+            Initialized = true;
         }
     }
 }

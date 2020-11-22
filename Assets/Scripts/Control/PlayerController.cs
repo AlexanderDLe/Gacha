@@ -50,6 +50,7 @@ namespace RPG.Core
             if (Input.GetKeyDown(KeyCode.Alpha1)) HandleCharacterSwap(0);
             if (Input.GetKeyDown(KeyCode.Alpha2)) HandleCharacterSwap(1);
             if (Input.GetKeyDown(KeyCode.Alpha3)) HandleCharacterSwap(2);
+            if (Input.GetKeyDown(KeyCode.Escape)) HandlePressEscape();
             if (DetectMovementInput()) HandleMovementInput();
             stateMachine.ExecuteStateUpdate();
             UpdateAnimator();
@@ -150,6 +151,10 @@ namespace RPG.Core
         {
             if (!stateManager.CanSwapCharacter()) return;
             stateManager.SwapCharacter(num);
+        }
+        private void HandlePressEscape()
+        {
+            if (stateManager.IsAimingActive()) stateManager.CancelAiming();
         }
 
         private void EnterDashState()

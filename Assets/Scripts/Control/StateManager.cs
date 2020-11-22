@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using System.Drawing;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using RPG.Control;
@@ -46,35 +45,39 @@ namespace RPG.Core
 
         private void BuildAllCharacters()
         {
-            characters[0] = BuildCharacter(char_gameObjs[0], char1_SO);
-            characters[1] = BuildCharacter(char_gameObjs[1], char2_SO);
-            characters[2] = BuildCharacter(char_gameObjs[2], char3_SO);
+            characters[0] = BuildCharacter(charGameObjs[0], char1_SO, out charPrefabs[0]);
+            characters[1] = BuildCharacter(charGameObjs[1], char2_SO, out charPrefabs[1]);
+            characters[2] = BuildCharacter(charGameObjs[2], char3_SO, out charPrefabs[2]);
         }
-        private CharacterManager BuildCharacter(GameObject character_GO, CharacterScriptableObject character_SO)
+        private CharacterManager BuildCharacter(GameObject character_GO, CharacterScriptableObject character_SO, out GameObject charPrefab)
         {
             if (character_SO == null)
             {
+                charPrefab = null;
                 return null;
             }
 
             character_GO = new GameObject();
             character_GO.transform.SetParent(gameObject.transform);
-            character_GO.name = character_SO.name;
+            character_GO.name = character_SO.name + " Controller";
 
             CharacterManager charManager = character_GO.AddComponent<CharacterManager>();
             charManager.Initialize(gameObject, character_GO, animator, character_SO);
+
+            charPrefab = Instantiate(character_SO.prefab, transform);
+            charPrefab.SetActive(false);
 
             return charManager;
         }
         public void InitializeCharacter(CharacterManager character)
         {
-            // Debug.Log(currentCharIndex);
-            currentCharPrefab = Instantiate(character.prefab, transform);
+            currentCharPrefab = charPrefabs[currentCharIndex];
+            currentCharPrefab.SetActive(true);
+
             InitializeCharacterStats(character);
             InitializeCharacterSkills(character);
-            actionManager.InitializeCharacterFX(character.charSO);
-            gameObject.SetActive(false);
-            gameObject.SetActive(true);
+            actionManager.InitializeCharacterFX(character.char_SO);
+
             animator.avatar = character.avatar;
             animator.Rebind();
             OnCharacterInitialization();
@@ -214,12 +217,12 @@ namespace RPG.Core
 
         #region Character Swapping Mechanics
         CharacterManager[] characters = new CharacterManager[3];
-        GameObject[] char_gameObjs = new GameObject[3];
-
+        GameObject[] charGameObjs = new GameObject[3];
+        GameObject[] charPrefabs = new GameObject[3];
 
         [SerializeField] float charSwapCooldownTime = 2f;
         [SerializeField] bool charSwapInCooldown = false;
-        private int currentCharIndex = 1;
+        private int currentCharIndex = 0;
 
         public CharacterManager GetCharacter(int charIndex)
         {
@@ -231,7 +234,8 @@ namespace RPG.Core
             if (charIndex == 1 && !characters[1]) return;
             if (charIndex == 2 && !characters[2]) return;
 
-            Destroy(currentCharPrefab);
+            currentCharacter.CancelSkillAiming();
+            currentCharPrefab.SetActive(false);
             currentCharIndex = charIndex;
             currentCharacter = GetCharacter(charIndex);
             InitializeCharacter(currentCharacter);
@@ -278,11 +282,14 @@ namespace RPG.Core
             StartCoroutine(RegenDashCharge());
         }
 
+        public event Action OnDashUpdate;
         IEnumerator RegenDashCharge()
         {
             currentDashCharges--;
+            OnDashUpdate();
             yield return new WaitForSeconds(dashRegenRate);
             currentDashCharges++;
+            OnDashUpdate();
         }
         #endregion
 
@@ -430,6 +437,22 @@ namespace RPG.Core
         private string SKILLSHOT = "SKILLSHOT";
         private string RANGESHOT = "RANGESHOT";
 
+
+        public bool IsAimingActive()
+        {
+            return skillshotAimingActive || rangeshotAimingActive;
+        }
+        public void CancelAiming()
+        {
+            currentCharacter.CancelSkillAiming();
+
+            skillshotAimingActive = false;
+            rangeshotAimingActive = false;
+
+            skillshotImage.enabled = false;
+            rangeImage.enabled = false;
+            reticleImage.enabled = false;
+        }
         private void InitializeAimImage(string skillType)
         {
             if (skillType == MOVEMENT)
