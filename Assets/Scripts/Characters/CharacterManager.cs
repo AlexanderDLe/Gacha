@@ -34,31 +34,27 @@ namespace RPG.Characters
             this.numberOfAutoAttackHits = characterSO.numberOfAutoAttackHits;
             this.animatorOverride = characterSO.animatorOverride;
 
-            InitializeMovementSkill(gameObject, animator, raycaster, characterSO);
-            InitializePrimarySkill(gameObject, animator, raycaster, characterSO);
-            InitializeUltimateSkill(gameObject, animator, raycaster, characterSO);
+            this.movementSkillSprite = characterSO.movementSkill.skillSprite;
+            this.primarySkillSprite = characterSO.primarySkill.skillSprite;
+            this.ultimateSkillSprite = characterSO.ultimateSkill.skillSprite;
 
-            movementSkillSprite = characterSO.movementSkill.skillSprite;
-            primarySkillSprite = characterSO.primarySkill.skillSprite;
-            ultimateSkillSprite = characterSO.ultimateSkill.skillSprite;
+            movementSkill = InitializeSkill(gameObject, animator, raycaster,
+                characterSO.movementSkill, "movementSkill");
+
+            primarySkill = InitializeSkill(gameObject, animator, raycaster,
+                characterSO.primarySkill, "primarySkill");
+
+            ultimateSkill = InitializeSkill(gameObject, animator, raycaster,
+                characterSO.ultimateSkill, "ultimateSkill");
+
         }
 
-        private void InitializeMovementSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, CharacterScriptableObject characterSO)
+        private SkillManager InitializeSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, SkillScriptableObject skillSO, string skillType)
         {
-            movementSkill = gameObject.AddComponent<SkillManager>();
-            movementSkill.Initialize(gameObject, animator, raycaster, "movementSkill", characterSO.movementSkill);
-        }
+            SkillManager skill = gameObject.AddComponent<SkillManager>();
+            skill.Initialize(gameObject, animator, raycaster, skillType, skillSO);
 
-        private void InitializePrimarySkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, CharacterScriptableObject characterSO)
-        {
-            primarySkill = gameObject.AddComponent<SkillManager>();
-            primarySkill.Initialize(gameObject, animator, raycaster, "primarySkill", characterSO.primarySkill);
-        }
-
-        private void InitializeUltimateSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, CharacterScriptableObject characterSO)
-        {
-            ultimateSkill = gameObject.AddComponent<SkillManager>();
-            ultimateSkill.Initialize(gameObject, animator, raycaster, "ultimateSkill", characterSO.ultimateSkill);
+            return skill;
         }
     }
 }
