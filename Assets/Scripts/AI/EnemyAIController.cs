@@ -1,4 +1,5 @@
 ﻿using System;
+using RPG.Characters;
 using RPG.Core;
 using UnityEngine;
 using UnityEngine.AI;
@@ -31,22 +32,26 @@ namespace RPG.AIControl
 
         private void Update()
         {
+            AIBehaviour();
+            stateMachine.ExecuteStateUpdate();
+            UpdateAnimator();
+        }
+
+        private void AIBehaviour()
+        {
             if (AIManager.IsAggravated())
             {
                 AggroBehaviour();
             }
             else if (AIManager.IsSuspicious())
             {
-                print("Entering Sus State");
                 AIEnterSuspiciousState();
             }
             else
             {
+                if (!AIManager.CanMove()) return;
                 AIEnterMoveState(guardPosition, AIManager.movementSpeed);
             }
-
-            stateMachine.ExecuteStateUpdate();
-            UpdateAnimator();
         }
 
         private void AggroBehaviour()
@@ -54,20 +59,22 @@ namespace RPG.AIControl
             AIManager.timeSinceAggravated = 0;
             if (!AIManager.WithinAttackRange())
             {
+                if (!AIManager.CanMove()) return;
                 AIEnterChaseState(AIManager.movementSpeed);
             }
             else
             {
+                if (!AIManager.CanAttack()) return;
                 AIEnterAttackState();
             }
         }
 
-        private void AIEnterIdleState()
+        public void AIEnterIdleState()
         {
             SetAICombatStance(false);
             stateMachine.changeState(new AI_Idler(), StateEnum.Idle);
         }
-        private void AIEnterSuspiciousState()
+        public void AIEnterSuspiciousState()
         {
             SetAICombatStance(true);
             stateMachine.changeState(new AI_Idler(), StateEnum.Idle);
@@ -82,12 +89,11 @@ namespace RPG.AIControl
             SetAICombatStance(false);
             stateMachine.changeState(new AI_Mover(destination, navMeshAgent, movementSpeed), StateEnum.Move);
         }
-        private void AIEnterAttackState()
+        public void AIEnterAttackState()
         {
             SetAICombatStance(true);
             stateMachine.changeState(new AI_Attacker(player), StateEnum.Attack);
         }
-
         public void SetAICombatStance(bool value)
         {
             if (animator.GetBool("inCombat") == value) return;
