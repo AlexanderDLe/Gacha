@@ -1,11 +1,10 @@
-﻿using System;
-using RPG.Control;
+﻿using RPG.Control;
 using RPG.Core;
 using UnityEngine;
 
-namespace RPG.Combat
+namespace RPG.PlayerStates
 {
-    public class S_PrimarySkill : IState
+    public class S_UltimateSkill : IState
     {
         GameObject gameObject;
         StateManager stateManager;
@@ -13,7 +12,7 @@ namespace RPG.Combat
         RaycastMousePosition raycaster = null;
         SkillManager skill;
 
-        public S_PrimarySkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, StateManager stateManager, SkillManager skill)
+        public S_UltimateSkill(GameObject gameObject, Animator animator, RaycastMousePosition raycaster, StateManager stateManager, SkillManager skill)
         {
             this.gameObject = gameObject;
             this.animator = animator;
@@ -32,7 +31,7 @@ namespace RPG.Combat
         public void Exit()
         {
             stateManager.SetIsUsingSkill(skill, false);
-            animator.ResetTrigger("primarySkill");
+            animator.ResetTrigger("ultimateSkill");
             animator.SetTrigger("resetAttack");
         }
     }

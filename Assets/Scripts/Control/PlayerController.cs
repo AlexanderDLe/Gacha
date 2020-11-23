@@ -1,11 +1,7 @@
-﻿using RPG.Core;
-using RPG.Movement;
-using RPG.Combat;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
-using System;
 using RPG.Control;
-using RPG.States;
+using RPG.PlayerStates;
 
 namespace RPG.Core
 {

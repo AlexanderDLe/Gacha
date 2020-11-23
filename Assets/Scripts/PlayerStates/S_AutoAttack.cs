@@ -2,7 +2,7 @@
 using RPG.Core;
 using UnityEngine;
 
-namespace RPG.Combat
+namespace RPG.PlayerStates
 {
     public class S_AutoAttack : IState
     {

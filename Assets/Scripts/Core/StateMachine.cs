@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace RPG.Core
 {
@@ -22,7 +21,6 @@ namespace RPG.Core
 
         public void ExecuteStateUpdate()
         {
-            var RunningState = CurrentState;
             if (CurrentState != null) CurrentState.Execute();
         }
 

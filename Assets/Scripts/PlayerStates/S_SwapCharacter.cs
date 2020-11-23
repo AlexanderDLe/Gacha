@@ -1,6 +1,6 @@
 ﻿using RPG.Core;
 
-namespace RPG.States
+namespace RPG.PlayerStates
 {
     public class S_SwapCharacter : IState
     {

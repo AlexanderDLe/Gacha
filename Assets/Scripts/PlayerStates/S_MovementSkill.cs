@@ -3,7 +3,7 @@ using RPG.Core;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace RPG.Combat
+namespace RPG.PlayerStates
 {
     public class S_MovementSkill : IState
     {

@@ -1,5 +1,4 @@
-﻿using System;
-using RPG.Control;
+﻿using RPG.Control;
 using RPG.Core;
 using UnityEngine;
 
@@ -23,9 +22,9 @@ namespace RPG.Characters
         public Sprite primarySkillSprite;
         public Sprite ultimateSkillSprite;
 
-        public CharacterScriptableObject char_SO = null;
+        public PlayableCharacter_SO char_SO = null;
 
-        public void Initialize(GameObject player_GO, GameObject character_GO, Animator animator, CharacterScriptableObject character_SO)
+        public void Initialize(GameObject player_GO, GameObject character_GO, Animator animator, PlayableCharacter_SO character_SO)
         {
             this.char_SO = character_SO;
             this.prefab = character_SO.prefab;

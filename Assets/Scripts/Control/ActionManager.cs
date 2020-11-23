@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Sirenix.OdinInspector;
+using RPG.Characters;
 
 namespace RPG.Core
 {
@@ -8,6 +10,7 @@ namespace RPG.Core
         AudioSource audioSource = null;
         AudioSource characterAudioSource = null;
         AudioSource actionAudioSource = null;
+        public GameObject environment = null;
 
         #region Initializations
         private void Awake()
@@ -16,7 +19,7 @@ namespace RPG.Core
             characterAudioSource = gameObject.AddComponent<AudioSource>();
             actionAudioSource = gameObject.AddComponent<AudioSource>();
         }
-        public void InitializeCharacterFX(CharacterScriptableObject character)
+        public void InitializeCharacterFX(PlayableCharacter_SO character)
         {
             this.dashAudio = character.dashAudio;
 
@@ -55,6 +58,20 @@ namespace RPG.Core
         }
         #endregion
 
+        #region Swap Character
+        [FoldoutGroup("Character Swap")]
+        [SerializeField] GameObject swapVisualFX = null;
+        [FoldoutGroup("Character Swap")]
+        [SerializeField] AudioClip swapAudioFX = null;
+
+        public void ActivateSwapFX()
+        {
+            GameObject swapVFX = Instantiate(swapVisualFX, transform);
+            swapVFX.transform.SetParent(environment.transform);
+            actionAudioSource.PlayOneShot(swapAudioFX);
+        }
+        #endregion
+
         #region Dash
         private AudioClip[] dashAudio = null;
         private bool dashAudioJustPlayed = false;
@@ -75,10 +92,9 @@ namespace RPG.Core
         #endregion
 
         #region Auto Attack
-        // [SerializeField] AudioClip[] autoAttackClips = default;
-        public GameObject[] autoAttackVFX = null;
-        public AudioClip[] weakAttackAudio = null;
-        public AudioClip[] mediumAttackAudio = null;
+        GameObject[] autoAttackVFX = null;
+        AudioClip[] weakAttackAudio = null;
+        AudioClip[] mediumAttackAudio = null;
 
         public void Attack1()
         {
@@ -110,9 +126,12 @@ namespace RPG.Core
         #endregion
 
         #region Primary Skill
-        public GameObject primarySkillVFX = null;
-        public AudioClip primarySkillActionAudio = null;
-        public AudioClip primarySkillVocalAudio = null;
+        [FoldoutGroup("Primary Skill FX")]
+        GameObject primarySkillVFX = null;
+        [FoldoutGroup("Primary Skill FX")]
+        AudioClip primarySkillActionAudio = null;
+        [FoldoutGroup("Primary Skill FX")]
+        AudioClip primarySkillVocalAudio = null;
         public void PrimarySkillStart()
         {
             characterAudioSource.PlayOneShot(primarySkillVocalAudio);
@@ -125,9 +144,9 @@ namespace RPG.Core
         #endregion
 
         #region Ultimate Skill
-        public GameObject ultimateSkillVFX = null;
-        public AudioClip ultimateSkillActionAudio = null;
-        public AudioClip ultimateSkillVocalAudio = null;
+        GameObject ultimateSkillVFX = null;
+        AudioClip ultimateSkillActionAudio = null;
+        AudioClip ultimateSkillVocalAudio = null;
         public void UltimateSkillStart()
         {
             characterAudioSource.PlayOneShot(ultimateSkillVocalAudio);

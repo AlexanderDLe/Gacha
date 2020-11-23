@@ -3,8 +3,11 @@
     public enum StateEnum
     {
         Start,
+        Idle,
         Move,
         Dash,
+        Chase,
+        Attack,
         SwapCharacter,
         AutoAttack,
         MovementSkill,

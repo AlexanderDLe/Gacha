@@ -1,21 +1,12 @@
-﻿using Sirenix.OdinInspector;
+﻿using RPG.Core;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace RPG.Core
+namespace RPG.Characters
 {
-    [CreateAssetMenu(fileName = "CharacterScriptableObject", menuName = "Character/Create New Character", order = 0)]
-    public class CharacterScriptableObject : ScriptableObject
+    [CreateAssetMenu(fileName = "CharacterScriptableObject", menuName = "Character/Create New Playable Character", order = 0)]
+    public class PlayableCharacter_SO : BaseCharacter_SO
     {
-        #region Character Config
-        [Title("Character Config")]
-        public new string name;
-        public float health;
-        public GameObject prefab;
-        public Sprite image;
-        public AnimatorOverrideController animatorOverride;
-        public Avatar characterAvatar;
-        #endregion
-
         #region Character FX
         [FoldoutGroup("Character FX")]
         public AudioClip[] dashAudio;

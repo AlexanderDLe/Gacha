@@ -15,11 +15,10 @@ namespace RPG.Core
         ActionManager actionManager = null;
         RaycastMousePosition raycaster = null;
         Vector3 mousePosition = Vector3.zero;
-        public GameObject Environment = null;
 
-        public CharacterScriptableObject char1_SO = null;
-        public CharacterScriptableObject char2_SO = null;
-        public CharacterScriptableObject char3_SO = null;
+        public PlayableCharacter_SO char1_SO = null;
+        public PlayableCharacter_SO char2_SO = null;
+        public PlayableCharacter_SO char3_SO = null;
 
         private void Awake()
         {
@@ -51,7 +50,7 @@ namespace RPG.Core
             chars[2] = BuildCharacter(char_GOs[2], char3_SO, out char_PFs[2]);
         }
         private CharacterManager BuildCharacter(GameObject char_GO,
-            CharacterScriptableObject char_SO, out GameObject char_PF)
+            PlayableCharacter_SO char_SO, out GameObject char_PF)
         {
             if (char_SO == null)
             {
@@ -221,15 +220,13 @@ namespace RPG.Core
         CharacterManager[] chars = new CharacterManager[3];
         GameObject[] char_GOs = new GameObject[3];
         GameObject[] char_PFs = new GameObject[3];
+        int currentCharIndex = 0;
 
 
         [FoldoutGroup("Character Swap")]
         [SerializeField] float charSwapCooldownTime = 2f;
         [FoldoutGroup("Character Swap")]
         [SerializeField] bool charSwapInCooldown = false;
-        [FoldoutGroup("Character Swap")]
-        [SerializeField] GameObject swapFX;
-        private int currentCharIndex = 0;
 
         public CharacterManager GetCharacter(int charIndex)
         {
@@ -247,13 +244,8 @@ namespace RPG.Core
             currentCharacter = GetCharacter(charIndex);
 
             InitializeCharacter(currentCharacter);
-            SwapFX();
+            actionManager.ActivateSwapFX();
             StartCoroutine(StartSwapCooldown());
-        }
-        private void SwapFX()
-        {
-            GameObject swapVFX = Instantiate(swapFX, transform);
-            swapVFX.transform.SetParent(Environment.transform);
         }
 
         IEnumerator StartSwapCooldown()
