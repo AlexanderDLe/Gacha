@@ -92,7 +92,7 @@ namespace RPG.AIControl
         public void AIEnterAttackState()
         {
             SetAICombatStance(true);
-            stateMachine.changeState(new AI_Attacker(player), StateEnum.Attack);
+            stateMachine.changeState(new AI_Attacker(player, AIManager, animator), StateEnum.Attack);
         }
         public void SetAICombatStance(bool value)
         {

@@ -12,12 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577ce5c4adddce54da27e137906398b3, type: 3}
   m_Name: Howl
   m_EditorClassIdentifier: 
+  character: 1
+  progression: {fileID: 11400000, guid: e5cbe46b7c4eb0f43bee0db2902a9e2a, type: 2}
   name: Howl
   health: 0
   prefab: {fileID: 1458085392994294953, guid: 24eaedfc6a3c2db4eb8e3acc4dd3e994, type: 3}
   image: {fileID: 21300000, guid: f216b48aaeff2054eadb3bb27c9a1431, type: 3}
-  animatorOverride: {fileID: 0}
   characterAvatar: {fileID: 9000000, guid: 8181a60873ee9534e8bbaae5f51cd066, type: 2}
+  animatorOverride: {fileID: 0}
+  baseDamage: 0
+  chaseDistance: 0
   dashAudio:
   - {fileID: 8300000, guid: 93b127add7e8f524281842e7914ca8da, type: 3}
   numberOfAutoAttackHits: 2

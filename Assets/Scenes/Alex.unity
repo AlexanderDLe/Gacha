@@ -1288,6 +1288,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1224215883}
   m_CullTransparentMesh: 0
+--- !u!1 &1347320110
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1347320112}
+  - component: {fileID: 1347320111}
+  m_Layer: 0
+  m_Name: ObjectPooler
+  m_TagString: ObjectPooler
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1347320111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1347320110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ebae09b8264aa340883c3480a8987a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pools:
+  - prefab: {fileID: 8030018271069893892, guid: 4b2e3057bd1332643af8e23b1b109287,
+      type: 3}
+    size: 10
+--- !u!4 &1347320112
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1347320110}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.3468962, y: 2.0398712, z: 1.6263275}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1361583295
 GameObject:
   m_ObjectHideFlags: 0
@@ -3669,6 +3716,7 @@ GameObject:
   - component: {fileID: 4585278837564367680}
   - component: {fileID: 3215502549647007023}
   - component: {fileID: 4585278837564367683}
+  - component: {fileID: 4585278837564367684}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -3738,14 +3786,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fa29175b86b74845ba6ae4cde117cbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy_SO: {fileID: 11400000, guid: 204d91c95088df74dacba24d7ae3bfb1, type: 2}
+  health: 4
   movementSpeed: 4
-  weaponRange: 1
+  damage: 5
   chaseDistance: 3
   distanceToPlayer: 0
   timeSinceLastSawPlayer: Infinity
   timeSinceAggravated: Infinity
   aggroCooldownTime: 3
   suspicionTime: 3
+  weaponRange: 1
+  inAttackCooldown: 0
+  attackCooldownTime: 3
+  projectileSpawnTransform: {fileID: 3086913893466186150}
+  hasProjectile: 0
+  projectileSpeed: 1
+  projectileLifetime: 5
+--- !u!114 &4585278837564367684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4585278837564367679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c213c606806c4224fa41091c0c503cb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character: 2
+  startingLevel: 1
+  progression: {fileID: 11400000, guid: e5cbe46b7c4eb0f43bee0db2902a9e2a, type: 2}
 --- !u!4 &4650373230969464563
 Transform:
   m_ObjectHideFlags: 0
@@ -4249,7 +4321,7 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!114 &5605697787432900259
@@ -4315,6 +4387,7 @@ GameObject:
   - component: {fileID: 5605697787432900262}
   - component: {fileID: 5605697787432900264}
   - component: {fileID: 5605697787432900265}
+  - component: {fileID: 5605697787432900266}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -4386,6 +4459,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5759d371d88ca64284231c61640415c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!136 &5605697787432900266
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5605697787432900260}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!95 &5605697787432900269
 Animator:
   serializedVersion: 3
@@ -4999,7 +5086,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 01ae555d11e107443a50817db8374362, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1

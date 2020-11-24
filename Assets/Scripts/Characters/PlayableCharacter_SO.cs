@@ -24,8 +24,13 @@ namespace RPG.Characters
         public AudioClip[] mediumAttackAudio;
         #endregion
 
+        #region Skills
+        [FoldoutGroup("Skills")]
         public SkillScriptableObject movementSkill;
+        [FoldoutGroup("Skills")]
         public SkillScriptableObject primarySkill;
+        [FoldoutGroup("Skills")]
         public SkillScriptableObject ultimateSkill;
+        #endregion
     }
 }

@@ -1,32 +1,55 @@
-﻿using RPG.Control;
+﻿using RPG.Attributes;
+using RPG.Control;
 using RPG.Core;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace RPG.Characters
 {
     public class CharacterManager : MonoBehaviour
     {
+        #region Attributes
         public new string name;
         public float health;
-        public Sprite image;
         public int numberOfAutoAttackHits;
-        public GameObject prefab;
-        public Avatar avatar;
-        public AnimatorOverrideController animatorOverride;
+        public BaseStats baseStats;
+        #endregion
 
+        #region Metadata
+        [FoldoutGroup("Metadata")]
+        public Sprite image;
+        [FoldoutGroup("Metadata")]
+        public GameObject prefab;
+        [FoldoutGroup("Metadata")]
+        public Avatar avatar;
+        [FoldoutGroup("Metadata")]
+        public AnimatorOverrideController animatorOverride;
+        #endregion
+
+        #region Skills
+        [FoldoutGroup("Skills")]
         public SkillManager movementSkill;
+        [FoldoutGroup("Skills")]
         public SkillManager primarySkill;
+        [FoldoutGroup("Skills")]
         public SkillManager ultimateSkill;
 
+        [FoldoutGroup("Skills")]
         public Sprite movementSkillSprite;
+        [FoldoutGroup("Skills")]
         public Sprite primarySkillSprite;
+        [FoldoutGroup("Skills")]
         public Sprite ultimateSkillSprite;
+        #endregion
 
-        public PlayableCharacter_SO char_SO = null;
+        public PlayableCharacter_SO script = null;
 
         public void Initialize(GameObject player_GO, GameObject character_GO, Animator animator, PlayableCharacter_SO character_SO)
         {
-            this.char_SO = character_SO;
+            this.baseStats = character_GO.AddComponent<BaseStats>();
+            baseStats.Initialize(character_SO);
+
+            this.script = character_SO;
             this.prefab = character_SO.prefab;
             this.avatar = character_SO.characterAvatar;
             this.name = character_SO.name;

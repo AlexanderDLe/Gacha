@@ -77,7 +77,7 @@ namespace RPG.Core
 
             InitializeCharacterStats(character);
             InitializeCharacterSkills(character);
-            actionManager.InitializeCharacterFX(character.char_SO);
+            actionManager.InitializeCharacterFX(character.script);
 
             animator.avatar = character.avatar;
             animator.Rebind();

@@ -12,13 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12c207dcf2f19254f8677f769f7c9c1a, type: 3}
   m_Name: EnemyTest
   m_EditorClassIdentifier: 
+  character: 2
+  progression: {fileID: 11400000, guid: e5cbe46b7c4eb0f43bee0db2902a9e2a, type: 2}
   name: Test Dummy
   health: 50
   prefab: {fileID: 0}
   image: {fileID: 0}
   characterAvatar: {fileID: 9000000, guid: 63aa49e7dff477e44bae8fba4d50324d, type: 2}
   animatorOverride: {fileID: 0}
+  baseDamage: 3
+  chaseDistance: 5
   movementSpeed: 4
-  attackCooldown: 2
-  weaponRange: 1
-  projectile_SO: {fileID: 0}
+  attackCooldownTime: 1
+  weaponRange: 5
+  projectile_SO: {fileID: 11400000, guid: 83bbb09340e918943b0cf48074b6310d, type: 2}

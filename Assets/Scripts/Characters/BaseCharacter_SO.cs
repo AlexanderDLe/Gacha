@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using RPG.Attributes;
 
 namespace RPG.Characters
 {
@@ -7,12 +8,20 @@ namespace RPG.Characters
     {
         #region Character Config
         [Title("Character Config")]
+        public Progression progression;
         public new string name;
-        public float health;
+        [FoldoutGroup("Metadata")]
         public GameObject prefab;
+        [FoldoutGroup("Metadata")]
         public Sprite image;
+        [FoldoutGroup("Metadata")]
         public Avatar characterAvatar;
+        [FoldoutGroup("Metadata")]
         public AnimatorOverrideController animatorOverride;
+        [FoldoutGroup("Attributes")]
+        public float health;
+        [FoldoutGroup("Attack")]
+        public float baseDamage;
         #endregion
     }
 }
