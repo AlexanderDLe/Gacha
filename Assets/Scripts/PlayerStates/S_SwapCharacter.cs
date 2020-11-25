@@ -1,4 +1,5 @@
-﻿using RPG.Core;
+﻿using RPG.Control;
+using RPG.Core;
 
 namespace RPG.PlayerStates
 {

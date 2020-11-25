@@ -65,13 +65,13 @@ namespace RPG.Characters
         #region Permissions
         public bool CanMove()
         {
-            if (IsInAttackAnimation()) return false;
+            if (isInAttackAnimation) return false;
             return true;
         }
         public bool CanAttack()
         {
             if (inAttackCooldown) return false;
-            if (IsInAttackAnimation()) return false;
+            if (isInAttackAnimation) return false;
             return true;
         }
         #endregion
@@ -130,6 +130,8 @@ namespace RPG.Characters
         public bool inAttackCooldown = false;
         [FoldoutGroup("Attack")]
         public float attackCooldownTime = 3f;
+        [FoldoutGroup("Attack")]
+        public bool isInAttackAnimation = false;
 
         [Header("Projectile")]
         [FoldoutGroup("Attack")]
@@ -145,6 +147,7 @@ namespace RPG.Characters
 
         public void TriggerAttack()
         {
+            isInAttackAnimation = true;
             StartCoroutine(StartAttackCooldown());
         }
         IEnumerator StartAttackCooldown()
@@ -152,10 +155,6 @@ namespace RPG.Characters
             inAttackCooldown = true;
             yield return new WaitForSeconds(attackCooldownTime);
             inAttackCooldown = false;
-        }
-        public bool IsInAttackAnimation()
-        {
-            return animator.GetCurrentAnimatorStateInfo(0).IsName("attack");
         }
         public void AttackStart() { }
         public void AttackActivate()
@@ -172,7 +171,10 @@ namespace RPG.Characters
 
             }
         }
-        public void AttackEnd() { }
+        public void AttackEnd()
+        {
+            isInAttackAnimation = false;
+        }
         #endregion
     }
 }

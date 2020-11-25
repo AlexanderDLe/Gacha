@@ -3,7 +3,7 @@ using System.Collections;
 using Sirenix.OdinInspector;
 using RPG.Characters;
 
-namespace RPG.Core
+namespace RPG.Control
 {
     public class ActionManager : MonoBehaviour
     {

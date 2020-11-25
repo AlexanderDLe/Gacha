@@ -2,8 +2,9 @@
 using UnityEngine.AI;
 using RPG.Control;
 using RPG.PlayerStates;
+using RPG.Core;
 
-namespace RPG.Core
+namespace RPG.Control
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(RaycastMousePosition))]

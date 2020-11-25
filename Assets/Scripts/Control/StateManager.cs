@@ -7,8 +7,9 @@ using RPG.Control;
 using RPG.Characters;
 using RPG.Attributes;
 using RPG.Combat;
+using RPG.Core;
 
-namespace RPG.Core
+namespace RPG.Control
 {
     public class StateManager : MonoBehaviour
     {
@@ -17,6 +18,7 @@ namespace RPG.Core
         ActionManager actionManager = null;
         RaycastMousePosition raycaster = null;
         Vector3 mousePosition = Vector3.zero;
+        CharacterBuilder builder = null;
         public BaseStats currentBaseStats = null;
 
         public PlayableCharacter_SO char1_SO = null;
@@ -28,6 +30,7 @@ namespace RPG.Core
             animator = GetComponent<Animator>();
             actionManager = GetComponent<ActionManager>();
             raycaster = GetComponent<RaycastMousePosition>();
+            builder = GetComponent<CharacterBuilder>();
         }
         private void Start()
         {
@@ -44,68 +47,28 @@ namespace RPG.Core
         #endregion
 
         #region Initializations
-        public event Action CharacterInitializationComplete;
-
         private void BuildAllCharacters()
         {
-            chars[0] = BuildCharacter(char_GOs[0], char1_SO, out char_PFs[0]);
-            chars[1] = BuildCharacter(char_GOs[1], char2_SO, out char_PFs[1]);
-            chars[2] = BuildCharacter(char_GOs[2], char3_SO, out char_PFs[2]);
-        }
-        private CharacterManager BuildCharacter(GameObject char_GO,
-            PlayableCharacter_SO char_SO, out GameObject char_PF)
-        {
-            if (char_SO == null)
-            {
-                char_PF = null;
-                return null;
-            }
-
-            char_GO = CreateCharacterController(char_SO);
-
-            CharacterManager charManager = char_GO.AddComponent<CharacterManager>();
-            charManager.Initialize(gameObject, char_GO, animator, char_SO);
-
-            char_PF = SpawnAndEquipCharacter(char_SO);
-            char_PF.SetActive(false);
-
-            return charManager;
+            chars[0] = builder.BuildCharacter(char_GOs[0], char1_SO, out char_PFs[0]);
+            chars[1] = builder.BuildCharacter(char_GOs[1], char2_SO, out char_PFs[1]);
+            chars[2] = builder.BuildCharacter(char_GOs[2], char3_SO, out char_PFs[2]);
         }
 
-        private GameObject CreateCharacterController(PlayableCharacter_SO char_SO)
-        {
-            GameObject char_GO = new GameObject();
-            char_GO.transform.SetParent(gameObject.transform);
-            char_GO.name = char_SO.name + " Controller";
-            return char_GO;
-        }
-
-        private GameObject SpawnAndEquipCharacter(PlayableCharacter_SO char_SO)
-        {
-            GameObject char_PF = Instantiate(char_SO.prefab, transform);
-            WeaponHolder weaponHolder = char_PF.GetComponent<WeaponHolder>();
-            GameObject holdWeapon_GO = weaponHolder.holdWeapon_GO;
-            Weapon char_Weapon = Instantiate(char_SO.weapon, holdWeapon_GO.transform);
-            return char_PF;
-        }
-
+        public event Action CharacterInitializationComplete;
         public void InitializeCharacter(CharacterManager character)
         {
-            currentCharPrefab = char_PFs[currentCharIndex];
-            currentCharPrefab.SetActive(true);
-
+            InitializeCharacterModel();
             InitializeCharacterStats(character);
             InitializeCharacterSkills(character);
             InitializeCharacterFX(character);
-
-            animator.avatar = character.avatar;
-            animator.Rebind();
+            InitializeCharacterAnimation(character);
             CharacterInitializationComplete();
         }
 
-        private void InitializeCharacterFX(CharacterManager character)
+        private void InitializeCharacterModel()
         {
-            actionManager.InitializeCharacterFX(character.script);
+            currentCharPrefab = char_PFs[currentCharIndex];
+            currentCharPrefab.SetActive(true);
         }
 
         public void InitializeCharacterStats(CharacterManager character)
@@ -118,6 +81,11 @@ namespace RPG.Core
             GenerateAutoAttackArray(this.numberOfAutoAttacksHits);
             if (!character.animatorOverride) return;
             else animator.runtimeAnimatorController = character.animatorOverride;
+        }
+
+        private void InitializeCharacterFX(CharacterManager character)
+        {
+            actionManager.InitializeCharacterFX(character.script);
         }
 
         public void InitializeCharacterSkills(CharacterManager character)
@@ -135,9 +103,14 @@ namespace RPG.Core
             this.ultimateSkill = character.ultimateSkill;
         }
 
+        private void InitializeCharacterAnimation(CharacterManager character)
+        {
+            animator.avatar = character.avatar;
+            animator.Rebind();
+        }
         #endregion
 
-        #region Current Player Attributes
+        #region Current Player
         [FoldoutGroup("Current Character Info")]
         public CharacterManager currentCharacter = null;
         [FoldoutGroup("Current Character Info")]

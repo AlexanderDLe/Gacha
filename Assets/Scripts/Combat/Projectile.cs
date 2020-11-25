@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
-using RPG.Attributes;
-using RPG.Core;
+﻿using RPG.Attributes;
+using RPG.Control;
 using UnityEngine;
 
 namespace RPG.Combat
