@@ -3,10 +3,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
-using RPG.Control;
 using RPG.Characters;
 using RPG.Attributes;
-using RPG.Combat;
 using RPG.Core;
 
 namespace RPG.Control
@@ -20,6 +18,8 @@ namespace RPG.Control
         Vector3 mousePosition = Vector3.zero;
         CharacterBuilder builder = null;
         public BaseStats currentBaseStats = null;
+        public DashManager dasher = null;
+        public InitializeManager initialize = null;
 
         public PlayableCharacter_SO char1_SO = null;
         public PlayableCharacter_SO char2_SO = null;
@@ -31,13 +31,14 @@ namespace RPG.Control
             actionManager = GetComponent<ActionManager>();
             raycaster = GetComponent<RaycastMousePosition>();
             builder = GetComponent<CharacterBuilder>();
+            dasher = GetComponent<DashManager>();
+            initialize = GetComponent<InitializeManager>();
         }
         private void Start()
         {
             BuildAllCharacters();
             currentCharacter = GetCharacter(currentCharIndex);
             InitializeCharacter(currentCharacter);
-            currentDashCharges = maxDashCharges;
         }
         private void Update()
         {
@@ -57,56 +58,20 @@ namespace RPG.Control
         public event Action CharacterInitializationComplete;
         public void InitializeCharacter(CharacterManager character)
         {
-            InitializeCharacterModel();
-            InitializeCharacterStats(character);
-            InitializeCharacterSkills(character);
-            InitializeCharacterFX(character);
-            InitializeCharacterAnimation(character);
-            CharacterInitializationComplete();
-        }
+            initialize.CurrentCharacter(character);
 
-        private void InitializeCharacterModel()
-        {
-            currentCharPrefab = char_PFs[currentCharIndex];
-            currentCharPrefab.SetActive(true);
-        }
+            initialize.CharacterPrefab(out currentCharPrefab, char_PFs, currentCharIndex);
 
-        public void InitializeCharacterStats(CharacterManager character)
-        {
-            this.currentBaseStats = character.baseStats;
-            this.currCharName = character.name;
-            this.currCharImage = character.image;
-            this.numberOfAutoAttacksHits = character.numberOfAutoAttackHits;
+            initialize.CharacterStats(out currentBaseStats, out currCharName, out currCharImage, out numberOfAutoAttackHits, out autoAttackArray);
 
-            GenerateAutoAttackArray(this.numberOfAutoAttacksHits);
-            if (!character.animatorOverride) return;
-            else animator.runtimeAnimatorController = character.animatorOverride;
-        }
+            initialize.CharacterSkills(out movementSprite, out primarySprite, out ultimateSprite, out movementSkill, out primarySkill, out ultimateSkill);
 
-        private void InitializeCharacterFX(CharacterManager character)
-        {
+            initialize.CharacterAnimation(animator);
+
             actionManager.InitializeCharacterFX(character.script);
-        }
 
-        public void InitializeCharacterSkills(CharacterManager character)
-        {
-            skillshotImage.enabled = false;
-            rangeImage.enabled = false;
-            reticleImage.enabled = false;
-
-            movementSprite = character.movementSkillSprite;
-            primarySprite = character.primarySkillSprite;
-            ultimateSprite = character.ultimateSkillSprite;
-
-            this.movementSkill = character.movementSkill;
-            this.primarySkill = character.primarySkill;
-            this.ultimateSkill = character.ultimateSkill;
-        }
-
-        private void InitializeCharacterAnimation(CharacterManager character)
-        {
-            animator.avatar = character.avatar;
-            animator.Rebind();
+            SetAimImagesEnabled(false);
+            CharacterInitializationComplete();
         }
         #endregion
 
@@ -149,7 +114,7 @@ namespace RPG.Control
         #region Permissions
         public bool CanSwapCharacter()
         {
-            if (isDashing) return false;
+            if (IsDashing()) return false;
             if (charSwapInCooldown) return false;
             if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
             if (IsUsingAnySkill() || IsInAnySkillAnimation()) return false;
@@ -157,21 +122,21 @@ namespace RPG.Control
         }
         public bool CanMove()
         {
-            if (isDashing) return false;
+            if (IsDashing()) return false;
             if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
             if (IsUsingAnySkill() || IsInAnySkillAnimation()) return false;
             return true;
         }
         public bool CanDash()
         {
-            if (isDashing) return false;
-            if (currentDashCharges == 0) return false;
+            if (IsDashing()) return false;
+            if (dasher.currentDashCharges == 0) return false;
             if (IsUsingAnySkill()) return false;
             return true;
         }
         public bool CanAutoAttack()
         {
-            if (isDashing) return false;
+            if (IsDashing()) return false;
             if (isInAutoAttackState) return false;
             if (IsUsingAnySkill()) return false;
             if (IsInAutoAttackAnimation()) return false;
@@ -179,21 +144,21 @@ namespace RPG.Control
         }
         public bool CanUseMovementSkill()
         {
-            if (isDashing) return false;
+            if (IsDashing()) return false;
             if (GetIsSkillInCooldown(movementSkill)) return false;
             if (IsUsingAnySkill()) return false;
             return true;
         }
         public bool CanUsePrimarySkill()
         {
-            if (isDashing) return false;
+            if (IsDashing()) return false;
             if (GetIsSkillInCooldown(primarySkill)) return false;
             if (IsUsingAnySkill()) return false;
             return true;
         }
         public bool CanUseUltimateSkill()
         {
-            if (isDashing) return false;
+            if (IsDashing()) return false;
             if (GetIsSkillInCooldown(ultimateSkill)) return false;
             if (IsUsingAnySkill()) return false;
             return true;
@@ -219,7 +184,6 @@ namespace RPG.Control
         GameObject[] char_GOs = new GameObject[3];
         GameObject[] char_PFs = new GameObject[3];
         int currentCharIndex = 0;
-
 
         [FoldoutGroup("Character Swap")]
         [SerializeField] float charSwapCooldownTime = 2f;
@@ -255,52 +219,25 @@ namespace RPG.Control
         #endregion
 
         #region Dash Mechanics
-        [FoldoutGroup("Dash Mechanics")]
-        [SerializeField] float dashSpeed = 20f;
-        [FoldoutGroup("Dash Mechanics")]
-        public bool isDashing = false;
-
-        [Header("Dash Charges")]
-        [FoldoutGroup("Dash Mechanics")]
-        [SerializeField] int maxDashCharges = 3;
-        [FoldoutGroup("Dash Mechanics")]
-        public int currentDashCharges = 3;
-        [FoldoutGroup("Dash Mechanics")]
-        [SerializeField] float dashRegenRate = 3f;
-
         public bool GetCanDash()
         {
-            return currentDashCharges > 0;
+            return dasher.currentDashCharges > 0;
         }
-
-        public bool GetIsDashing()
+        public bool IsDashing()
         {
-            return isDashing;
+            return dasher.isDashing;
         }
-
         public void SetIsDashing(bool value)
         {
-            isDashing = value;
+            dasher.isDashing = value;
         }
-
         public float GetDashSpeed()
         {
-            return dashSpeed;
+            return dasher.dashSpeed;
         }
-
         public void TriggerDash()
         {
-            isDashing = true;
-            StartCoroutine(RegenDashCharge());
-        }
-        public event Action OnDashUpdate;
-        IEnumerator RegenDashCharge()
-        {
-            currentDashCharges--;
-            OnDashUpdate();
-            yield return new WaitForSeconds(dashRegenRate);
-            currentDashCharges++;
-            OnDashUpdate();
+            dasher.TriggerDash();
         }
         #endregion
 
@@ -327,7 +264,7 @@ namespace RPG.Control
             Implementation: To provide them the ability to read & write to the bool, we give the auto attack state direct access to the manager.
          */
         [FoldoutGroup("Auto Attack Mechanics")]
-        public int numberOfAutoAttacksHits;
+        public int numberOfAutoAttackHits;
         [FoldoutGroup("Auto Attack Mechanics")]
         [SerializeField] bool isInAutoAttackState = false;
         [FoldoutGroup("Auto Attack Mechanics")]
@@ -340,22 +277,13 @@ namespace RPG.Control
         public void SetIsInAutoAttackState(bool value) => isInAutoAttackState = value;
         public bool GetCanTriggerNextAutoAttack() => canTriggerNextAutoAttack;
         public void SetCanTriggerNextAutoAttack(bool value) => canTriggerNextAutoAttack = value;
-        private void GenerateAutoAttackArray(int numOfAutoAttackHits)
-        {
-            string[] autoAttackTempArray = new string[numOfAutoAttackHits];
-            for (int i = 0; i < numOfAutoAttackHits; i++)
-            {
-                autoAttackTempArray[i] = ("attack" + (i + 1).ToString());
-            }
-            autoAttackArray = autoAttackTempArray;
-        }
         public string[] GetAutoAttackArray()
         {
             return autoAttackArray;
         }
         public bool IsInAutoAttackAnimation()
         {
-            for (int i = 0; i < numberOfAutoAttacksHits; i++)
+            for (int i = 0; i < numberOfAutoAttackHits; i++)
             {
                 // We dynamically generate an array with "attack#" values.
                 // These values are used to interact with the Animator.
@@ -400,7 +328,7 @@ namespace RPG.Control
         public void ActivateSkillAim(SkillManager skill, string skillType)
         {
             skill.SetAimingEnabled(true);
-            InitializeAimImage(skillType);
+            InitializeAimImage(skill);
             string aimType = skill.requiresSkillShot ? SKILLSHOT : RANGESHOT;
             SetAimingEnabled(aimType, true);
         }
@@ -435,10 +363,6 @@ namespace RPG.Control
         private bool rangeshotAimingActive = false;
         private float maxRangeShotDistance = 5f;
 
-        private string MOVEMENT = "movementSkill";
-        private string PRIMARY = "primarySkill";
-        private string ULTIMATE = "ultimateSkill";
-
         private string SKILLSHOT = "SKILLSHOT";
         private string RANGESHOT = "RANGESHOT";
 
@@ -452,48 +376,24 @@ namespace RPG.Control
 
             skillshotAimingActive = false;
             rangeshotAimingActive = false;
-
-            skillshotImage.enabled = false;
-            rangeImage.enabled = false;
-            reticleImage.enabled = false;
+            SetAimImagesEnabled(false);
         }
-        private void InitializeAimImage(string skillType)
+        private void SetAimImagesEnabled(bool value)
         {
-            if (skillType == MOVEMENT)
+            skillshotImage.enabled = value;
+            rangeImage.enabled = value;
+            reticleImage.enabled = value;
+        }
+        private void InitializeAimImage(SkillManager skill)
+        {
+            if (skill.requiresSkillShot)
             {
-                if (movementSkill.requiresSkillShot)
-                {
-                    skillshotImage.sprite = movementSkill.skillShotImage;
-                }
-                if (movementSkill.requiresRangeShot)
-                {
-                    rangeImage.sprite = movementSkill.rangeImage;
-                    reticleImage.sprite = movementSkill.reticleImage;
-                }
+                skillshotImage.sprite = skill.skillShotImage;
             }
-            if (skillType == PRIMARY)
+            if (skill.requiresRangeShot)
             {
-                if (primarySkill.requiresSkillShot)
-                {
-                    skillshotImage.sprite = primarySkill.skillShotImage;
-                }
-                if (primarySkill.requiresRangeShot)
-                {
-                    rangeImage.sprite = primarySkill.rangeImage;
-                    reticleImage.sprite = primarySkill.reticleImage;
-                }
-            }
-            if (skillType == ULTIMATE)
-            {
-                if (ultimateSkill.requiresSkillShot)
-                {
-                    skillshotImage.sprite = ultimateSkill.skillShotImage;
-                }
-                if (ultimateSkill.requiresRangeShot)
-                {
-                    rangeImage.sprite = ultimateSkill.rangeImage;
-                    reticleImage.sprite = ultimateSkill.reticleImage;
-                }
+                rangeImage.sprite = skill.rangeImage;
+                reticleImage.sprite = skill.reticleImage;
             }
         }
         private void SetAimingEnabled(string skillType, bool value)

@@ -11,6 +11,7 @@ namespace RPG.UI
     {
         public StateManager stateManager = null;
         public BaseStats baseStats = null;
+        private bool pollingSkills = false;
 
         [Header("Character Attributes")]
         public Text characterName = null;
@@ -41,7 +42,8 @@ namespace RPG.UI
         {
             stateManager.CharacterInitializationComplete += InitializeCharacterUI;
             stateManager.CharacterInitializationComplete += UpdateCurrentHealth;
-            stateManager.OnDashUpdate += UpdateDashCount;
+            stateManager.CharacterInitializationComplete += UpdateDashCount;
+            stateManager.dasher.OnDashUpdate += UpdateDashCount;
             characterLevel.text = "Level 1";
         }
 
@@ -59,14 +61,17 @@ namespace RPG.UI
             ultimateText.enabled = false;
 
             characterName.text = stateManager.currCharName;
-
             characterImage.sprite = stateManager.currCharImage;
 
             movementSkillImage.sprite = stateManager.movementSprite;
             primarySkillImage.sprite = stateManager.primarySprite;
             ultimateSkillImage.sprite = stateManager.ultimateSprite;
 
-            InvokeRepeating("PollSkillCooldowns", .1f, .1f);
+            if (!pollingSkills)
+            {
+                InvokeRepeating("PollSkillCooldowns", .1f, .1f);
+                pollingSkills = true;
+            }
         }
 
         private void UpdateCurrentHealth()
@@ -86,7 +91,7 @@ namespace RPG.UI
 
         private void UpdateDashCount()
         {
-            dashCharges.text = "Dash Charges: " + stateManager.currentDashCharges;
+            dashCharges.text = "Dash Charges: " + stateManager.dasher.currentDashCharges;
         }
 
         private void PollSkillCooldowns()

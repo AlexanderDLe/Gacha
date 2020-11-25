@@ -12,6 +12,7 @@ namespace RPG.Characters
         public new string name;
         public float health;
         public int numberOfAutoAttackHits;
+        public string[] autoAttackArray;
         public BaseStats baseStats;
         #endregion
 
@@ -48,7 +49,6 @@ namespace RPG.Characters
         {
             this.baseStats = character_GO.AddComponent<BaseStats>();
             baseStats.Initialize(character_SO);
-            
 
             this.script = character_SO;
             this.prefab = character_SO.prefab;
@@ -56,6 +56,8 @@ namespace RPG.Characters
             this.name = character_SO.name;
             this.image = character_SO.image;
             this.numberOfAutoAttackHits = character_SO.numberOfAutoAttackHits;
+            this.autoAttackArray = GenerateAutoAttackArray(numberOfAutoAttackHits);
+
             this.animatorOverride = character_SO.animatorOverride;
 
             this.movementSkillSprite = character_SO.movementSkill.skillSprite;
@@ -85,6 +87,16 @@ namespace RPG.Characters
             movementSkill.SetAimingEnabled(false);
             primarySkill.SetAimingEnabled(false);
             ultimateSkill.SetAimingEnabled(false);
+        }
+
+        private string[] GenerateAutoAttackArray(int numOfAutoAttackHits)
+        {
+            string[] autoAttackTempArray = new string[numOfAutoAttackHits];
+            for (int i = 0; i < numOfAutoAttackHits; i++)
+            {
+                autoAttackTempArray[i] = ("attack" + (i + 1).ToString());
+            }
+            return autoAttackTempArray;
         }
     }
 }
