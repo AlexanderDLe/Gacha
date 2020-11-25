@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using RPG.Control;
 using RPG.Characters;
+using RPG.Attributes;
+using RPG.Combat;
 
 namespace RPG.Core
 {
@@ -15,6 +17,7 @@ namespace RPG.Core
         ActionManager actionManager = null;
         RaycastMousePosition raycaster = null;
         Vector3 mousePosition = Vector3.zero;
+        public BaseStats currentBaseStats = null;
 
         public PlayableCharacter_SO char1_SO = null;
         public PlayableCharacter_SO char2_SO = null;
@@ -41,7 +44,7 @@ namespace RPG.Core
         #endregion
 
         #region Initializations
-        public event Action OnCharacterInitialization;
+        public event Action CharacterInitializationComplete;
 
         private void BuildAllCharacters()
         {
@@ -58,18 +61,34 @@ namespace RPG.Core
                 return null;
             }
 
-            char_GO = new GameObject();
-            char_GO.transform.SetParent(gameObject.transform);
-            char_GO.name = char_SO.name + " Controller";
+            char_GO = CreateCharacterController(char_SO);
 
             CharacterManager charManager = char_GO.AddComponent<CharacterManager>();
             charManager.Initialize(gameObject, char_GO, animator, char_SO);
 
-            char_PF = Instantiate(char_SO.prefab, transform);
+            char_PF = SpawnAndEquipCharacter(char_SO);
             char_PF.SetActive(false);
 
             return charManager;
         }
+
+        private GameObject CreateCharacterController(PlayableCharacter_SO char_SO)
+        {
+            GameObject char_GO = new GameObject();
+            char_GO.transform.SetParent(gameObject.transform);
+            char_GO.name = char_SO.name + " Controller";
+            return char_GO;
+        }
+
+        private GameObject SpawnAndEquipCharacter(PlayableCharacter_SO char_SO)
+        {
+            GameObject char_PF = Instantiate(char_SO.prefab, transform);
+            WeaponHolder weaponHolder = char_PF.GetComponent<WeaponHolder>();
+            GameObject holdWeapon_GO = weaponHolder.holdWeapon_GO;
+            Weapon char_Weapon = Instantiate(char_SO.weapon, holdWeapon_GO.transform);
+            return char_PF;
+        }
+
         public void InitializeCharacter(CharacterManager character)
         {
             currentCharPrefab = char_PFs[currentCharIndex];
@@ -77,16 +96,22 @@ namespace RPG.Core
 
             InitializeCharacterStats(character);
             InitializeCharacterSkills(character);
-            actionManager.InitializeCharacterFX(character.script);
+            InitializeCharacterFX(character);
 
             animator.avatar = character.avatar;
             animator.Rebind();
-            OnCharacterInitialization();
+            CharacterInitializationComplete();
         }
+
+        private void InitializeCharacterFX(CharacterManager character)
+        {
+            actionManager.InitializeCharacterFX(character.script);
+        }
+
         public void InitializeCharacterStats(CharacterManager character)
         {
+            this.currentBaseStats = character.baseStats;
             this.currCharName = character.name;
-            this.currCharHealth = character.health;
             this.currCharImage = character.image;
             this.numberOfAutoAttacksHits = character.numberOfAutoAttackHits;
 
@@ -94,20 +119,22 @@ namespace RPG.Core
             if (!character.animatorOverride) return;
             else animator.runtimeAnimatorController = character.animatorOverride;
         }
+
         public void InitializeCharacterSkills(CharacterManager character)
         {
             skillshotImage.enabled = false;
             rangeImage.enabled = false;
             reticleImage.enabled = false;
 
-            this.movementSkill = character.movementSkill;
-            this.primarySkill = character.primarySkill;
-            this.ultimateSkill = character.ultimateSkill;
-
             movementSprite = character.movementSkillSprite;
             primarySprite = character.primarySkillSprite;
             ultimateSprite = character.ultimateSkillSprite;
+
+            this.movementSkill = character.movementSkill;
+            this.primarySkill = character.primarySkill;
+            this.ultimateSkill = character.ultimateSkill;
         }
+
         #endregion
 
         #region Current Player Attributes
@@ -124,8 +151,6 @@ namespace RPG.Core
 
         [FoldoutGroup("Current Character Info")]
         public string currCharName;
-        [FoldoutGroup("Current Character Info")]
-        public float currCharHealth;
         [FoldoutGroup("Current Character Info")]
         public Sprite currCharImage;
 
@@ -295,7 +320,6 @@ namespace RPG.Core
             isDashing = true;
             StartCoroutine(RegenDashCharge());
         }
-
         public event Action OnDashUpdate;
         IEnumerator RegenDashCharge()
         {

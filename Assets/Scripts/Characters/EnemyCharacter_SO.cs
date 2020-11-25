@@ -8,9 +8,9 @@ namespace RPG.Characters
     public class EnemyCharacter_SO : BaseCharacter_SO
     {
         [FoldoutGroup("Attributes")]
-        public int experienceGiven;
-        [FoldoutGroup("Attributes")]
         public float movementSpeed;
+        [FoldoutGroup("Attributes")]
+        public int experienceGiven;
 
         [FoldoutGroup("Attack")]
         public float attackCooldownTime;

@@ -48,12 +48,12 @@ namespace RPG.Characters
         {
             this.baseStats = character_GO.AddComponent<BaseStats>();
             baseStats.Initialize(character_SO);
+            
 
             this.script = character_SO;
             this.prefab = character_SO.prefab;
             this.avatar = character_SO.characterAvatar;
             this.name = character_SO.name;
-            this.health = character_SO.health;
             this.image = character_SO.image;
             this.numberOfAutoAttackHits = character_SO.numberOfAutoAttackHits;
             this.animatorOverride = character_SO.animatorOverride;

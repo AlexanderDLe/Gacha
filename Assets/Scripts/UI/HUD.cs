@@ -1,4 +1,6 @@
-﻿using RPG.Control;
+﻿using System;
+using RPG.Attributes;
+using RPG.Control;
 using RPG.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,10 +10,13 @@ namespace RPG.UI
     public class HUD : MonoBehaviour
     {
         public StateManager stateManager = null;
+        public BaseStats baseStats = null;
 
         [Header("Character Attributes")]
         public Text characterName = null;
+        public Text characterLevel = null;
         public Text characterHealth = null;
+        public RectTransform healthBar = null;
         public Text dashCharges = null;
 
         [Header("CharacterImage")]
@@ -32,30 +37,64 @@ namespace RPG.UI
         public Image primaryMask;
         public Image ultimateMask;
 
-        private bool Initialized = false;
-
         private void Start()
         {
-            InitializeCharacterUI();
-            stateManager.OnCharacterInitialization += InitializeCharacterUI;
-            stateManager.OnCharacterInitialization += SetIntialized;
+            stateManager.CharacterInitializationComplete += InitializeCharacterUI;
+            stateManager.CharacterInitializationComplete += UpdateCurrentHealth;
             stateManager.OnDashUpdate += UpdateDashCount;
+            characterLevel.text = "Level 1";
         }
 
-        private void Update()
+        public void InitializeCharacterUI()
         {
-            if (!Initialized) return;
-            UpdateDashCount();
-            PollSkillCountdown(stateManager.movementSkill, movementMask, movementText);
-            PollSkillCountdown(stateManager.primarySkill, primaryMask, primaryText);
-            PollSkillCountdown(stateManager.ultimateSkill, ultimateMask, ultimateText);
+            baseStats = stateManager.currentBaseStats;
+            baseStats.OnHealthChange += UpdateCurrentHealth;
+
+            movementMask.enabled = false;
+            primaryMask.enabled = false;
+            ultimateMask.enabled = false;
+
+            movementText.enabled = false;
+            primaryText.enabled = false;
+            ultimateText.enabled = false;
+
+            characterName.text = stateManager.currCharName;
+
+            characterImage.sprite = stateManager.currCharImage;
+
+            movementSkillImage.sprite = stateManager.movementSprite;
+            primarySkillImage.sprite = stateManager.primarySprite;
+            ultimateSkillImage.sprite = stateManager.ultimateSprite;
+
+            InvokeRepeating("PollSkillCooldowns", .1f, .1f);
+        }
+
+        private void UpdateCurrentHealth()
+        {
+            float currentHealth = baseStats.currentHealth;
+            float maxHealth = baseStats.maxHealth;
+            float healthPercentage = baseStats.GetHealthFraction();
+
+            characterHealth.text = currentHealth + "/" + maxHealth;
+            healthBar.localScale = new Vector3(healthPercentage, 1, 1);
+        }
+
+        private void UpdateCurrentLevel()
+        {
+            UpdateCurrentHealth();
         }
 
         private void UpdateDashCount()
         {
-            this.dashCharges.text = "Dash Charges: " + stateManager.currentDashCharges;
+            dashCharges.text = "Dash Charges: " + stateManager.currentDashCharges;
         }
 
+        private void PollSkillCooldowns()
+        {
+            PollSkillCountdown(stateManager.movementSkill, movementMask, movementText);
+            PollSkillCountdown(stateManager.primarySkill, primaryMask, primaryText);
+            PollSkillCountdown(stateManager.ultimateSkill, ultimateMask, ultimateText);
+        }
         private void PollSkillCountdown(SkillManager skill, Image mask, Text text)
         {
             if (skill.GetIsSkillInCooldown())
@@ -70,31 +109,6 @@ namespace RPG.UI
                 mask.enabled = false;
                 text.enabled = false;
             }
-        }
-
-        public void InitializeCharacterUI()
-        {
-            movementMask.enabled = false;
-            primaryMask.enabled = false;
-            ultimateMask.enabled = false;
-
-            movementText.enabled = false;
-            primaryText.enabled = false;
-            ultimateText.enabled = false;
-
-            this.characterName.text = stateManager.currCharName;
-            this.characterHealth.text = stateManager.currCharHealth.ToString();
-
-            characterImage.sprite = stateManager.currCharImage;
-
-            movementSkillImage.sprite = stateManager.movementSprite;
-            primarySkillImage.sprite = stateManager.primarySprite;
-            ultimateSkillImage.sprite = stateManager.ultimateSprite;
-        }
-
-        public void SetIntialized()
-        {
-            Initialized = true;
         }
     }
 }

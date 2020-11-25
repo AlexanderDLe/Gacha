@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using RPG.Attributes;
+using RPG.Core;
 using UnityEngine;
 
 namespace RPG.Combat
@@ -45,7 +47,19 @@ namespace RPG.Combat
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag(tagToHarm)) Debug.Log("Hit target");
+            if (other.CompareTag(tagToHarm))
+            {
+                BaseStats target = null;
+                if (tagToHarm == "Player")
+                {
+                    target = other.gameObject.GetComponent<StateManager>().currentBaseStats;
+                }
+                else if (tagToHarm == "Enemy")
+                {
+                    target = other.gameObject.GetComponent<BaseStats>();
+                }
+                target.TakeDamage(damage);
+            }
         }
     }
 }

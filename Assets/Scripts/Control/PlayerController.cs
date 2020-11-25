@@ -33,7 +33,7 @@ namespace RPG.Core
         private void Start()
         {
             EnterMovementState();
-            stateManager.OnCharacterInitialization += UpdateCharacterSkills;
+            stateManager.CharacterInitializationComplete += UpdateCharacterSkills;
         }
         void Update()
         {

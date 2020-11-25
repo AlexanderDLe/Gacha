@@ -1,4 +1,5 @@
-﻿using RPG.Core;
+﻿using RPG.Combat;
+using RPG.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ namespace RPG.Characters
         #endregion
 
         #region Auto Attack
+        [FoldoutGroup("Auto Attack")]
+        public Weapon weapon;
         [FoldoutGroup("Auto Attack")]
         public int numberOfAutoAttackHits;
         [Header("Auto Attack FX")]

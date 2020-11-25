@@ -45,12 +45,10 @@ namespace RPG.Characters
         public void BuildCharacter(EnemyCharacter_SO enemyScriptObj)
         {
             baseStats.Initialize(enemyScriptObj);
-            this.health = enemyScriptObj.health;
             this.attackCooldownTime = enemyScriptObj.attackCooldownTime;
             this.attackCooldownTime = enemyScriptObj.attackCooldownTime;
             this.weaponRange = enemyScriptObj.weaponRange;
             this.hasProjectile = enemyScriptObj.projectile_SO != null;
-            this.damage = enemyScriptObj.baseDamage;
             this.chaseDistance = enemyScriptObj.chaseDistance;
 
             if (this.hasProjectile)
@@ -125,7 +123,7 @@ namespace RPG.Characters
         }
         #endregion
 
-        #region 
+        #region Attack
         [FoldoutGroup("Attack")]
         public float weaponRange = 1f;
         [FoldoutGroup("Attack")]
@@ -155,9 +153,6 @@ namespace RPG.Characters
             yield return new WaitForSeconds(attackCooldownTime);
             inAttackCooldown = false;
         }
-        #endregion
-
-        #region Animator
         public bool IsInAttackAnimation()
         {
             return animator.GetCurrentAnimatorStateInfo(0).IsName("attack");
@@ -173,7 +168,7 @@ namespace RPG.Characters
 
                 if (!proj) Debug.Log("Projectile not found.");
 
-                proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, damage, "Player", projectileLifetime);
+                proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, baseStats.GetDamage(), "Player", projectileLifetime);
 
             }
         }
