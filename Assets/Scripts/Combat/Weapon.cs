@@ -4,16 +4,13 @@ namespace RPG.Combat
 {
     public class Weapon : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
+        public Transform hitboxPoint;
+        public float hitboxDebugRadius;
+
+        private void OnDrawGizmos()
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(hitboxPoint.position, hitboxDebugRadius);
         }
     }
 }

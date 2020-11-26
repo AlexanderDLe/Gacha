@@ -15,9 +15,20 @@ namespace RPG.Characters
 
         #region Auto Attack
         [FoldoutGroup("Auto Attack")]
+        public FightingType fightingType;
+        [FoldoutGroup("Auto Attack")]
         public Weapon weapon;
+        [FoldoutGroup("Auto Attack"), ShowIf("fightingType", FightingType.Projectile)]
+        public Projectile_SO projectile;
+
+        [InfoBox("The number of the attack hits MUST BE THE SAME as the array length of the damage fractions and hit radiuses!")]
         [FoldoutGroup("Auto Attack")]
         public int numberOfAutoAttackHits;
+        [FoldoutGroup("Auto Attack")]
+        public float[] autoAttackDamageFractions;
+        [FoldoutGroup("Auto Attack"), ShowIf("fightingType", FightingType.Melee)]
+        public float[] autoAttackHitRadiuses;
+
         [Header("Auto Attack FX")]
         [FoldoutGroup("Auto Attack")]
         public GameObject[] autoAttackVFX;

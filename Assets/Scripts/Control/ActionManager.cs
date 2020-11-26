@@ -2,15 +2,18 @@
 using System.Collections;
 using Sirenix.OdinInspector;
 using RPG.Characters;
+using RPG.Attributes;
+using RPG.Combat;
 
 namespace RPG.Control
 {
     public class ActionManager : MonoBehaviour
     {
+        public GameObject environment = null;
         AudioSource audioSource = null;
         AudioSource characterAudioSource = null;
         AudioSource actionAudioSource = null;
-        public GameObject environment = null;
+        BaseStats baseStats = null;
 
         #region Initializations
         private void Awake()
@@ -19,25 +22,40 @@ namespace RPG.Control
             characterAudioSource = gameObject.AddComponent<AudioSource>();
             actionAudioSource = gameObject.AddComponent<AudioSource>();
         }
-        public void InitializeCharacterFX(PlayableCharacter_SO character)
+
+        public void Initialize(PlayableCharacter_SO char_SO, BaseStats baseStats, Weapon weapon)
         {
-            this.dashAudio = character.dashAudio;
+            this.baseStats = baseStats;
+            this.weapon = weapon;
+            this.hitboxPoint = weapon.hitboxPoint;
+            this.dashAudio = char_SO.dashAudio;
+            this.fightingType = char_SO.fightingType;
+            this.autoAttackDamageFraction = char_SO.autoAttackDamageFractions;
 
-            this.autoAttackVFX = character.autoAttackVFX;
-            this.weakAttackAudio = character.weakAttackAudio;
-            this.mediumAttackAudio = character.mediumAttackAudio;
+            if (this.fightingType == FightingType.Projectile)
+            {
+                this.projectile_SO = char_SO.projectile;
+            }
+            if (this.fightingType == FightingType.Melee)
+            {
+                this.autoAttackHitRadiuses = char_SO.autoAttackHitRadiuses;
+            }
 
-            this.movementSkillVFX = character.movementSkill.skillVFX;
-            this.movementSkillVocalAudio = character.movementSkill.skillVocalAudio;
-            this.movementSkillActionAudio = character.movementSkill.skillActionAudio;
+            this.autoAttackVFX = char_SO.autoAttackVFX;
+            this.weakAttackAudio = char_SO.weakAttackAudio;
+            this.mediumAttackAudio = char_SO.mediumAttackAudio;
 
-            this.primarySkillVFX = character.primarySkill.skillVFX;
-            this.primarySkillVocalAudio = character.primarySkill.skillVocalAudio;
-            this.primarySkillActionAudio = character.primarySkill.skillActionAudio;
+            this.movementSkillVFX = char_SO.movementSkill.skillVFX;
+            this.movementSkillVocalAudio = char_SO.movementSkill.skillVocalAudio;
+            this.movementSkillActionAudio = char_SO.movementSkill.skillActionAudio;
 
-            this.ultimateSkillVFX = character.ultimateSkill.skillVFX;
-            this.ultimateSkillVocalAudio = character.ultimateSkill.skillVocalAudio;
-            this.ultimateSkillActionAudio = character.ultimateSkill.skillActionAudio;
+            this.primarySkillVFX = char_SO.primarySkill.skillVFX;
+            this.primarySkillVocalAudio = char_SO.primarySkill.skillVocalAudio;
+            this.primarySkillActionAudio = char_SO.primarySkill.skillActionAudio;
+
+            this.ultimateSkillVFX = char_SO.ultimateSkill.skillVFX;
+            this.ultimateSkillVocalAudio = char_SO.ultimateSkill.skillVocalAudio;
+            this.ultimateSkillActionAudio = char_SO.ultimateSkill.skillActionAudio;
         }
         #endregion
 
@@ -92,20 +110,58 @@ namespace RPG.Control
         #endregion
 
         #region Auto Attack
+        public LayerMask enemyLayer;
         GameObject[] autoAttackVFX = null;
         AudioClip[] weakAttackAudio = null;
         AudioClip[] mediumAttackAudio = null;
+        public FightingType fightingType;
+
+        public Projectile_SO projectile_SO = null;
+        public float[] autoAttackHitRadiuses = null;
+        public float[] autoAttackDamageFraction = null;
+        public Weapon weapon = null;
+        public Transform hitboxPoint = null;
+        public float hitboxRadius = 1f;
+        public GameObject hitboxDebugSphere = null;
+
+        public void SpawnHitboxRadiusDebug()
+        {
+            GameObject debug_GO = Instantiate(hitboxDebugSphere, hitboxPoint);
+            debug_GO.transform.SetParent(environment.transform);
+
+            Vector3 hitboxScaling = new Vector3(weapon.hitboxDebugRadius * 2, weapon.hitboxDebugRadius * 2, weapon.hitboxDebugRadius * 2);
+            debug_GO.transform.localScale = hitboxScaling;
+        }
+
+        public void InflictDamage(int index)
+        {
+            if (fightingType == FightingType.Melee) InflictMeleeDamage(index);
+        }
+
+        public void InflictMeleeDamage(int index)
+        {
+            float radius = autoAttackHitRadiuses[index];
+            Collider[] hitEnemies = Physics.OverlapSphere(hitboxPoint.position, radius, enemyLayer);
+
+            foreach (Collider enemy in hitEnemies)
+            {
+                BaseStats enemyStats = enemy.GetComponent<BaseStats>();
+                float damage = baseStats.GetDamage() * autoAttackDamageFraction[index];
+                enemyStats.TakeDamage(damage);
+            }
+        }
 
         public void Attack1()
         {
-
             SelectAndPlayCharacterClip(weakAttackAudio);
             Instantiate(autoAttackVFX[0], transform.position, transform.rotation);
+            InflictDamage(0);
         }
         public void Attack2()
         {
             SelectAndPlayCharacterClip(mediumAttackAudio);
             Instantiate(autoAttackVFX[1], transform.position, transform.rotation);
+            InflictDamage(1);
         }
         #endregion
 

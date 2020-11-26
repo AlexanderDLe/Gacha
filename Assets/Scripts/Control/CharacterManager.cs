@@ -1,4 +1,5 @@
 ﻿using RPG.Attributes;
+using RPG.Combat;
 using RPG.Control;
 using RPG.Core;
 using Sirenix.OdinInspector;
@@ -14,13 +15,12 @@ namespace RPG.Characters
         public int numberOfAutoAttackHits;
         public string[] autoAttackArray;
         public BaseStats baseStats;
+        public Weapon weapon;
         #endregion
 
         #region Metadata
         [FoldoutGroup("Metadata")]
         public Sprite image;
-        [FoldoutGroup("Metadata")]
-        public GameObject prefab;
         [FoldoutGroup("Metadata")]
         public Avatar avatar;
         [FoldoutGroup("Metadata")]
@@ -45,13 +45,14 @@ namespace RPG.Characters
 
         public PlayableCharacter_SO script = null;
 
-        public void Initialize(GameObject player_GO, GameObject character_GO, Animator animator, PlayableCharacter_SO character_SO)
+        public void Initialize(GameObject player_GO, GameObject character_GO, Animator animator, PlayableCharacter_SO character_SO, Weapon weapon)
         {
             this.baseStats = character_GO.AddComponent<BaseStats>();
-            baseStats.Initialize(character_SO);
+            this.baseStats.Initialize(character_SO);
+
+            this.weapon = weapon;
 
             this.script = character_SO;
-            this.prefab = character_SO.prefab;
             this.avatar = character_SO.characterAvatar;
             this.name = character_SO.name;
             this.image = character_SO.image;

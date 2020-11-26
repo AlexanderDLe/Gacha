@@ -1,4 +1,5 @@
 ﻿using RPG.Combat;
+using RPG.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ namespace RPG.Characters
         public float movementSpeed;
         [FoldoutGroup("Attributes")]
         public int experienceGiven;
+        [FoldoutGroup("Attributes")]
+        public Rarity EnemyRarity;
 
         [FoldoutGroup("Attack")]
         public float attackCooldownTime;
@@ -20,5 +23,6 @@ namespace RPG.Characters
         public Projectile_SO projectile_SO;
         [FoldoutGroup("Attack")]
         public float chaseDistance;
+
     }
 }

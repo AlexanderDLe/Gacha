@@ -13,12 +13,12 @@ namespace RPG.Attributes
         private void Start()
         {
             baseStats.OnHealthChange += UpdateHealthBar;
-            foreground.localScale = new Vector3(.5f, 1, 1);
         }
 
         public void UpdateHealthBar()
         {
-            foreground.localScale = new Vector3(.5f, 1, 1);
+            float fraction = baseStats.GetHealthFraction();
+            foreground.localScale = new Vector3(fraction, 1, 1);
         }
     }
 }

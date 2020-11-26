@@ -21,8 +21,16 @@ MonoBehaviour:
   dashAudio:
   - {fileID: 8300000, guid: 82dbcb26c195a3640a883dbe979cbad2, type: 3}
   - {fileID: 8300000, guid: cd75db6c69d471642b49c020a3da9ce9, type: 3}
+  fightingType: 0
   weapon: {fileID: 4279306141280766081, guid: 91eaea4949ca4034989eb2bafece4474, type: 3}
+  projectile: {fileID: 0}
   numberOfAutoAttackHits: 2
+  autoAttackDamageFractions:
+  - 0.85
+  - 0.9
+  autoAttackHitRadiuses:
+  - 1.1
+  - 1.1
   autoAttackVFX:
   - {fileID: 1819066416490906, guid: 38c92f637b04dc1419efcde39fde5c66, type: 3}
   - {fileID: 1107296871017770, guid: 4b91df529222fb945b2b8cebe790f720, type: 3}

@@ -17,7 +17,7 @@ namespace RPG.Control
         RaycastMousePosition raycaster = null;
         Vector3 mousePosition = Vector3.zero;
         CharacterBuilder builder = null;
-        public BaseStats currentBaseStats = null;
+        public BaseStats currBaseStats = null;
         public DashManager dasher = null;
         public InitializeManager initialize = null;
 
@@ -31,8 +31,8 @@ namespace RPG.Control
             actionManager = GetComponent<ActionManager>();
             raycaster = GetComponent<RaycastMousePosition>();
             builder = GetComponent<CharacterBuilder>();
-            dasher = GetComponent<DashManager>();
             initialize = GetComponent<InitializeManager>();
+            dasher = GetComponent<DashManager>();
         }
         private void Start()
         {
@@ -62,53 +62,66 @@ namespace RPG.Control
 
             initialize.CharacterPrefab(out currentCharPrefab, char_PFs, currentCharIndex);
 
-            initialize.CharacterStats(out currentBaseStats, out currCharName, out currCharImage, out numberOfAutoAttackHits, out autoAttackArray);
+            initialize.CharacterStats(out currBaseStats, out currCharName, out currCharImage, out numberOfAutoAttackHits, out autoAttackArray);
 
             initialize.CharacterSkills(out movementSprite, out primarySprite, out ultimateSprite, out movementSkill, out primarySkill, out ultimateSkill);
 
             initialize.CharacterAnimation(animator);
 
-            actionManager.InitializeCharacterFX(character.script);
+            actionManager.Initialize(character.script, currBaseStats, character.weapon);
 
             SetAimImagesEnabled(false);
             CharacterInitializationComplete();
         }
         #endregion
 
-        #region Current Player
+        #region Character Swapping Mechanics
         [FoldoutGroup("Current Character Info")]
         public CharacterManager currentCharacter = null;
         [FoldoutGroup("Current Character Info")]
         public GameObject currentCharPrefab = null;
-        [FoldoutGroup("Current Character Info")]
-        public SkillManager ultimateSkill = null;
-        [FoldoutGroup("Current Character Info")]
-        public SkillManager primarySkill = null;
-        [FoldoutGroup("Current Character Info")]
-        public SkillManager movementSkill = null;
 
         [FoldoutGroup("Current Character Info")]
         public string currCharName;
         [FoldoutGroup("Current Character Info")]
         public Sprite currCharImage;
 
-        [FoldoutGroup("Skill UI Icons")]
-        public Sprite movementSprite = null;
-        [FoldoutGroup("Skill UI Icons")]
-        public Sprite primarySprite = null;
-        [FoldoutGroup("Skill UI Icons")]
-        public Sprite ultimateSprite = null;
+        CharacterManager[] chars = new CharacterManager[3];
+        GameObject[] char_GOs = new GameObject[3];
+        GameObject[] char_PFs = new GameObject[3];
+        int currentCharIndex = 0;
 
-        [FoldoutGroup("Aiming Asset References")]
-        public Canvas skillshotCanvas = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Canvas reticleCanvas = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image skillshotImage = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image rangeImage = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image reticleImage = null;
+        [FoldoutGroup("Character Swap")]
+        [SerializeField] float charSwapCooldownTime = 2f;
+        [FoldoutGroup("Character Swap")]
+        [SerializeField] bool charSwapInCooldown = false;
+
+        public CharacterManager GetCharacter(int charIndex)
+        {
+            return chars[charIndex];
+        }
+        public void SwapCharacter(int charIndex)
+        {
+            if (charIndex == currentCharIndex) return;
+            if (charIndex == 1 && !chars[1]) return;
+            if (charIndex == 2 && !chars[2]) return;
+
+            currentCharacter.CancelSkillAiming();
+            currentCharPrefab.SetActive(false);
+            currentCharIndex = charIndex;
+            currentCharacter = GetCharacter(charIndex);
+
+            InitializeCharacter(currentCharacter);
+            actionManager.ActivateSwapFX();
+            StartCoroutine(StartSwapCooldown());
+        }
+
+        IEnumerator StartSwapCooldown()
+        {
+            charSwapInCooldown = true;
+            yield return new WaitForSeconds(charSwapCooldownTime);
+            charSwapInCooldown = false;
+        }
         #endregion
 
         #region Permissions
@@ -179,61 +192,22 @@ namespace RPG.Control
         }
         #endregion
 
-        #region Character Swapping Mechanics
-        CharacterManager[] chars = new CharacterManager[3];
-        GameObject[] char_GOs = new GameObject[3];
-        GameObject[] char_PFs = new GameObject[3];
-        int currentCharIndex = 0;
-
-        [FoldoutGroup("Character Swap")]
-        [SerializeField] float charSwapCooldownTime = 2f;
-        [FoldoutGroup("Character Swap")]
-        [SerializeField] bool charSwapInCooldown = false;
-
-        public CharacterManager GetCharacter(int charIndex)
-        {
-            return chars[charIndex];
-        }
-        public void SwapCharacter(int charIndex)
-        {
-            if (charIndex == currentCharIndex) return;
-            if (charIndex == 1 && !chars[1]) return;
-            if (charIndex == 2 && !chars[2]) return;
-
-            currentCharacter.CancelSkillAiming();
-            currentCharPrefab.SetActive(false);
-            currentCharIndex = charIndex;
-            currentCharacter = GetCharacter(charIndex);
-
-            InitializeCharacter(currentCharacter);
-            actionManager.ActivateSwapFX();
-            StartCoroutine(StartSwapCooldown());
-        }
-
-        IEnumerator StartSwapCooldown()
-        {
-            charSwapInCooldown = true;
-            yield return new WaitForSeconds(charSwapCooldownTime);
-            charSwapInCooldown = false;
-        }
-        #endregion
-
         #region Dash Mechanics
         public bool GetCanDash()
         {
-            return dasher.currentDashCharges > 0;
+            return dasher.GetCanDash();
         }
         public bool IsDashing()
         {
-            return dasher.isDashing;
+            return dasher.GetIsDashing();
         }
         public void SetIsDashing(bool value)
         {
-            dasher.isDashing = value;
+            dasher.SetIsDashing(value);
         }
         public float GetDashSpeed()
         {
-            return dasher.dashSpeed;
+            return dasher.GetDashSpeed();
         }
         public void TriggerDash()
         {
@@ -273,7 +247,6 @@ namespace RPG.Control
         [SerializeField] int comboNum = 0;
         private string[] autoAttackArray = null;
 
-
         public void SetIsInAutoAttackState(bool value) => isInAutoAttackState = value;
         public bool GetCanTriggerNextAutoAttack() => canTriggerNextAutoAttack;
         public void SetCanTriggerNextAutoAttack(bool value) => canTriggerNextAutoAttack = value;
@@ -285,8 +258,6 @@ namespace RPG.Control
         {
             for (int i = 0; i < numberOfAutoAttackHits; i++)
             {
-                // We dynamically generate an array with "attack#" values.
-                // These values are used to interact with the Animator.
                 if (animator.GetCurrentAnimatorStateInfo(0).IsName(autoAttackArray[i]))
                 {
                     return true;
@@ -309,6 +280,32 @@ namespace RPG.Control
         #endregion
 
         #region Skill Mechanics
+        [FoldoutGroup("Current Character Info")]
+        public SkillManager ultimateSkill = null;
+        [FoldoutGroup("Current Character Info")]
+        public SkillManager primarySkill = null;
+        [FoldoutGroup("Current Character Info")]
+        public SkillManager movementSkill = null;
+
+
+        [FoldoutGroup("Skill UI Icons")]
+        public Sprite movementSprite = null;
+        [FoldoutGroup("Skill UI Icons")]
+        public Sprite primarySprite = null;
+        [FoldoutGroup("Skill UI Icons")]
+        public Sprite ultimateSprite = null;
+
+        [FoldoutGroup("Aiming Asset References")]
+        public Canvas skillshotCanvas = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Canvas reticleCanvas = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Image skillshotImage = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Image rangeImage = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Image reticleImage = null;
+
         public bool GetIsSkillInCooldown(SkillManager skill)
         {
             return skill.GetIsSkillInCooldown();

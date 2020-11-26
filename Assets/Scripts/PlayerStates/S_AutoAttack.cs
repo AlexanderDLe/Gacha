@@ -14,7 +14,7 @@ namespace RPG.PlayerStates
 
         [Tooltip("The current index of the combo.")]
         private float comboResetTimer = 0;
-        private float timeUntilComboReset = 1;
+        private float timeUntilComboReset = 3;
 
         bool repeatAction = false;
         // float repeatReset = .5f;
