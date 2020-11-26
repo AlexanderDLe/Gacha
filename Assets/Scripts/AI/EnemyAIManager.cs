@@ -17,6 +17,7 @@ namespace RPG.Characters
         Animator animator = null;
         ObjectPooler objectPooler = null;
         BaseStats baseStats = null;
+        DamageTextSpawner damageTextSpawner = null;
         [SerializeField] EnemyCharacter_SO enemy_SO = null;
 
         private void Awake()
@@ -25,6 +26,7 @@ namespace RPG.Characters
             stateMachine = GetComponent<StateMachine>();
             navMeshAgent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
+            damageTextSpawner = GetComponent<DamageTextSpawner>();
             player = GameObject.FindWithTag("Player");
         }
         private void Start()
@@ -120,6 +122,15 @@ namespace RPG.Characters
         public bool WithinAttackRange()
         {
             return distanceToPlayer <= weaponRange;
+        }
+        #endregion
+
+        #region Take Damage
+        public void TakeDamage(int damage)
+        {
+            print("Takin damage");
+            baseStats.TakeDamage(damage);
+            damageTextSpawner.SpawnText(damage);
         }
         #endregion
 

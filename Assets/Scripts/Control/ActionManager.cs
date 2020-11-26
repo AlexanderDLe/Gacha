@@ -145,9 +145,10 @@ namespace RPG.Control
 
             foreach (Collider enemy in hitEnemies)
             {
-                BaseStats enemyStats = enemy.GetComponent<BaseStats>();
-                float damage = baseStats.GetDamage() * autoAttackDamageFraction[index];
-                enemyStats.TakeDamage(damage);
+                EnemyAIManager AIEnemy = enemy.GetComponent<EnemyAIManager>();
+                float damage = Mathf.Round(baseStats.GetDamage() * autoAttackDamageFraction[index]);
+
+                AIEnemy.TakeDamage((int)damage);
             }
         }
 
