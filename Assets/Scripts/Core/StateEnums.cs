@@ -9,6 +9,7 @@
         Chase,
         Attack,
         Flinch,
+        CombatStance,
         SwapCharacter,
         AutoAttack,
         MovementSkill,

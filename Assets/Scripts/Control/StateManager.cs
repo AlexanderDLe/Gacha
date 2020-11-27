@@ -68,7 +68,7 @@ namespace RPG.Control
 
             initialize.CharacterAnimation(animator);
 
-            actionManager.Initialize(character.script, currBaseStats, character.weapon);
+            actionManager.Initialize(character, currBaseStats);
 
             SetAimImagesEnabled(false);
             CharacterInitializationComplete();

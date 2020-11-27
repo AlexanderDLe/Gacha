@@ -28,7 +28,16 @@ namespace RPG.Control
             objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
 
-        public void Initialize(PlayableCharacter_SO char_SO, BaseStats baseStats, Weapon weapon)
+        public void Initialize(CharacterManager character, BaseStats baseStats)
+        {
+            PlayableCharacter_SO char_SO = character.script;
+            Weapon weapon = character.weapon;
+
+            InitializeAttackAttributes(char_SO, baseStats, weapon);
+            InitializeFX(char_SO);
+        }
+
+        private void InitializeAttackAttributes(PlayableCharacter_SO char_SO, BaseStats baseStats, Weapon weapon)
         {
             this.baseStats = baseStats;
             this.weapon = weapon;
@@ -39,14 +48,11 @@ namespace RPG.Control
             if (this.fightingType == FightingType.Projectile)
             {
                 this.projectile_SO = char_SO.projectile;
-                objectPooler.AddToPool(projectile_SO.prefab, 10);
             }
             if (this.fightingType == FightingType.Melee)
             {
                 this.autoAttackHitRadiuses = char_SO.autoAttackHitRadiuses;
             }
-
-            InitializeFX(char_SO);
         }
 
         private void InitializeFX(PlayableCharacter_SO char_SO)
@@ -122,20 +128,19 @@ namespace RPG.Control
         #endregion
 
         #region Auto Attack
+        public FightingType fightingType;
+        public Weapon weapon = null;
         public LayerMask enemyLayer;
         GameObject[] autoAttackVFX = null;
         AudioClip[] weakAttackAudio = null;
         AudioClip[] mediumAttackAudio = null;
-        public FightingType fightingType;
 
+        public Projectile_SO projectile_SO = null;
+        public Transform hitboxPoint = null;
         public float[] autoAttackHitRadiuses = null;
         public float[] autoAttackDamageFraction = null;
-        public Weapon weapon = null;
-        public Transform hitboxPoint = null;
-        public float hitboxRadius = 1f;
-        public GameObject hitboxDebugSphere = null;
-        public Projectile_SO projectile_SO = null;
 
+        public GameObject hitboxDebugSphere = null;
         public void SpawnHitboxRadiusDebug()
         {
             GameObject debug_GO = Instantiate(hitboxDebugSphere, hitboxPoint);
@@ -145,7 +150,7 @@ namespace RPG.Control
             debug_GO.transform.localScale = hitboxScaling;
         }
 
-        public void InflictDamage(int index)
+        public void AutoAttack(int index)
         {
             if (fightingType == FightingType.Melee) InflictMeleeDamage(index);
             if (fightingType == FightingType.Projectile) ShootProjectile(index);
@@ -153,7 +158,6 @@ namespace RPG.Control
 
         private void ShootProjectile(int index)
         {
-
             if (!objectPooler) Debug.Log("Object Pooler not found.");
             // Spawn a GameObject from ObjectPool then access as Projectile
             Projectile proj = objectPooler.SpawnFromPool(projectile_SO.prefab.name).GetComponent<Projectile>();
@@ -162,7 +166,6 @@ namespace RPG.Control
             RaycastHit ray = raycaster.GetRaycastMousePoint();
 
             proj.Initialize(transform.position, ray.point, projectile_SO.speed, baseStats.GetDamage(), "Enemy", projectile_SO.maxLifeTime);
-
         }
 
         public void InflictMeleeDamage(int index)
@@ -183,13 +186,13 @@ namespace RPG.Control
         {
             SelectAndPlayCharacterClip(weakAttackAudio);
             Instantiate(autoAttackVFX[0], transform.position, transform.rotation);
-            InflictDamage(0);
+            AutoAttack(0);
         }
         public void Attack2()
         {
             SelectAndPlayCharacterClip(mediumAttackAudio);
             Instantiate(autoAttackVFX[1], transform.position, transform.rotation);
-            InflictDamage(1);
+            AutoAttack(1);
         }
         #endregion
 

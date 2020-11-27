@@ -1,4 +1,5 @@
-﻿using RPG.Characters;
+﻿using System;
+using RPG.Characters;
 using RPG.Combat;
 using UnityEngine;
 
@@ -7,10 +8,12 @@ namespace RPG.Control
     public class CharacterBuilder : MonoBehaviour
     {
         Animator animator = null;
+        ObjectPooler objectPooler = null;
 
         private void Awake()
         {
             animator = GetComponent<Animator>();
+            objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
 
         public CharacterManager BuildCharacter(GameObject char_GO,
@@ -60,6 +63,10 @@ namespace RPG.Control
             // 4. Spawn weapon at the Hold Weapon Transform
             weapon = Instantiate(char_SO.weapon, holdWeaponTransform);
 
+            // 5. If Projectile fighter, then add to Object Pool
+            AddProjectilesToPool(char_SO);
+
+
             char_PF.SetActive(false);
             return char_PF;
         }
@@ -76,5 +83,12 @@ namespace RPG.Control
             return charManager;
         }
 
+        private void AddProjectilesToPool(PlayableCharacter_SO char_SO)
+        {
+            if (char_SO.fightingType != FightingType.Projectile) return;
+
+            GameObject projectile = char_SO.projectile.prefab;
+            objectPooler.AddToPool(projectile, 10);
+        }
     }
 }

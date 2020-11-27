@@ -82,6 +82,12 @@ namespace RPG.Characters
             if (isInAttackAnimation) return false;
             return true;
         }
+        public bool CanEnterCombatStance()
+        {
+            if (isFlinching) return false;
+            if (isInAttackAnimation) return false;
+            return true;
+        }
         #endregion
 
         #region Attributes
@@ -106,6 +112,8 @@ namespace RPG.Characters
         public float aggroCooldownTime = 3f;
         [FoldoutGroup("Aggro")]
         public float suspicionTime = 3f;
+        [FoldoutGroup("Aggro")]
+        public bool isAggressive = false;
 
         public void Aggravate()
         {
@@ -120,6 +128,7 @@ namespace RPG.Characters
 
             return distanceToPlayer <= chaseDistance || aggravated;
         }
+
         public bool IsSuspicious()
         {
             return timeSinceAggravated < suspicionTime;
@@ -128,6 +137,15 @@ namespace RPG.Characters
         public bool WithinAttackRange()
         {
             return distanceToPlayer <= weaponRange;
+        }
+        public void StartAggression()
+        {
+            isAggressive = true;
+            StartCoroutine(StartAttackCooldown());
+        }
+        public void EndAggression()
+        {
+            isAggressive = false;
         }
         #endregion
 

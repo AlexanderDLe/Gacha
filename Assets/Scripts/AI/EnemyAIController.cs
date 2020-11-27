@@ -50,21 +50,30 @@ namespace RPG.AIControl
         {
             if (AIManager.IsAggravated())
             {
-                AggroBehaviour();
+                AggressiveBehaviour();
             }
             else if (AIManager.IsSuspicious())
             {
-                AIEnterSuspiciousState();
+                SuspiciousState();
             }
             else
             {
-                if (!AIManager.CanMove()) return;
-                AIEnterMoveState(guardPosition, AIManager.movementSpeed);
+                PassiveBehaviour();
             }
         }
 
-        private void AggroBehaviour()
+        private void PassiveBehaviour()
         {
+            if (!AIManager.CanMove()) return;
+            AIManager.EndAggression();
+            AIEnterMoveState(guardPosition, AIManager.movementSpeed);
+        }
+
+        private void AggressiveBehaviour()
+        {
+            if (!AIManager.isAggressive) AIManager.StartAggression();
+            // SetAICombatStance(true);
+
             AIManager.timeSinceAggravated = 0;
             if (!AIManager.WithinAttackRange())
             {
@@ -73,7 +82,11 @@ namespace RPG.AIControl
             }
             else
             {
-                if (!AIManager.CanAttack()) return;
+                if (!AIManager.CanAttack())
+                {
+                    if (AIManager.CanEnterCombatStance()) AIEnterCombatStance();
+                    return;
+                }
                 AIEnterAttackState();
             }
         }
@@ -84,33 +97,27 @@ namespace RPG.AIControl
         }
         public void AIEnterIdleState()
         {
-            SetAICombatStance(false);
             stateMachine.changeState(new AI_Idler(), StateEnum.Idle);
         }
-        public void AIEnterSuspiciousState()
+        public void AIEnterCombatStance()
         {
-            SetAICombatStance(true);
+            stateMachine.changeState(new AI_CombatStance(navMeshAgent, animator), StateEnum.CombatStance);
+        }
+        public void SuspiciousState()
+        {
             stateMachine.changeState(new AI_Idler(), StateEnum.Idle);
         }
         public void AIEnterChaseState(float movementSpeed)
         {
-            SetAICombatStance(false);
             stateMachine.changeState(new AI_Mover(player, navMeshAgent, movementSpeed), StateEnum.Chase);
         }
         public void AIEnterMoveState(Vector3 destination, float movementSpeed)
         {
-            SetAICombatStance(false);
             stateMachine.changeState(new AI_Mover(destination, navMeshAgent, movementSpeed), StateEnum.Move);
         }
         public void AIEnterAttackState()
         {
-            SetAICombatStance(true);
             stateMachine.changeState(new AI_Attacker(player, AIManager, animator), StateEnum.Attack);
-        }
-        public void SetAICombatStance(bool value)
-        {
-            if (animator.GetBool("inCombat") == value) return;
-            animator.SetBool("inCombat", value);
         }
 
         private void UpdateAnimator()

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b047e4ebbcec384c971986c6d76e9a7, type: 3}
   m_Name: HowlProjectile
   m_EditorClassIdentifier: 
-  prefab: {fileID: 3009873763069283852, guid: a1c0c236fdde33743b816305eaacf8a0, type: 3}
+  prefab: {fileID: 7290589718722439294, guid: a1c0c236fdde33743b816305eaacf8a0, type: 3}
   hitEffect: {fileID: 0}
   speed: 7
   maxLifeTime: 5
