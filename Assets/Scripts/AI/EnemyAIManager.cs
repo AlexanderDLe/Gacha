@@ -28,6 +28,7 @@ namespace RPG.Characters
             animator = GetComponent<Animator>();
             damageTextSpawner = GetComponent<DamageTextSpawner>();
             player = GameObject.FindWithTag("Player");
+            objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
         private void Start()
         {
@@ -55,9 +56,12 @@ namespace RPG.Characters
 
             if (this.hasProjectile)
             {
-                objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
+                GameObject projectilePrefab = enemyScriptObj.projectile_SO.prefab;
 
-                projectile = enemyScriptObj.projectile_SO.prefab;
+                objectPooler.AddToPool(projectilePrefab, 10);
+
+                projectile = projectilePrefab.GetComponent<Projectile>();
+
                 projectileSpeed = enemyScriptObj.projectile_SO.speed;
                 projectileLifetime = enemyScriptObj.projectile_SO.maxLifeTime;
             }
@@ -67,11 +71,13 @@ namespace RPG.Characters
         #region Permissions
         public bool CanMove()
         {
+            if (isFlinching) return false;
             if (isInAttackAnimation) return false;
             return true;
         }
         public bool CanAttack()
         {
+            if (isFlinching) return false;
             if (inAttackCooldown) return false;
             if (isInAttackAnimation) return false;
             return true;
@@ -126,11 +132,22 @@ namespace RPG.Characters
         #endregion
 
         #region Take Damage
+        public bool isFlinching = false;
+        public event Action OnDamageTaken;
         public void TakeDamage(int damage)
         {
-            print("Takin damage");
             baseStats.TakeDamage(damage);
             damageTextSpawner.SpawnText(damage);
+            OnDamageTaken();
+        }
+        public void SetIsFlinching(bool value)
+        {
+            isFlinching = value;
+        }
+        public void FlinchStart() { }
+        public void FlinchEnd()
+        {
+            SetIsFlinching(false);
         }
         #endregion
 
@@ -170,16 +187,17 @@ namespace RPG.Characters
         public void AttackStart() { }
         public void AttackActivate()
         {
+            Debug.Log(projectile.name);
             if (hasProjectile)
             {
                 if (!objectPooler) Debug.Log("Object Pooler not found.");
+
                 // Spawn a GameObject from ObjectPool then access as Projectile
                 Projectile proj = objectPooler.SpawnFromPool(projectile.name).GetComponent<Projectile>();
 
                 if (!proj) Debug.Log("Projectile not found.");
 
                 proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, baseStats.GetDamage(), "Player", projectileLifetime);
-
             }
         }
         public void AttackEnd()

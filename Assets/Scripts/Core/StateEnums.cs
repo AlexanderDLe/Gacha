@@ -8,6 +8,7 @@
         Dash,
         Chase,
         Attack,
+        Flinch,
         SwapCharacter,
         AutoAttack,
         MovementSkill,

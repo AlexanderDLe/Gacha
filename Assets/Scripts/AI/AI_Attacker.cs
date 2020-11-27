@@ -32,6 +32,7 @@ namespace RPG.AIControl
 
         public void Exit()
         {
+            AIManager.AttackEnd();
             animator.ResetTrigger("attack");
             animator.SetTrigger("resetAttack");
         }

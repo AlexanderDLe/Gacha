@@ -4,12 +4,15 @@ using Sirenix.OdinInspector;
 using RPG.Characters;
 using RPG.Attributes;
 using RPG.Combat;
+using RPG.Core;
 
 namespace RPG.Control
 {
     public class ActionManager : MonoBehaviour
     {
         public GameObject environment = null;
+        ObjectPooler objectPooler = null;
+        RaycastMousePosition raycaster = null;
         AudioSource audioSource = null;
         AudioSource characterAudioSource = null;
         AudioSource actionAudioSource = null;
@@ -18,9 +21,11 @@ namespace RPG.Control
         #region Initializations
         private void Awake()
         {
+            raycaster = GetComponent<RaycastMousePosition>();
             audioSource = GetComponent<AudioSource>();
             characterAudioSource = gameObject.AddComponent<AudioSource>();
             actionAudioSource = gameObject.AddComponent<AudioSource>();
+            objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
 
         public void Initialize(PlayableCharacter_SO char_SO, BaseStats baseStats, Weapon weapon)
@@ -28,18 +33,25 @@ namespace RPG.Control
             this.baseStats = baseStats;
             this.weapon = weapon;
             this.hitboxPoint = weapon.hitboxPoint;
-            this.dashAudio = char_SO.dashAudio;
             this.fightingType = char_SO.fightingType;
             this.autoAttackDamageFraction = char_SO.autoAttackDamageFractions;
 
             if (this.fightingType == FightingType.Projectile)
             {
                 this.projectile_SO = char_SO.projectile;
+                objectPooler.AddToPool(projectile_SO.prefab, 10);
             }
             if (this.fightingType == FightingType.Melee)
             {
                 this.autoAttackHitRadiuses = char_SO.autoAttackHitRadiuses;
             }
+
+            InitializeFX(char_SO);
+        }
+
+        private void InitializeFX(PlayableCharacter_SO char_SO)
+        {
+            this.dashAudio = char_SO.dashAudio;
 
             this.autoAttackVFX = char_SO.autoAttackVFX;
             this.weakAttackAudio = char_SO.weakAttackAudio;
@@ -116,13 +128,13 @@ namespace RPG.Control
         AudioClip[] mediumAttackAudio = null;
         public FightingType fightingType;
 
-        public Projectile_SO projectile_SO = null;
         public float[] autoAttackHitRadiuses = null;
         public float[] autoAttackDamageFraction = null;
         public Weapon weapon = null;
         public Transform hitboxPoint = null;
         public float hitboxRadius = 1f;
         public GameObject hitboxDebugSphere = null;
+        public Projectile_SO projectile_SO = null;
 
         public void SpawnHitboxRadiusDebug()
         {
@@ -136,6 +148,21 @@ namespace RPG.Control
         public void InflictDamage(int index)
         {
             if (fightingType == FightingType.Melee) InflictMeleeDamage(index);
+            if (fightingType == FightingType.Projectile) ShootProjectile(index);
+        }
+
+        private void ShootProjectile(int index)
+        {
+
+            if (!objectPooler) Debug.Log("Object Pooler not found.");
+            // Spawn a GameObject from ObjectPool then access as Projectile
+            Projectile proj = objectPooler.SpawnFromPool(projectile_SO.prefab.name).GetComponent<Projectile>();
+
+            if (!proj) Debug.Log("Projectile not found.");
+            RaycastHit ray = raycaster.GetRaycastMousePoint();
+
+            proj.Initialize(transform.position, ray.point, projectile_SO.speed, baseStats.GetDamage(), "Enemy", projectile_SO.maxLifeTime);
+
         }
 
         public void InflictMeleeDamage(int index)

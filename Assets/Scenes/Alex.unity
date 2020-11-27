@@ -1575,6 +1575,9 @@ MonoBehaviour:
   - prefab: {fileID: 8030018271069893892, guid: 4b2e3057bd1332643af8e23b1b109287,
       type: 3}
     size: 10
+  - prefab: {fileID: 7290589718722439294, guid: a1c0c236fdde33743b816305eaacf8a0,
+      type: 3}
+    size: 10
 --- !u!4 &1347320112
 Transform:
   m_ObjectHideFlags: 0
@@ -3548,6 +3551,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   environment: {fileID: 1888917985478224201}
+  objectPooler: {fileID: 1347320111}
   swapVisualFX: {fileID: 1271190732513390, guid: 8bc58c2dc37d5b34f8a3f37fd8564d2e,
     type: 3}
   swapAudioFX: {fileID: 8300000, guid: 39ce53b7b554fa24cba6475d20601e3a, type: 3}
@@ -3555,7 +3559,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   fightingType: 0
-  projectile_SO: {fileID: 0}
   autoAttackHitRadiuses: []
   autoAttackDamageFraction: []
   weapon: {fileID: 0}
@@ -3563,6 +3566,7 @@ MonoBehaviour:
   hitboxRadius: 1
   hitboxDebugSphere: {fileID: 2344632610373806237, guid: a7fa732c3df1f964683e45f474969e76,
     type: 3}
+  projectile_SO: {fileID: 0}
   footstepClips:
   - {fileID: 8300000, guid: 4d11813f5983ce047873c94858e6a6c1, type: 3}
   - {fileID: 8300000, guid: 6154d2d90f91ac743a30a16a58f9fa32, type: 3}
@@ -4350,6 +4354,7 @@ MonoBehaviour:
   timeSinceAggravated: Infinity
   aggroCooldownTime: 3
   suspicionTime: 3
+  isFlinching: 0
   weaponRange: 1
   inAttackCooldown: 0
   attackCooldownTime: 3

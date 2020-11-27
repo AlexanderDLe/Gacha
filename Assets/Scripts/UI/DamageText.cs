@@ -5,7 +5,7 @@ namespace RPG.UI
 {
     public class DamageText : MonoBehaviour
     {
-        [SerializeField] TextMeshPro textMesh;
+        [SerializeField] TextMeshPro textMesh = default;
 
         public void Initialize(int damage)
         {

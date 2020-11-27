@@ -47,6 +47,31 @@ public class ObjectPooler : MonoBehaviour
         }
     }
 
+    public void AddToPool(GameObject prefab, int size)
+    {
+        if (poolDictionary.ContainsKey(prefab.name)) return;
+
+        Queue<GameObject> objectPool = new Queue<GameObject>();
+
+        for (int i = 0; i < size; i++)
+        {
+            GameObject obj = Instantiate(prefab);
+            obj.transform.SetParent(gameObject.transform);
+            obj.SetActive(false);
+            objectPool.Enqueue(obj);
+        }
+
+        poolDictionary.Add(prefab.name, objectPool);
+    }
+
+    public void RemoveFromPool(GameObject prefab)
+    {
+        if (poolDictionary.ContainsKey(prefab.name))
+        {
+            poolDictionary.Remove(prefab.name);
+        }
+    }
+
     public GameObject SpawnFromPool(string tag)
     {
         if (!poolDictionary.ContainsKey(tag))

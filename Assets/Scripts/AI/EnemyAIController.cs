@@ -30,6 +30,15 @@ namespace RPG.AIControl
             AIEnterIdleState();
         }
 
+        private void OnEnable()
+        {
+            AIManager.OnDamageTaken += EnterFlinchState;
+        }
+        private void OnDisable()
+        {
+            AIManager.OnDamageTaken -= EnterFlinchState;
+        }
+
         private void Update()
         {
             AIBehaviour();
@@ -69,6 +78,10 @@ namespace RPG.AIControl
             }
         }
 
+        public void EnterFlinchState()
+        {
+            stateMachine.changeState(new AI_Flinch(AIManager, animator), StateEnum.Flinch);
+        }
         public void AIEnterIdleState()
         {
             SetAICombatStance(false);

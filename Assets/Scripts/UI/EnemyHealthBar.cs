@@ -12,7 +12,15 @@ namespace RPG.Attributes
 
         private void Start()
         {
+        }
+
+        private void OnEnable()
+        {
             baseStats.OnHealthChange += UpdateHealthBar;
+        }
+        private void OnDisable()
+        {
+            baseStats.OnHealthChange -= UpdateHealthBar;
         }
 
         public void UpdateHealthBar()

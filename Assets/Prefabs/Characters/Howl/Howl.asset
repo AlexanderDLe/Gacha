@@ -20,9 +20,9 @@ MonoBehaviour:
   animatorOverride: {fileID: 0}
   dashAudio:
   - {fileID: 8300000, guid: 93b127add7e8f524281842e7914ca8da, type: 3}
-  fightingType: 0
+  fightingType: 1
   weapon: {fileID: 5979040720903688586, guid: 1384c29a314f8f14099eb8a8be18aaa7, type: 3}
-  projectile: {fileID: 0}
+  projectile: {fileID: 11400000, guid: b478e8cd7d8f1b54e9825b771af45abb, type: 2}
   numberOfAutoAttackHits: 2
   autoAttackDamageFractions:
   - 1
