@@ -64,7 +64,7 @@ namespace RPG.Control
 
             initialize.CharacterStats(out currBaseStats, out currCharName, out currCharImage, out numberOfAutoAttackHits, out autoAttackArray);
 
-            initialize.CharacterSkills(out movementSprite, out primarySprite, out ultimateSprite, out movementSkill, out primarySkill, out ultimateSkill);
+            initialize.CharacterSkills(out movementSkill, out primarySkill, out ultimateSkill);
 
             initialize.CharacterAnimation(animator);
 
@@ -127,7 +127,7 @@ namespace RPG.Control
         #region Permissions
         public bool CanSwapCharacter()
         {
-            if (IsDashing()) return false;
+            if (dasher.IsDashing()) return false;
             if (charSwapInCooldown) return false;
             if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
             if (IsUsingAnySkill() || IsInAnySkillAnimation()) return false;
@@ -135,21 +135,21 @@ namespace RPG.Control
         }
         public bool CanMove()
         {
-            if (IsDashing()) return false;
+            if (dasher.IsDashing()) return false;
             if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
             if (IsUsingAnySkill() || IsInAnySkillAnimation()) return false;
             return true;
         }
         public bool CanDash()
         {
-            if (IsDashing()) return false;
+            if (dasher.IsDashing()) return false;
             if (dasher.currentDashCharges == 0) return false;
             if (IsUsingAnySkill()) return false;
             return true;
         }
         public bool CanAutoAttack()
         {
-            if (IsDashing()) return false;
+            if (dasher.IsDashing()) return false;
             if (isInAutoAttackState) return false;
             if (IsUsingAnySkill()) return false;
             if (IsInAutoAttackAnimation()) return false;
@@ -157,61 +157,38 @@ namespace RPG.Control
         }
         public bool CanUseMovementSkill()
         {
-            if (IsDashing()) return false;
-            if (GetIsSkillInCooldown(movementSkill)) return false;
+            if (dasher.IsDashing()) return false;
+            if (movementSkill.GetIsSkillInCooldown()) return false;
             if (IsUsingAnySkill()) return false;
             return true;
         }
         public bool CanUsePrimarySkill()
         {
-            if (IsDashing()) return false;
-            if (GetIsSkillInCooldown(primarySkill)) return false;
+            if (dasher.IsDashing()) return false;
+            if (primarySkill.GetIsSkillInCooldown()) return false;
             if (IsUsingAnySkill()) return false;
             return true;
         }
         public bool CanUseUltimateSkill()
         {
-            if (IsDashing()) return false;
-            if (GetIsSkillInCooldown(ultimateSkill)) return false;
+            if (dasher.IsDashing()) return false;
+            if (ultimateSkill.GetIsSkillInCooldown()) return false;
             if (IsUsingAnySkill()) return false;
             return true;
         }
         public bool IsUsingAnySkill()
         {
-            if (GetIsUsingSkill(movementSkill)) return true;
-            if (GetIsUsingSkill(primarySkill)) return true;
-            if (GetIsUsingSkill(ultimateSkill)) return true;
+            if (movementSkill.GetIsUsingSkill()) return true;
+            if (primarySkill.GetIsUsingSkill()) return true;
+            if (ultimateSkill.GetIsUsingSkill()) return true;
             return false;
         }
         public bool IsInAnySkillAnimation()
         {
-            if (IsInSkillAnimation(movementSkill)) return true;
-            if (IsInSkillAnimation(primarySkill)) return true;
-            if (IsInSkillAnimation(ultimateSkill)) return true;
+            if (movementSkill.IsInSkillAnimation()) return true;
+            if (primarySkill.IsInSkillAnimation()) return true;
+            if (ultimateSkill.IsInSkillAnimation()) return true;
             return false;
-        }
-        #endregion
-
-        #region Dash Mechanics
-        public bool GetCanDash()
-        {
-            return dasher.GetCanDash();
-        }
-        public bool IsDashing()
-        {
-            return dasher.GetIsDashing();
-        }
-        public void SetIsDashing(bool value)
-        {
-            dasher.SetIsDashing(value);
-        }
-        public float GetDashSpeed()
-        {
-            return dasher.GetDashSpeed();
-        }
-        public void TriggerDash()
-        {
-            dasher.TriggerDash();
         }
         #endregion
 
@@ -280,48 +257,13 @@ namespace RPG.Control
         #endregion
 
         #region Skill Mechanics
-        [FoldoutGroup("Current Character Info")]
+        [FoldoutGroup("Skills")]
         public SkillManager ultimateSkill = null;
-        [FoldoutGroup("Current Character Info")]
+        [FoldoutGroup("Skills")]
         public SkillManager primarySkill = null;
-        [FoldoutGroup("Current Character Info")]
+        [FoldoutGroup("Skills")]
         public SkillManager movementSkill = null;
 
-
-        [FoldoutGroup("Skill UI Icons")]
-        public Sprite movementSprite = null;
-        [FoldoutGroup("Skill UI Icons")]
-        public Sprite primarySprite = null;
-        [FoldoutGroup("Skill UI Icons")]
-        public Sprite ultimateSprite = null;
-
-        [FoldoutGroup("Aiming Asset References")]
-        public Canvas skillshotCanvas = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Canvas reticleCanvas = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image skillshotImage = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image rangeImage = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image reticleImage = null;
-
-        public bool GetIsSkillInCooldown(SkillManager skill)
-        {
-            return skill.GetIsSkillInCooldown();
-        }
-        public void SetIsUsingSkill(SkillManager skill, bool value)
-        {
-            skill.SetIsUsingSkill(value);
-        }
-        public bool GetIsUsingSkill(SkillManager skill)
-        {
-            return skill.GetIsUsingSkill();
-        }
-        public bool IsInSkillAnimation(SkillManager skill)
-        {
-            return skill.IsInSkillAnimation();
-        }
         public void ActivateSkillAim(SkillManager skill, string skillType)
         {
             skill.SetAimingEnabled(true);
@@ -340,6 +282,7 @@ namespace RPG.Control
             skill.TriggerSkill();
             DeactivateSkillAim(skill);
         }
+
         // Animation Event
         public void PrimarySkillActivate()
         {
@@ -356,6 +299,17 @@ namespace RPG.Control
         #endregion
 
         #region Aiming Mechanics
+        [FoldoutGroup("Aiming Asset References")]
+        public Canvas skillshotCanvas = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Canvas reticleCanvas = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Image skillshotImage = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Image rangeImage = null;
+        [FoldoutGroup("Aiming Asset References")]
+        public Image reticleImage = null;
+
         private bool skillshotAimingActive = false;
         private bool rangeshotAimingActive = false;
         private float maxRangeShotDistance = 5f;

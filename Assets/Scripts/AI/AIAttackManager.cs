@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using RPG.Attributes;
 using RPG.Characters;
 using RPG.Combat;
@@ -20,8 +19,8 @@ namespace RPG.AI
         public FightingType fightingType;
         public Weapon weapon;
         public float weaponRange = 1f;
-        public bool inAttackCooldown = false;
         public float attackCooldownTime = 3f;
+        public bool inAttackCooldown = false;
         public bool isInAttackAnimation = false;
         public float attackCooldownCounter = 0f;
         public float hitboxRadius = 1f;
@@ -62,15 +61,15 @@ namespace RPG.AI
                 objectPooler.AddToPool(projectilePrefab, 10);
             }
 
-            projectile = projectilePrefab.GetComponent<Projectile>();
+            this.projectile = projectilePrefab.GetComponent<Projectile>();
 
-            projectileSpeed = script.projectile_SO.speed;
-            projectileLifetime = script.projectile_SO.maxLifeTime;
+            this.projectileSpeed = script.projectile_SO.speed;
+            this.projectileLifetime = script.projectile_SO.maxLifeTime;
 
-            hitboxPoint = prefab.GetComponent<WeaponHolder>().holdWeapon_GO.transform;
-            hitboxRadius = script.hitboxRadius;
+            this.hitboxPoint = prefab.GetComponent<WeaponHolder>().holdWeapon_GO.transform;
+            this.hitboxRadius = script.hitboxRadius;
 
-            projectileSpawnTransform = hitboxPoint;
+            this.projectileSpawnTransform = hitboxPoint;
         }
 
         public event Action OnAttackTriggered;

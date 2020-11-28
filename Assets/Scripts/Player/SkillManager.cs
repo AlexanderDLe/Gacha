@@ -12,12 +12,13 @@ namespace RPG.Control
         string RANGESHOT = "RANGESHOT";
 
         public void Initialize(GameObject player_GO, Animator animator,
-            string skillType, SkillScriptableObject skillScriptableObject)
+            string skillType, SkillScriptableObject skillScriptableObject, Sprite skillImage)
         {
             this.skill = skillScriptableObject;
             this.skillName = skill.skillName;
             this.animator = animator;
             this.skillType = skillType;
+            this.skillImage = skillImage;
 
             this.cooldownResetTime = skill.baseCooldownTime;
             this.requiresSkillShot = skill.requiresSkillShot;
@@ -50,6 +51,7 @@ namespace RPG.Control
         public bool requiresRangeShot = false;
         public bool isAimingSkill = false;
 
+        public Sprite skillImage = null;
         public Sprite skillShotImage = null;
         public Sprite rangeImage = null;
         public Sprite reticleImage = null;

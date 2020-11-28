@@ -51,13 +51,13 @@ namespace RPG.PlayerStates
         {
             navMeshAgent.isStopped = false;
             navMeshAgent.destination = destination;
-            navMeshAgent.speed = stateManager.GetDashSpeed() * Mathf.Clamp01(speedFraction);
+            navMeshAgent.speed = stateManager.dasher.GetDashSpeed() * Mathf.Clamp01(speedFraction);
         }
 
         public void Exit()
         {
             navMeshAgent.isStopped = true;
-            stateManager.SetIsDashing(false);
+            stateManager.dasher.SetIsDashing(false);
         }
     }
 }

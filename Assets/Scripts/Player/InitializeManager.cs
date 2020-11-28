@@ -28,12 +28,8 @@ namespace RPG.Control
             autoAttackArray = character.autoAttackArray;
         }
 
-        public void CharacterSkills(out Sprite movementSprite, out Sprite primarySprite, out Sprite ultimateSprite, out SkillManager movementSkill, out SkillManager primarySkill, out SkillManager ultimateSkill)
+        public void CharacterSkills(out SkillManager movementSkill, out SkillManager primarySkill, out SkillManager ultimateSkill)
         {
-            movementSprite = character.movementSkillSprite;
-            primarySprite = character.primarySkillSprite;
-            ultimateSprite = character.ultimateSkillSprite;
-
             movementSkill = character.movementSkill;
             primarySkill = character.primarySkill;
             ultimateSkill = character.ultimateSkill;

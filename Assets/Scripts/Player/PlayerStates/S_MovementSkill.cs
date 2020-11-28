@@ -41,7 +41,7 @@ namespace RPG.PlayerStates
 
         public void Exit()
         {
-            stateManager.SetIsUsingSkill(skill, false);
+            skill.SetIsUsingSkill(false);
             animator.ResetTrigger("movementSkill");
             animator.SetTrigger("resetAttack");
         }

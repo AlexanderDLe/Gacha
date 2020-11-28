@@ -63,9 +63,9 @@ namespace RPG.UI
             characterName.text = stateManager.currCharName;
             characterImage.sprite = stateManager.currCharImage;
 
-            movementSkillImage.sprite = stateManager.movementSprite;
-            primarySkillImage.sprite = stateManager.primarySprite;
-            ultimateSkillImage.sprite = stateManager.ultimateSprite;
+            movementSkillImage.sprite = stateManager.movementSkill.skillImage;
+            primarySkillImage.sprite = stateManager.primarySkill.skillImage;
+            ultimateSkillImage.sprite = stateManager.ultimateSkill.skillImage;
 
             if (!pollingSkills)
             {

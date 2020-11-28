@@ -66,19 +66,19 @@ namespace RPG.Characters
             this.ultimateSkillSprite = character_SO.ultimateSkill.skillSprite;
 
             movementSkill = InitializeSkill(player_GO, character_GO, animator,
-                character_SO.movementSkill, "movementSkill");
+                character_SO.movementSkill, "movementSkill", movementSkillSprite);
 
             primarySkill = InitializeSkill(player_GO, character_GO, animator,
-                character_SO.primarySkill, "primarySkill");
+                character_SO.primarySkill, "primarySkill", primarySkillSprite);
 
             ultimateSkill = InitializeSkill(player_GO, character_GO, animator,
-                character_SO.ultimateSkill, "ultimateSkill");
+                character_SO.ultimateSkill, "ultimateSkill", ultimateSkillSprite);
         }
 
-        private SkillManager InitializeSkill(GameObject player_GO, GameObject character_GO, Animator animator, SkillScriptableObject skillSO, string skillType)
+        private SkillManager InitializeSkill(GameObject player_GO, GameObject character_GO, Animator animator, SkillScriptableObject skillSO, string skillType, Sprite skillImage)
         {
             SkillManager skill = character_GO.AddComponent<SkillManager>();
-            skill.Initialize(player_GO, animator, skillType, skillSO);
+            skill.Initialize(player_GO, animator, skillType, skillSO, skillImage);
 
             return skill;
         }

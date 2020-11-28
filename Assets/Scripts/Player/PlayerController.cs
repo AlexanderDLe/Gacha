@@ -142,7 +142,7 @@ namespace RPG.Control
         private void HandleLeftShift()
         {
             if (!stateManager.CanDash()) return;
-            stateManager.TriggerDash();
+            stateManager.dasher.TriggerDash();
             EnterDashState();
         }
         private void HandleCharacterSwap(int index)

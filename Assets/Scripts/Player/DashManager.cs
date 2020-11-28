@@ -23,7 +23,7 @@ namespace RPG.Control
             return currentDashCharges > 0;
         }
 
-        public bool GetIsDashing()
+        public bool IsDashing()
         {
             return isDashing;
         }
