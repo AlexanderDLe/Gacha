@@ -19,13 +19,11 @@ namespace RPG.Control
             currentCharPrefab.SetActive(true);
         }
 
-        public void CharacterStats(out BaseStats currentBaseStats, out string currCharName, out Sprite currCharImage, out int numberOfAutoAttackHits, out string[] autoAttackArray)
+        public void CharacterStats(out BaseStats currentBaseStats, out string currCharName, out Sprite currCharImage)
         {
             currentBaseStats = character.baseStats;
             currCharName = character.name;
             currCharImage = character.image;
-            numberOfAutoAttackHits = character.numberOfAutoAttackHits;
-            autoAttackArray = character.autoAttackArray;
         }
 
         public void CharacterSkills(out SkillManager movementSkill, out SkillManager primarySkill, out SkillManager ultimateSkill)

@@ -97,7 +97,7 @@ namespace RPG.Control
                 return;
             }
             if (!stateManager.CanAutoAttack()) return;
-            stateManager.SetIsInAutoAttackState(true);
+            stateManager.attacker.SetIsInAutoAttackState(true);
             stateMachine.changeState(new S_AutoAttack(gameObject, animator, raycaster,
             stateManager, repeatAttack), StateEnum.AutoAttack);
         }

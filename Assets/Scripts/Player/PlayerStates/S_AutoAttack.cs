@@ -11,14 +11,13 @@ namespace RPG.PlayerStates
         private RaycastMousePosition raycaster;
         private string[] autoAttackArray = null;
         private StateManager stateManager = null;
+        private AttackManager attacker = null;
 
         [Tooltip("The current index of the combo.")]
         private float comboResetTimer = 0;
         private float timeUntilComboReset = 3;
 
         bool repeatAction = false;
-        // float repeatReset = .5f;
-        // float repeatTimer = 0f;
 
         public S_AutoAttack(
             GameObject gameObject,
@@ -31,9 +30,9 @@ namespace RPG.PlayerStates
             this.gameObject = gameObject;
             this.animator = animator;
             this.raycaster = raycaster;
-            this.stateManager = stateManager;
+            this.attacker = stateManager.attacker;
             this.repeatAction = repeatAction;
-            this.autoAttackArray = stateManager.GetAutoAttackArray();
+            this.autoAttackArray = attacker.GetAutoAttackArray();
         }
 
         public void Enter() { }
@@ -46,31 +45,31 @@ namespace RPG.PlayerStates
 
         private void UpdateAutoAttackCycle()
         {
-            if (stateManager.GetComboNum() > 0)
+            if (attacker.GetComboNum() > 0)
             {
                 comboResetTimer += Time.deltaTime;
                 if (comboResetTimer >= timeUntilComboReset)
                 {
                     ResetAutoAttack();
-                    stateManager.SetComboNum(0);
+                    attacker.SetComboNum(0);
                 }
-                if (stateManager.GetComboNum() == autoAttackArray.Length)
+                if (attacker.GetComboNum() == autoAttackArray.Length)
                 {
-                    stateManager.SetComboNum(0);
+                    attacker.SetComboNum(0);
                 }
             }
         }
 
         private void TriggerAutoAttack()
         {
-            if (!stateManager.GetCanTriggerNextAutoAttack()) return;
-            stateManager.SetCanTriggerNextAutoAttack(false);
+            if (!attacker.GetCanTriggerNextAutoAttack()) return;
+            attacker.SetCanTriggerNextAutoAttack(false);
             RaycastHit hit = raycaster.GetRaycastMousePoint();
             gameObject.transform.LookAt(hit.point);
 
-            int currentComboNum = stateManager.GetComboNum();
+            int currentComboNum = attacker.GetComboNum();
             animator.SetTrigger(autoAttackArray[currentComboNum]);
-            stateManager.SetComboNum(currentComboNum + 1);
+            attacker.SetComboNum(currentComboNum + 1);
             comboResetTimer = 0;
         }
 
@@ -85,8 +84,8 @@ namespace RPG.PlayerStates
 
         public void Exit()
         {
-            stateManager.SetCanTriggerNextAutoAttack(true);
-            stateManager.SetIsInAutoAttackState(false);
+            attacker.SetCanTriggerNextAutoAttack(true);
+            attacker.SetIsInAutoAttackState(false);
             ResetAutoAttack();
         }
     }

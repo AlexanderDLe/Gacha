@@ -19,6 +19,7 @@ namespace RPG.Control
         CharacterBuilder builder = null;
         public BaseStats currBaseStats = null;
         public DashManager dasher = null;
+        public AttackManager attacker = null;
         public InitializeManager initialize = null;
 
         public PlayableCharacter_SO char1_SO = null;
@@ -33,6 +34,7 @@ namespace RPG.Control
             builder = GetComponent<CharacterBuilder>();
             initialize = GetComponent<InitializeManager>();
             dasher = GetComponent<DashManager>();
+            attacker = GetComponent<AttackManager>();
         }
         private void Start()
         {
@@ -62,13 +64,15 @@ namespace RPG.Control
 
             initialize.CharacterPrefab(out currentCharPrefab, char_PFs, currentCharIndex);
 
-            initialize.CharacterStats(out currBaseStats, out currCharName, out currCharImage, out numberOfAutoAttackHits, out autoAttackArray);
+            initialize.CharacterStats(out currBaseStats, out currCharName, out currCharImage);
 
             initialize.CharacterSkills(out movementSkill, out primarySkill, out ultimateSkill);
 
             initialize.CharacterAnimation(animator);
 
             actionManager.Initialize(character, currBaseStats);
+
+            attacker.Initialize(character);
 
             SetAimImagesEnabled(false);
             CharacterInitializationComplete();
@@ -129,14 +133,16 @@ namespace RPG.Control
         {
             if (dasher.IsDashing()) return false;
             if (charSwapInCooldown) return false;
-            if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
+            if (attacker.isInAutoAttackState) return false;
+            if (attacker.IsInAutoAttackAnimation()) return false;
             if (IsUsingAnySkill() || IsInAnySkillAnimation()) return false;
             return true;
         }
         public bool CanMove()
         {
             if (dasher.IsDashing()) return false;
-            if (isInAutoAttackState || IsInAutoAttackAnimation()) return false;
+            if (attacker.isInAutoAttackState) return false;
+            if (attacker.IsInAutoAttackAnimation()) return false;
             if (IsUsingAnySkill() || IsInAnySkillAnimation()) return false;
             return true;
         }
@@ -150,9 +156,9 @@ namespace RPG.Control
         public bool CanAutoAttack()
         {
             if (dasher.IsDashing()) return false;
-            if (isInAutoAttackState) return false;
+            if (attacker.isInAutoAttackState) return false;
             if (IsUsingAnySkill()) return false;
-            if (IsInAutoAttackAnimation()) return false;
+            if (attacker.IsInAutoAttackAnimation()) return false;
             return true;
         }
         public bool CanUseMovementSkill()
@@ -189,70 +195,6 @@ namespace RPG.Control
             if (primarySkill.IsInSkillAnimation()) return true;
             if (ultimateSkill.IsInSkillAnimation()) return true;
             return false;
-        }
-        #endregion
-
-        #region Auto Attack Mechanics        
-        /*  Auto Attack State Mechanics
-
-            Summary: When you attack, you should be able to cancel out of movement.
-
-            Moving Scenario: While moving, the player should be able to cancel into an attack. To do so, we set the isInAutoAttack bool to TRUE. When the attack animation completes, we dash out, we set isInAutoAttack bool to FALSE.
-
-            Implementation: To provide them the ability to read & write to the bool, we give the auto attack state direct access to the manager.
-
-            We use isInAutoAttackState to prevent override. We do not want the next auto attack to override auto attack nor the next auto attack.
-        */
-        /*  Auto Attack Override Prevention Mechanics
-
-            Summary: Upon attacking, you should not be allowed to override the current  
-            until the current attack is complete. We use a delegated function to get/set a bool to prevent this from occurring.
-
-            Combo Scenario: To prevent the override, we use the canTriggerNextAutoAttack.  an attack animation, we set the bool to FALSE so the player is unable to override. When the animation is complete, we set the bool to TRUE so that the player has permission to continue the combo.
-
-            Dash Cancel Scenario: If the player is in an Auto Attack animation, he must be able to cancel the action with a dash. However, since the animation completes due to the dash cancel, the canTriggerNextAutoAttack never returns to TRUE. To resolve this, the AutoAttack state must set the bool back to TRUE upon exiting the state machine.
-
-            Implementation: To provide them the ability to read & write to the bool, we give the auto attack state direct access to the manager.
-         */
-        [FoldoutGroup("Auto Attack Mechanics")]
-        public int numberOfAutoAttackHits;
-        [FoldoutGroup("Auto Attack Mechanics")]
-        [SerializeField] bool isInAutoAttackState = false;
-        [FoldoutGroup("Auto Attack Mechanics")]
-        [SerializeField] bool canTriggerNextAutoAttack = true;
-        [FoldoutGroup("Auto Attack Mechanics")]
-        [SerializeField] int comboNum = 0;
-        private string[] autoAttackArray = null;
-
-        public void SetIsInAutoAttackState(bool value) => isInAutoAttackState = value;
-        public bool GetCanTriggerNextAutoAttack() => canTriggerNextAutoAttack;
-        public void SetCanTriggerNextAutoAttack(bool value) => canTriggerNextAutoAttack = value;
-        public string[] GetAutoAttackArray()
-        {
-            return autoAttackArray;
-        }
-        public bool IsInAutoAttackAnimation()
-        {
-            for (int i = 0; i < numberOfAutoAttackHits; i++)
-            {
-                if (animator.GetCurrentAnimatorStateInfo(0).IsName(autoAttackArray[i]))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // Combo Mechanics
-        public void SetComboNum(int i) => comboNum = i;
-        public int GetComboNum() => comboNum;
-
-        // Auto Attack Animator Events
-        public void AttackStart() { }
-        public void AttackEnd()
-        {
-            SetCanTriggerNextAutoAttack(true);
-            SetIsInAutoAttackState(false);
         }
         #endregion
 
