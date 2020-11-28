@@ -26,6 +26,7 @@ namespace RPG.AIControl
 
         public void Enter()
         {
+            navMeshAgent.speed = movementSpeed;
             navMeshAgent.isStopped = false;
         }
 

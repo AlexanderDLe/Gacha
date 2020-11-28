@@ -1,5 +1,6 @@
 ﻿using RPG.Attributes;
 using RPG.Control;
+using RPG.Characters;
 using UnityEngine;
 
 namespace RPG.Combat
@@ -47,16 +48,18 @@ namespace RPG.Combat
         {
             if (other.CompareTag(tagToHarm))
             {
-                BaseStats target = null;
                 if (tagToHarm == "Player")
                 {
+                    BaseStats target = null;
                     target = other.gameObject.GetComponent<StateManager>().currBaseStats;
+                    target.TakeDamage(damage);
                 }
                 else if (tagToHarm == "Enemy")
                 {
-                    target = other.gameObject.GetComponent<BaseStats>();
+                    EnemyAIManager target = null;
+                    target = other.gameObject.GetComponent<EnemyAIManager>();
+                    target.TakeDamage((int)damage);
                 }
-                target.TakeDamage(damage);
             }
         }
     }

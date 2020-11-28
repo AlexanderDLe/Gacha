@@ -14,14 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   progression: {fileID: 11400000, guid: e5cbe46b7c4eb0f43bee0db2902a9e2a, type: 2}
   name: Test Dummy
-  prefab: {fileID: 0}
+  prefab: {fileID: 7672909014984375895, guid: 3b29ddf4cd50f7b4ebca6cfc35268cff, type: 3}
   image: {fileID: 0}
   characterAvatar: {fileID: 9000000, guid: 63aa49e7dff477e44bae8fba4d50324d, type: 2}
   animatorOverride: {fileID: 0}
   movementSpeed: 4
   experienceGiven: 0
   EnemyRarity: 0
-  attackCooldownTime: 3
-  weaponRange: 5
+  fightingType: 0
   projectile_SO: {fileID: 11400000, guid: 83bbb09340e918943b0cf48074b6310d, type: 2}
+  hitboxRadius: 1
+  weapon: {fileID: 0}
+  attackCooldownTime: 3
+  weaponRange: 0.8
   chaseDistance: 5

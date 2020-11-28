@@ -24,6 +24,7 @@ namespace RPG.AIControl
 
         public void Exit()
         {
+
             animator.SetBool("combatStance", false);
         }
     }

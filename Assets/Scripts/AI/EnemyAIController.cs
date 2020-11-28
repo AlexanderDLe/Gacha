@@ -72,7 +72,6 @@ namespace RPG.AIControl
         private void AggressiveBehaviour()
         {
             if (!AIManager.isAggressive) AIManager.StartAggression();
-            // SetAICombatStance(true);
 
             AIManager.timeSinceAggravated = 0;
             if (!AIManager.WithinAttackRange())
@@ -90,6 +89,10 @@ namespace RPG.AIControl
                 AIEnterAttackState();
             }
         }
+        public void SuspiciousState()
+        {
+            AIEnterCombatStance();
+        }
 
         public void EnterFlinchState()
         {
@@ -103,10 +106,7 @@ namespace RPG.AIControl
         {
             stateMachine.changeState(new AI_CombatStance(navMeshAgent, animator), StateEnum.CombatStance);
         }
-        public void SuspiciousState()
-        {
-            stateMachine.changeState(new AI_Idler(), StateEnum.Idle);
-        }
+
         public void AIEnterChaseState(float movementSpeed)
         {
             stateMachine.changeState(new AI_Mover(player, navMeshAgent, movementSpeed), StateEnum.Chase);

@@ -16,11 +16,17 @@ namespace RPG.Characters
         public Rarity EnemyRarity;
 
         [FoldoutGroup("Attack")]
+        public FightingType fightingType;
+        [FoldoutGroup("Attack"), ShowIf("fightingType", FightingType.Projectile)]
+        public Projectile_SO projectile_SO;
+        [FoldoutGroup("Attack"), ShowIf("fightingType", FightingType.Melee)]
+        public float hitboxRadius;
+        [FoldoutGroup("Attack")]
+        public Weapon weapon;
+        [FoldoutGroup("Attack")]
         public float attackCooldownTime;
         [FoldoutGroup("Attack")]
         public float weaponRange;
-        [FoldoutGroup("Attack")]
-        public Projectile_SO projectile_SO;
         [FoldoutGroup("Attack")]
         public float chaseDistance;
 

@@ -28,6 +28,11 @@ namespace RPG.Control
             objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
 
+        private void Start()
+        {
+            this.enemyLayer = LayerMask.GetMask("Enemy");
+        }
+
         public void Initialize(CharacterManager character, BaseStats baseStats)
         {
             PlayableCharacter_SO char_SO = character.script;
@@ -163,7 +168,8 @@ namespace RPG.Control
             Projectile proj = objectPooler.SpawnFromPool(projectile_SO.prefab.name).GetComponent<Projectile>();
 
             if (!proj) Debug.Log("Projectile not found.");
-            RaycastHit ray = raycaster.GetRaycastMousePoint();
+            LayerMask terrainLayer = LayerMask.GetMask("Terrain");
+            RaycastHit ray = raycaster.GetRaycastMousePoint(terrainLayer);
 
             proj.Initialize(transform.position, ray.point, projectile_SO.speed, baseStats.GetDamage(), "Enemy", projectile_SO.maxLifeTime);
         }

@@ -2,6 +2,7 @@
 using System.Collections;
 using RPG.Attributes;
 using RPG.Combat;
+using RPG.Control;
 using RPG.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace RPG.Characters
         BaseStats baseStats = null;
         DamageTextSpawner damageTextSpawner = null;
         [SerializeField] EnemyCharacter_SO enemy_SO = null;
+        public GameObject placeholder = null;
 
         private void Awake()
         {
@@ -33,6 +35,8 @@ namespace RPG.Characters
         private void Start()
         {
             BuildCharacter(enemy_SO);
+            playerLayer = LayerMask.GetMask("Player");
+            placeholder.SetActive(false);
         }
         private void Update()
         {
@@ -47,24 +51,59 @@ namespace RPG.Characters
         #region Initialization
         public void BuildCharacter(EnemyCharacter_SO enemyScriptObj)
         {
+            InitializeModel(enemyScriptObj);
+
             baseStats.Initialize(enemyScriptObj);
             this.attackCooldownTime = enemyScriptObj.attackCooldownTime;
             this.attackCooldownTime = enemyScriptObj.attackCooldownTime;
+            this.weapon = enemyScriptObj.weapon;
             this.weaponRange = enemyScriptObj.weaponRange;
-            this.hasProjectile = enemyScriptObj.projectile_SO != null;
             this.chaseDistance = enemyScriptObj.chaseDistance;
+            this.fightingType = enemyScriptObj.fightingType;
 
-            if (this.hasProjectile)
+            InitializeFightType(enemyScriptObj);
+        }
+
+        private void InitializeModel(EnemyCharacter_SO enemyScriptObj)
+        {
+            this.prefab = Instantiate(enemyScriptObj.prefab, transform);
+
+            animator.avatar = enemyScriptObj.characterAvatar;
+            if (enemyScriptObj.animatorOverride != null)
             {
-                GameObject projectilePrefab = enemyScriptObj.projectile_SO.prefab;
-
-                objectPooler.AddToPool(projectilePrefab, 10);
-
-                projectile = projectilePrefab.GetComponent<Projectile>();
-
-                projectileSpeed = enemyScriptObj.projectile_SO.speed;
-                projectileLifetime = enemyScriptObj.projectile_SO.maxLifeTime;
+                animator.runtimeAnimatorController = enemyScriptObj.animatorOverride;
             }
+            animator.Rebind();
+        }
+
+        private void InitializeFightType(EnemyCharacter_SO enemyScriptObj)
+        {
+            if (fightingType == FightingType.Projectile)
+            {
+                InitializeProjectile(enemyScriptObj);
+            }
+            if (fightingType == FightingType.Melee)
+            {
+                InitializeMelee(enemyScriptObj);
+            }
+        }
+
+        private void InitializeMelee(EnemyCharacter_SO enemyScriptObj)
+        {
+            this.hitboxRadius = enemyScriptObj.hitboxRadius;
+            this.hitboxPoint = prefab.GetComponent<WeaponHolder>().transform;
+        }
+
+        private void InitializeProjectile(EnemyCharacter_SO enemyScriptObj)
+        {
+            GameObject projectilePrefab = enemyScriptObj.projectile_SO.prefab;
+
+            objectPooler.AddToPool(projectilePrefab, 10);
+
+            projectile = projectilePrefab.GetComponent<Projectile>();
+
+            projectileSpeed = enemyScriptObj.projectile_SO.speed;
+            projectileLifetime = enemyScriptObj.projectile_SO.maxLifeTime;
         }
         #endregion
 
@@ -91,6 +130,8 @@ namespace RPG.Characters
         #endregion
 
         #region Attributes
+        [FoldoutGroup("Attributes")]
+        public GameObject prefab = null;
         [FoldoutGroup("Attributes")]
         public float health = 4f;
         [FoldoutGroup("Attributes")]
@@ -171,6 +212,12 @@ namespace RPG.Characters
 
         #region Attack
         [FoldoutGroup("Attack")]
+        public LayerMask playerLayer;
+        [FoldoutGroup("Attack")]
+        public FightingType fightingType;
+        [FoldoutGroup("Attack")]
+        public Weapon weapon;
+        [FoldoutGroup("Attack")]
         public float weaponRange = 1f;
         [FoldoutGroup("Attack")]
         public bool inAttackCooldown = false;
@@ -178,6 +225,12 @@ namespace RPG.Characters
         public float attackCooldownTime = 3f;
         [FoldoutGroup("Attack")]
         public bool isInAttackAnimation = false;
+        [FoldoutGroup("Attack")]
+        public float attackCooldownCounter = 0f;
+        [FoldoutGroup("Attack")]
+        public float hitboxRadius = 1f;
+        [FoldoutGroup("Attack")]
+        public Transform hitboxPoint = null;
 
         [Header("Projectile")]
         [FoldoutGroup("Attack")]
@@ -185,11 +238,10 @@ namespace RPG.Characters
         [FoldoutGroup("Attack")]
         Projectile projectile = null;
         [FoldoutGroup("Attack")]
-        public bool hasProjectile = false;
-        [FoldoutGroup("Attack")]
         public float projectileSpeed = 1f;
         [FoldoutGroup("Attack")]
         public float projectileLifetime = 5;
+
 
         public void TriggerAttack()
         {
@@ -198,25 +250,52 @@ namespace RPG.Characters
         }
         IEnumerator StartAttackCooldown()
         {
+            attackCooldownCounter = attackCooldownTime;
             inAttackCooldown = true;
-            yield return new WaitForSeconds(attackCooldownTime);
+            while (attackCooldownCounter > 0)
+            {
+                if (isFlinching) attackCooldownCounter = attackCooldownTime;
+                attackCooldownCounter -= Time.deltaTime;
+                yield return null;
+            }
             inAttackCooldown = false;
         }
+        public void Attack()
+        {
+            if (fightingType == FightingType.Projectile) ShootProjectile();
+            if (fightingType == FightingType.Melee) InflictMelee();
+        }
+
+        private void InflictMelee()
+        {
+            Collider[] hitResults = Physics.OverlapSphere(hitboxPoint.position, hitboxRadius, playerLayer);
+
+            foreach (Collider hit in hitResults)
+            {
+                print(hit);
+                BaseStats player = hit.GetComponent<StateManager>().currBaseStats;
+                float damage = Mathf.Round(baseStats.GetDamage());
+
+                player.TakeDamage((int)damage);
+            }
+        }
+
+        private void ShootProjectile()
+        {
+            if (!objectPooler) Debug.Log("Object Pooler not found.");
+
+            // Spawn a GameObject from ObjectPool then access as Projectile
+            Projectile proj = objectPooler.SpawnFromPool(projectile.name).GetComponent<Projectile>();
+
+            if (!proj) Debug.Log("Projectile not found.");
+
+            proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, baseStats.GetDamage(), "Player", projectileLifetime);
+        }
+
         public void AttackStart() { }
         public void AttackActivate()
         {
-            Debug.Log(projectile.name);
-            if (hasProjectile)
-            {
-                if (!objectPooler) Debug.Log("Object Pooler not found.");
-
-                // Spawn a GameObject from ObjectPool then access as Projectile
-                Projectile proj = objectPooler.SpawnFromPool(projectile.name).GetComponent<Projectile>();
-
-                if (!proj) Debug.Log("Projectile not found.");
-
-                proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, baseStats.GetDamage(), "Player", projectileLifetime);
-            }
+            Attack();
         }
         public void AttackEnd()
         {
