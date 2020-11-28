@@ -4,28 +4,30 @@ using RPG.Core;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace RPG.AIControl
+namespace RPG.AI
 {
-    public class EnemyAIController : MonoBehaviour
+    public class AIController : MonoBehaviour
     {
         GameObject player = null;
         StateMachine stateMachine = null;
         NavMeshAgent navMeshAgent = null;
         Animator animator = null;
-        EnemyAIManager AIManager = null;
+        AIManager AIManager = null;
         Vector3 guardPosition;
+        AIAggroManager aggro = null;
 
         private void Awake()
         {
             this.stateMachine = GetComponent<StateMachine>();
             this.navMeshAgent = GetComponent<NavMeshAgent>();
-            this.AIManager = GetComponent<EnemyAIManager>();
+            this.AIManager = GetComponent<AIManager>();
             this.animator = GetComponent<Animator>();
             this.player = GameObject.FindWithTag("Player");
         }
 
         private void Start()
         {
+            this.aggro = AIManager.aggro;
             guardPosition = transform.position;
             AIEnterIdleState();
         }
@@ -48,11 +50,11 @@ namespace RPG.AIControl
 
         private void AIBehaviour()
         {
-            if (AIManager.IsAggravated())
+            if (aggro.IsAggravated())
             {
                 AggressiveBehaviour();
             }
-            else if (AIManager.IsSuspicious())
+            else if (aggro.IsSuspicious())
             {
                 SuspiciousState();
             }
@@ -65,16 +67,16 @@ namespace RPG.AIControl
         private void PassiveBehaviour()
         {
             if (!AIManager.CanMove()) return;
-            AIManager.EndAggression();
+            aggro.EndAggression();
             AIEnterMoveState(guardPosition, AIManager.movementSpeed);
         }
 
         private void AggressiveBehaviour()
         {
-            if (!AIManager.isAggressive) AIManager.StartAggression();
+            if (!aggro.isAggressive) aggro.StartAggression();
 
-            AIManager.timeSinceAggravated = 0;
-            if (!AIManager.WithinAttackRange())
+            aggro.timeSinceAggravated = 0;
+            if (!aggro.WithinAttackRange())
             {
                 if (!AIManager.CanMove()) return;
                 AIEnterChaseState(AIManager.movementSpeed);

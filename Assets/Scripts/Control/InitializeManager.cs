@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using RPG.Attributes;
+﻿using RPG.Attributes;
 using RPG.Characters;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace RPG.Control
 {

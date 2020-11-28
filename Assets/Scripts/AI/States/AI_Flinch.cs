@@ -2,14 +2,14 @@
 using RPG.Core;
 using UnityEngine;
 
-namespace RPG.AIControl
+namespace RPG.AI
 {
     public class AI_Flinch : IState
     {
-        EnemyAIManager AIManager;
+        AIManager AIManager;
         Animator animator;
 
-        public AI_Flinch(EnemyAIManager AIManager, Animator animator)
+        public AI_Flinch(AIManager AIManager, Animator animator)
         {
             this.AIManager = AIManager;
             this.animator = animator;

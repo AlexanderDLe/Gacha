@@ -5,6 +5,7 @@ using RPG.Characters;
 using RPG.Attributes;
 using RPG.Combat;
 using RPG.Core;
+using RPG.AI;
 
 namespace RPG.Control
 {
@@ -181,7 +182,7 @@ namespace RPG.Control
 
             foreach (Collider enemy in hitEnemies)
             {
-                EnemyAIManager AIEnemy = enemy.GetComponent<EnemyAIManager>();
+                AIManager AIEnemy = enemy.GetComponent<AIManager>();
                 float damage = Mathf.Round(baseStats.GetDamage() * autoAttackDamageFraction[index]);
 
                 AIEnemy.TakeDamage((int)damage);

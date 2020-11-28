@@ -1,7 +1,7 @@
 ﻿using RPG.Attributes;
 using RPG.Control;
-using RPG.Characters;
 using UnityEngine;
+using RPG.AI;
 
 namespace RPG.Combat
 {
@@ -56,8 +56,8 @@ namespace RPG.Combat
                 }
                 else if (tagToHarm == "Enemy")
                 {
-                    EnemyAIManager target = null;
-                    target = other.gameObject.GetComponent<EnemyAIManager>();
+                    AIManager target = null;
+                    target = other.gameObject.GetComponent<AIManager>();
                     target.TakeDamage((int)damage);
                 }
             }

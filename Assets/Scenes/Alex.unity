@@ -3157,7 +3157,10 @@ GameObject:
   - component: {fileID: 4585278837564367681}
   - component: {fileID: 4585278837564367680}
   - component: {fileID: 3215502549647007023}
+  - component: {fileID: 4585278837564367687}
   - component: {fileID: 4585278837564367683}
+  - component: {fileID: 4585278837564367688}
+  - component: {fileID: 4585278837564367689}
   - component: {fileID: 4585278837564367684}
   - component: {fileID: 4585278837564367685}
   - component: {fileID: 4585278837564367686}
@@ -3231,34 +3234,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy_SO: {fileID: 11400000, guid: 204d91c95088df74dacba24d7ae3bfb1, type: 2}
+  aggro: {fileID: 0}
+  attacker: {fileID: 0}
   placeholder: {fileID: 886213917}
   prefab: {fileID: 0}
-  health: 4
   movementSpeed: 4
-  damage: 5
-  chaseDistance: 3
-  distanceToPlayer: 0
-  timeSinceLastSawPlayer: Infinity
-  timeSinceAggravated: Infinity
-  aggroCooldownTime: 3
-  suspicionTime: 3
-  isAggressive: 0
   isFlinching: 0
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  fightingType: 0
-  weapon: {fileID: 0}
-  weaponRange: 0.8
-  inAttackCooldown: 0
-  attackCooldownTime: 3
-  isInAttackAnimation: 0
-  attackCooldownCounter: 0
-  hitboxRadius: 1
-  hitboxPoint: {fileID: 0}
-  projectileSpawnTransform: {fileID: 0}
-  projectileSpeed: 1
-  projectileLifetime: 5
 --- !u!114 &4585278837564367684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3304,6 +3285,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageTextPrefab: {fileID: 2340870367115935700, guid: f711fda7494f8a740bdeaf1f856918e1,
     type: 3}
+--- !u!114 &4585278837564367687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4585278837564367679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77b0c8c43a1424c4cbf6c26cc49fe876, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4585278837564367688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4585278837564367679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcb6f1d3102d7814f9ae59cb2513f711, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chaseDistance: 5
+  distanceToPlayer: 0
+  timeSinceLastSawPlayer: Infinity
+  timeSinceAggravated: Infinity
+  aggroCooldownTime: 3
+  suspicionTime: 3
+  isAggressive: 0
+--- !u!114 &4585278837564367689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4585278837564367679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de2dece252f780346aabb19b938a407d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  fightingType: 0
+  weapon: {fileID: 0}
+  weaponRange: 1
+  inAttackCooldown: 0
+  attackCooldownTime: 3
+  isInAttackAnimation: 0
+  attackCooldownCounter: 0
+  hitboxRadius: 1
+  hitboxPoint: {fileID: 0}
+  projectileSpawnTransform: {fileID: 0}
+  projectileSpeed: 1
+  projectileLifetime: 5
 --- !u!1 &5605697786661164908
 GameObject:
   m_ObjectHideFlags: 0

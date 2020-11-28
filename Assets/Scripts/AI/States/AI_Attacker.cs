@@ -3,15 +3,15 @@ using RPG.Core;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace RPG.AIControl
+namespace RPG.AI
 {
     public class AI_Attacker : IState
     {
         GameObject player;
-        EnemyAIManager AIManager;
+        AIManager AIManager;
         Animator animator;
 
-        public AI_Attacker(GameObject player, EnemyAIManager AIManager, Animator animator)
+        public AI_Attacker(GameObject player, AIManager AIManager, Animator animator)
         {
             this.player = player;
             this.AIManager = AIManager;
@@ -26,13 +26,13 @@ namespace RPG.AIControl
             if (AIManager.CanAttack())
             {
                 animator.SetTrigger("attack");
-                AIManager.TriggerAttack();
+                AIManager.attacker.TriggerAttack();
             }
         }
 
         public void Exit()
         {
-            AIManager.AttackEnd();
+            AIManager.attacker.AttackEnd();
             animator.ResetTrigger("attack");
             animator.SetTrigger("resetAttack");
         }

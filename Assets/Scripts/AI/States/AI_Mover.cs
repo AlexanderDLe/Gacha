@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace RPG.AIControl
+namespace RPG.AI
 {
     public class AI_Mover : IState
     {
