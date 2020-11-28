@@ -2,10 +2,7 @@
 using System.Collections;
 using RPG.Attributes;
 using RPG.Characters;
-using RPG.Combat;
-using RPG.Control;
 using RPG.Core;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,13 +15,13 @@ namespace RPG.AI
         NavMeshAgent navMeshAgent = null;
         Animator animator = null;
         ObjectPooler objectPooler = null;
-        BaseStats baseStats = null;
         DamageTextSpawner damageTextSpawner = null;
+        public BaseStats baseStats = null;
         public EnemyCharacter_SO enemy_SO = null;
         public AIAggroManager aggro = null;
         public AIAttackManager attacker = null;
+        public AIFlinchManager flincher = null;
         public GameObject placeholder = null;
-
 
         private void Awake()
         {
@@ -36,6 +33,7 @@ namespace RPG.AI
             player = GameObject.FindWithTag("Player");
             aggro = GetComponent<AIAggroManager>();
             attacker = GetComponent<AIAttackManager>();
+            flincher = GetComponent<AIFlinchManager>();
             objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
         private void Start()
@@ -63,19 +61,21 @@ namespace RPG.AI
             baseStats.Initialize(enemy_SO);
 
             aggro.Initialize(player, enemy_SO);
+
             attacker.Initialize(enemy_SO, objectPooler, player, baseStats, prefab);
         }
 
         public void InitializeModel(GameObject prefab, Animator animator, EnemyCharacter_SO script)
         {
-            prefab = Instantiate(script.prefab, transform);
+            this.prefab = Instantiate(script.prefab, transform);
 
-            animator.avatar = script.characterAvatar;
+            this.animator.avatar = script.characterAvatar;
 
             if (script.animatorOverride != null)
             {
                 animator.runtimeAnimatorController = script.animatorOverride;
             }
+
             animator.Rebind();
         }
         #endregion
@@ -83,32 +83,27 @@ namespace RPG.AI
         #region Permissions
         public bool CanMove()
         {
-            if (isFlinching) return false;
+            if (flincher.isFlinching) return false;
             if (attacker.isInAttackAnimation) return false;
             return true;
         }
         public bool CanAttack()
         {
-            if (isFlinching) return false;
+            if (flincher.isFlinching) return false;
             if (attacker.inAttackCooldown) return false;
             if (attacker.isInAttackAnimation) return false;
             return true;
         }
         public bool CanEnterCombatStance()
         {
-            if (isFlinching) return false;
+            if (flincher.isFlinching) return false;
             if (attacker.isInAttackAnimation) return false;
             return true;
         }
         #endregion
 
-        #region Attributes
         public GameObject prefab = null;
-        public float movementSpeed = 4f;
-        #endregion
 
-        #region Take Damage
-        public bool isFlinching = false;
         public event Action OnDamageTaken;
         public void TakeDamage(int damage)
         {
@@ -116,18 +111,7 @@ namespace RPG.AI
             damageTextSpawner.SpawnText(damage);
             OnDamageTaken();
         }
-        public void SetIsFlinching(bool value)
-        {
-            isFlinching = value;
-        }
-        public void FlinchStart() { }
-        public void FlinchEnd()
-        {
-            SetIsFlinching(false);
-        }
-        #endregion
 
-        #region Attack
         public void StartAttackCooldownCoroutine()
         {
             StartCoroutine(StartAttackCooldown());
@@ -138,12 +122,11 @@ namespace RPG.AI
             attacker.inAttackCooldown = true;
             while (attacker.attackCooldownCounter > 0)
             {
-                if (isFlinching) attacker.attackCooldownCounter = attacker.attackCooldownTime;
+                if (flincher.isFlinching) attacker.attackCooldownCounter = attacker.attackCooldownTime;
                 attacker.attackCooldownCounter -= Time.deltaTime;
                 yield return null;
             }
             attacker.inAttackCooldown = false;
         }
-        #endregion
     }
 }

@@ -18,6 +18,7 @@ MonoBehaviour:
   image: {fileID: 21300000, guid: f216b48aaeff2054eadb3bb27c9a1431, type: 3}
   characterAvatar: {fileID: 9000000, guid: 8181a60873ee9534e8bbaae5f51cd066, type: 2}
   animatorOverride: {fileID: 0}
+  movementSpeed: 6
   dashAudio:
   - {fileID: 8300000, guid: 93b127add7e8f524281842e7914ca8da, type: 3}
   fightingType: 1

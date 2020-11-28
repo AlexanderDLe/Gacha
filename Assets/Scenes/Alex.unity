@@ -3157,8 +3157,8 @@ GameObject:
   - component: {fileID: 4585278837564367681}
   - component: {fileID: 4585278837564367680}
   - component: {fileID: 3215502549647007023}
-  - component: {fileID: 4585278837564367687}
   - component: {fileID: 4585278837564367683}
+  - component: {fileID: 4585278837564367687}
   - component: {fileID: 4585278837564367688}
   - component: {fileID: 4585278837564367689}
   - component: {fileID: 4585278837564367684}
@@ -3236,10 +3236,10 @@ MonoBehaviour:
   enemy_SO: {fileID: 11400000, guid: 204d91c95088df74dacba24d7ae3bfb1, type: 2}
   aggro: {fileID: 0}
   attacker: {fileID: 0}
+  flincher: {fileID: 0}
   placeholder: {fileID: 886213917}
   prefab: {fileID: 0}
   movementSpeed: 4
-  isFlinching: 0
 --- !u!114 &4585278837564367684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3257,6 +3257,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   damage: 5
+  movementSpeed: 5
 --- !u!136 &4585278837564367685
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3294,9 +3295,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4585278837564367679}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77b0c8c43a1424c4cbf6c26cc49fe876, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a6c8561e74fc1e40b8b41d53c7feac6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isFlinching: 0
 --- !u!114 &4585278837564367688
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,12 +12,14 @@ namespace RPG.Attributes
         public float maxHealth = 100f;
         public float currentHealth = 100f;
         public float damage = 5f;
+        public float movementSpeed = 5f;
 
         public void Initialize(BaseCharacter_SO charScript)
         {
             this.progression = charScript.progression;
             SetHealth();
             SetDamage();
+            SetAttributes(charScript);
         }
 
         private void SetHealth()
@@ -25,6 +27,11 @@ namespace RPG.Attributes
             maxHealth = progression.baseHealth;
             maxHealth += level * progression.healthGainedPerLevel;
             currentHealth = maxHealth;
+        }
+
+        private void SetAttributes(BaseCharacter_SO script)
+        {
+            movementSpeed = script.movementSpeed;
         }
 
         public float GetHealthFraction()

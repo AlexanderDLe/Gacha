@@ -18,7 +18,7 @@ namespace RPG.AI
         public void Enter()
         {
             animator.SetTrigger("flinch");
-            AIManager.SetIsFlinching(true);
+            AIManager.flincher.SetIsFlinching(true);
         }
 
         public void Execute() { }
