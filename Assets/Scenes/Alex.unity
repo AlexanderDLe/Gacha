@@ -2814,7 +2814,7 @@ GameObject:
   - component: {fileID: 810502882286394599}
   - component: {fileID: 810502882286394598}
   m_Layer: 0
-  m_Name: SkillshotLong
+  m_Name: SkillshotImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2944,7 +2944,7 @@ GameObject:
   - component: {fileID: 1018344888284028160}
   - component: {fileID: 1018344888284028161}
   m_Layer: 0
-  m_Name: ReticleCircle
+  m_Name: ReticleImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3082,17 +3082,6 @@ MonoBehaviour:
   swapVisualFX: {fileID: 1271190732513390, guid: 8bc58c2dc37d5b34f8a3f37fd8564d2e,
     type: 3}
   swapAudioFX: {fileID: 8300000, guid: 39ce53b7b554fa24cba6475d20601e3a, type: 3}
-  fightingType: 0
-  weapon: {fileID: 0}
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 512
-  projectile_SO: {fileID: 0}
-  hitboxPoint: {fileID: 0}
-  autoAttackHitRadiuses: []
-  autoAttackDamageFraction: []
-  hitboxDebugSphere: {fileID: 2344632610373806237, guid: a7fa732c3df1f964683e45f474969e76,
-    type: 3}
   footstepClips:
   - {fileID: 8300000, guid: 4d11813f5983ce047873c94858e6a6c1, type: 3}
   - {fileID: 8300000, guid: 6154d2d90f91ac743a30a16a58f9fa32, type: 3}
@@ -3233,13 +3222,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fa29175b86b74845ba6ae4cde117cbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseStats: {fileID: 0}
   enemy_SO: {fileID: 11400000, guid: 204d91c95088df74dacba24d7ae3bfb1, type: 2}
   aggro: {fileID: 0}
   attacker: {fileID: 0}
   flincher: {fileID: 0}
   placeholder: {fileID: 886213917}
   prefab: {fileID: 0}
-  movementSpeed: 4
 --- !u!114 &4585278837564367684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3332,12 +3321,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   fightingType: 0
   weapon: {fileID: 0}
   weaponRange: 1
-  inAttackCooldown: 0
   attackCooldownTime: 3
+  inAttackCooldown: 0
   isInAttackAnimation: 0
   attackCooldownCounter: 0
   hitboxRadius: 1
@@ -3446,7 +3435,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -3754,7 +3743,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currBaseStats: {fileID: 0}
   dasher: {fileID: 0}
+  attacker: {fileID: 0}
+  aimer: {fileID: 0}
   initialize: {fileID: 0}
+  characterAudioSource: {fileID: 5605697787432900273}
+  actionAudioSource: {fileID: 5605697787079883622}
   char1_SO: {fileID: 11400000, guid: 4374901d27a667e41b44f67605ca5c68, type: 2}
   char2_SO: {fileID: 11400000, guid: 39b0444cb962c6040b956bb47f75ed67, type: 2}
   char3_SO: {fileID: 0}
@@ -3764,21 +3757,9 @@ MonoBehaviour:
   currCharImage: {fileID: 0}
   charSwapCooldownTime: 2
   charSwapInCooldown: 0
-  numberOfAutoAttackHits: 0
-  isInAutoAttackState: 0
-  canTriggerNextAutoAttack: 1
-  comboNum: 0
   ultimateSkill: {fileID: 0}
   primarySkill: {fileID: 0}
   movementSkill: {fileID: 0}
-  movementSprite: {fileID: 0}
-  primarySprite: {fileID: 0}
-  ultimateSprite: {fileID: 0}
-  skillshotCanvas: {fileID: 810502881712842523}
-  reticleCanvas: {fileID: 1018344888903007259}
-  skillshotImage: {fileID: 810502882286394598}
-  rangeImage: {fileID: 6864847748183664472}
-  reticleImage: {fileID: 1018344888284028161}
 --- !u!1 &5605697787432900260
 GameObject:
   m_ObjectHideFlags: 0
@@ -3788,7 +3769,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5605697787432900263}
+  - component: {fileID: 5605697787432900273}
   - component: {fileID: 5605697787079883622}
+  - component: {fileID: 5605697787432900274}
   - component: {fileID: 5605697787432900258}
   - component: {fileID: 5605697787432900266}
   - component: {fileID: 5605697787432900250}
@@ -3798,6 +3781,8 @@ GameObject:
   - component: {fileID: 5605697787432900267}
   - component: {fileID: 5605697787432900270}
   - component: {fileID: 5605697787432900268}
+  - component: {fileID: 5605697787432900271}
+  - component: {fileID: 5605697787432900272}
   - component: {fileID: 1752829621050655995}
   - component: {fileID: 5605697787432900251}
   - component: {fileID: 5605697787432900259}
@@ -3948,6 +3933,166 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2beefc90f97cb494dae608bbffbc3edf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5605697787432900271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5605697787432900260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6f8c4e45837c0f43825c144803be4aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isInAutoAttackState: 0
+  canTriggerNextAutoAttack: 1
+  comboNum: 0
+  numberOfAutoAttackHits: 0
+  autoAttackArray: []
+  fightingType: 0
+  weapon: {fileID: 0}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  projectile_SO: {fileID: 0}
+  hitboxPoint: {fileID: 0}
+  autoAttackHitRadiuses: []
+  autoAttackDamageFraction: []
+--- !u!114 &5605697787432900272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5605697787432900260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 315a46066c0645849a3aae322f231c7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillshotCanvas: {fileID: 810502881712842523}
+  reticleCanvas: {fileID: 1018344888903007259}
+  skillshotImage: {fileID: 810502882286394598}
+  rangeImage: {fileID: 6864847748183664472}
+  reticleImage: {fileID: 1018344888284028161}
+  raycaster: {fileID: 0}
+  currentCharacter: {fileID: 0}
+  skillshotAimingActive: 0
+  rangeshotAimingActive: 0
+  maxRangeShotDistance: 5
+  SKILLSHOT: SKILLSHOT
+  RANGESHOT: RANGESHOT
+--- !u!82 &5605697787432900273
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5605697787432900260}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &5605697787432900274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5605697787432900260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cc5cb8bd16332741af2bc85e5354681, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterAudioSource: {fileID: 0}
+  actionAudioSource: {fileID: 0}
 --- !u!114 &6864847748183664472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3997,7 +4142,7 @@ GameObject:
   - component: {fileID: 6864847748183664473}
   - component: {fileID: 6864847748183664472}
   m_Layer: 0
-  m_Name: RangeCircle
+  m_Name: RangeImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

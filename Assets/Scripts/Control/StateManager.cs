@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using Sirenix.OdinInspector;
 using RPG.Characters;
 using RPG.Attributes;
@@ -15,15 +14,24 @@ namespace RPG.Control
         Animator animator = null;
         ActionManager actionManager = null;
         RaycastMousePosition raycaster = null;
-        Vector3 mousePosition = Vector3.zero;
         CharacterBuilder builder = null;
+        Vector3 mousePosition = Vector3.zero;
         public BaseStats currBaseStats = null;
         public DashManager dasher = null;
         public AttackManager attacker = null;
+        public AimManager aimer = null;
         public InitializeManager initialize = null;
+        ObjectPooler objectPooler = null;
 
+        public AudioSource characterAudioSource = null;
+        public AudioSource actionAudioSource = null;
+        AudioPlayer audioPlayer = null;
+
+        [FoldoutGroup("Character Scripts")]
         public PlayableCharacter_SO char1_SO = null;
+        [FoldoutGroup("Character Scripts")]
         public PlayableCharacter_SO char2_SO = null;
+        [FoldoutGroup("Character Scripts")]
         public PlayableCharacter_SO char3_SO = null;
 
         private void Awake()
@@ -33,19 +41,27 @@ namespace RPG.Control
             raycaster = GetComponent<RaycastMousePosition>();
             builder = GetComponent<CharacterBuilder>();
             initialize = GetComponent<InitializeManager>();
+            audioPlayer = GetComponent<AudioPlayer>();
             dasher = GetComponent<DashManager>();
             attacker = GetComponent<AttackManager>();
+            aimer = GetComponent<AimManager>();
+            objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
         private void Start()
         {
+            SetUpReferences();
             BuildAllCharacters();
             currentCharacter = GetCharacter(currentCharIndex);
             InitializeCharacter(currentCharacter);
         }
-        private void Update()
+        public void SetUpReferences()
         {
-            if (skillshotAimingActive) AimWithSkillshot();
-            if (rangeshotAimingActive) AimWithRangeshot();
+            audioPlayer.SetAudioSources(characterAudioSource, actionAudioSource);
+            actionManager.LinkReferences(audioPlayer, raycaster, objectPooler);
+            attacker.LinkReferences(audioPlayer, raycaster, animator, objectPooler);
+            builder.LinkReferences(animator, objectPooler);
+            dasher.LinkReferences(audioPlayer);
+            aimer.LinkReferences(raycaster);
         }
         #endregion
 
@@ -72,9 +88,12 @@ namespace RPG.Control
 
             actionManager.Initialize(character, currBaseStats);
 
-            attacker.Initialize(character);
+            attacker.Initialize(character, currBaseStats);
 
-            SetAimImagesEnabled(false);
+            aimer.Initialize(character);
+
+            dasher.Initialize(character);
+
             CharacterInitializationComplete();
         }
         #endregion
@@ -110,14 +129,18 @@ namespace RPG.Control
             if (charIndex == 1 && !chars[1]) return;
             if (charIndex == 2 && !chars[2]) return;
 
+            TransitionCharacter(charIndex);
+            InitializeCharacter(currentCharacter);
+            StartCoroutine(StartSwapCooldown());
+        }
+
+        private void TransitionCharacter(int charIndex)
+        {
             currentCharacter.CancelSkillAiming();
             currentCharPrefab.SetActive(false);
             currentCharIndex = charIndex;
             currentCharacter = GetCharacter(charIndex);
-
-            InitializeCharacter(currentCharacter);
             actionManager.ActivateSwapFX();
-            StartCoroutine(StartSwapCooldown());
         }
 
         IEnumerator StartSwapCooldown()
@@ -209,15 +232,15 @@ namespace RPG.Control
         public void ActivateSkillAim(SkillManager skill, string skillType)
         {
             skill.SetAimingEnabled(true);
-            InitializeAimImage(skill);
-            string aimType = skill.requiresSkillShot ? SKILLSHOT : RANGESHOT;
-            SetAimingEnabled(aimType, true);
+            aimer.InitializeAimImage(skill);
+            string aimType = skill.requiresSkillShot ? aimer.SKILLSHOT : aimer.RANGESHOT;
+            aimer.SetAimingEnabled(aimType, true);
         }
         public void DeactivateSkillAim(SkillManager skill)
         {
             skill.SetAimingEnabled(false);
-            string skillType = skill.requiresSkillShot ? SKILLSHOT : RANGESHOT;
-            SetAimingEnabled(skillType, false);
+            string skillType = skill.requiresSkillShot ? aimer.SKILLSHOT : aimer.RANGESHOT;
+            aimer.SetAimingEnabled(skillType, false);
         }
         public void TriggerSkill(SkillManager skill)
         {
@@ -238,89 +261,6 @@ namespace RPG.Control
         {
             movementSkill.SetIsUsingSkill(false);
         }
-        #endregion
-
-        #region Aiming Mechanics
-        [FoldoutGroup("Aiming Asset References")]
-        public Canvas skillshotCanvas = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Canvas reticleCanvas = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image skillshotImage = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image rangeImage = null;
-        [FoldoutGroup("Aiming Asset References")]
-        public Image reticleImage = null;
-
-        private bool skillshotAimingActive = false;
-        private bool rangeshotAimingActive = false;
-        private float maxRangeShotDistance = 5f;
-
-        private string SKILLSHOT = "SKILLSHOT";
-        private string RANGESHOT = "RANGESHOT";
-
-        public bool IsAimingActive()
-        {
-            return skillshotAimingActive || rangeshotAimingActive;
-        }
-        public void CancelAiming()
-        {
-            currentCharacter.CancelSkillAiming();
-
-            skillshotAimingActive = false;
-            rangeshotAimingActive = false;
-            SetAimImagesEnabled(false);
-        }
-        private void SetAimImagesEnabled(bool value)
-        {
-            skillshotImage.enabled = value;
-            rangeImage.enabled = value;
-            reticleImage.enabled = value;
-        }
-        private void InitializeAimImage(SkillManager skill)
-        {
-            if (skill.requiresSkillShot)
-            {
-                skillshotImage.sprite = skill.skillShotImage;
-            }
-            if (skill.requiresRangeShot)
-            {
-                rangeImage.sprite = skill.rangeImage;
-                reticleImage.sprite = skill.reticleImage;
-            }
-        }
-        private void SetAimingEnabled(string skillType, bool value)
-        {
-            if (skillType == "SKILLSHOT")
-            {
-                skillshotImage.enabled = value;
-                skillshotAimingActive = value;
-            }
-            if (skillType == "RANGESHOT")
-            {
-                rangeImage.enabled = value;
-                reticleImage.enabled = value;
-                rangeshotAimingActive = value;
-            }
-        }
-        public void AimWithSkillshot()
-        {
-            mousePosition = raycaster.GetRaycastMousePoint().point;
-            Quaternion transRot = Quaternion.LookRotation(mousePosition - transform.position);
-            transRot.eulerAngles = new Vector3(0, transRot.eulerAngles.y, transRot.eulerAngles.z);
-            skillshotCanvas.transform.rotation = Quaternion.Lerp(transRot, skillshotCanvas.transform.rotation, 0f);
-        }
-        public void AimWithRangeshot()
-        {
-            RaycastHit hit = raycaster.GetRaycastMousePoint();
-
-            var hitPosDir = (hit.point - transform.position).normalized;
-            float distance = Vector3.Distance(hit.point, transform.position);
-            distance = Mathf.Min(distance, maxRangeShotDistance);
-
-            var newHitPos = transform.position + hitPosDir * distance;
-            reticleCanvas.transform.position = newHitPos;
-        }
-        #endregion
+        #endregion        
     }
 }

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-using RPG.Control;
 using RPG.PlayerStates;
 using RPG.Core;
 
@@ -17,6 +16,7 @@ namespace RPG.Control
         RaycastMousePosition raycaster = null;
         StateMachine stateMachine = null;
         StateManager stateManager = null;
+        AimManager aimer = null;
 
         SkillManager primarySkill = null;
         SkillManager ultimateSkill = null;
@@ -33,9 +33,18 @@ namespace RPG.Control
         }
         private void Start()
         {
+            aimer = stateManager.aimer;
             EnterMovementState();
+        }
+        private void OnEnable()
+        {
             stateManager.CharacterInitializationComplete += UpdateCharacterSkills;
         }
+        private void OnDisable()
+        {
+            stateManager.CharacterInitializationComplete += UpdateCharacterSkills;
+        }
+
         void Update()
         {
             RepeatAction();
@@ -152,7 +161,7 @@ namespace RPG.Control
         }
         private void HandlePressEscape()
         {
-            if (stateManager.IsAimingActive()) stateManager.CancelAiming();
+            if (aimer.IsAimingActive()) aimer.CancelAiming();
         }
 
         private void EnterSwapCharacterState(int index)

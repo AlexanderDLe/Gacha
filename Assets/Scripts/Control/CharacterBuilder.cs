@@ -10,10 +10,10 @@ namespace RPG.Control
         Animator animator = null;
         ObjectPooler objectPooler = null;
 
-        private void Awake()
+        public void LinkReferences(Animator animator, ObjectPooler objectPooler)
         {
-            animator = GetComponent<Animator>();
-            objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
+            this.animator = animator;
+            this.objectPooler = objectPooler;
         }
 
         public CharacterManager BuildCharacter(GameObject char_GO,

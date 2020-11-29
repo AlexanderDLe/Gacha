@@ -10,7 +10,6 @@ namespace RPG.PlayerStates
         private Animator animator = null;
         private RaycastMousePosition raycaster;
         private string[] autoAttackArray = null;
-        private StateManager stateManager = null;
         private AttackManager attacker = null;
 
         [Tooltip("The current index of the combo.")]
