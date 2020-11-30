@@ -56,18 +56,18 @@ namespace RPG.Control
         public Sprite rangeImage = null;
         public Sprite reticleImage = null;
 
-        public bool GetIsSkillInCooldown()
-        {
-            return skillInCooldown;
-        }
-        public void SetIsUsingSkill(bool value)
-        {
-            isUsingSkill = value;
-        }
-        public bool GetIsUsingSkill()
-        {
-            return isUsingSkill;
-        }
+        public bool GetIsSkillInCooldown() => skillInCooldown;
+
+        public void SetIsUsingSkill(bool value) => isUsingSkill = value;
+
+        public bool GetIsUsingSkill() => isUsingSkill;
+
+        public bool SkillRequiresAim() => requiresSkillShot || requiresRangeShot;
+
+        public bool GetAimingEnabled() => isAimingSkill;
+
+        public void SetAimingEnabled(bool value) => isAimingSkill = value;
+
         public bool IsInSkillAnimation()
         {
             if (animator.GetCurrentAnimatorStateInfo(0).IsName(skillType))
@@ -77,31 +77,19 @@ namespace RPG.Control
             return false;
         }
 
-        //  Skill Aiming
-        public bool SkillRequiresAim()
-        {
-            return requiresSkillShot || requiresRangeShot;
-        }
-        public bool GetAimingEnabled()
-        {
-            return isAimingSkill;
-        }
-        public void SetAimingEnabled(bool value)
-        {
-            isAimingSkill = value;
-        }
         public void ActivateSkillAim()
         {
             SetAimingEnabled(true);
             string skillType = requiresSkillShot ? SKILLSHOT : RANGESHOT;
         }
-        //  Skill Triggers
+
         public void TriggerSkill()
         {
             skill.TriggerSkill();
             SetIsUsingSkill(true);
             StartCoroutine(SkillCountdown());
         }
+
         IEnumerator SkillCountdown()
         {
             skillInCooldown = true;
@@ -113,6 +101,7 @@ namespace RPG.Control
             }
             skillInCooldown = false;
         }
+
         public void SkillActivate()
         {
             SetIsUsingSkill(false);

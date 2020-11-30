@@ -15,6 +15,11 @@ namespace RPG.Control
         ObjectPooler objectPooler = null;
         RaycastMousePosition raycaster = null;
 
+        private void Start()
+        {
+            enemyLayer = LayerMask.GetMask("Enemy");
+        }
+
         public void LinkReferences(AudioPlayer audioPlayer, RaycastMousePosition raycaster, Animator animator, ObjectPooler objectPooler)
         {
             this.audioPlayer = audioPlayer;
@@ -34,8 +39,8 @@ namespace RPG.Control
 
             this.numberOfAutoAttackHits = character.numberOfAutoAttackHits;
             this.autoAttackArray = character.autoAttackArray;
-            this.autoAttackDamageFraction = script.autoAttackDamageFractions;
-            InitializeAttackFX(script);
+            this.autoAttackDamageFractions = script.autoAttackDamageFractions;
+            InitializeAutoAttackFX(script);
 
             if (this.fightingType == FightingType.Projectile)
             {
@@ -47,30 +52,31 @@ namespace RPG.Control
             }
         }
 
-        private void InitializeAttackFX(PlayableCharacter_SO script)
+        private void InitializeAutoAttackFX(PlayableCharacter_SO script)
         {
             this.autoAttackVFX = script.autoAttackVFX;
             this.weakAttackAudio = script.weakAttackAudio;
             this.mediumAttackAudio = script.mediumAttackAudio;
         }
 
+        GameObject[] autoAttackVFX = null;
+        AudioClip[] weakAttackAudio = null;
+        AudioClip[] mediumAttackAudio = null;
+        FightingType fightingType;
+        Weapon weapon = null;
+        Projectile_SO projectile_SO = null;
+        LayerMask enemyLayer;
+        Transform hitboxPoint = null;
+
+        // Auto Attack Mechanics
         public bool isInAutoAttackState = false;
         public bool canTriggerNextAutoAttack = true;
         public int comboNum = 0;
         public int numberOfAutoAttackHits;
         public string[] autoAttackArray = null;
 
-        public FightingType fightingType;
-        public Weapon weapon = null;
-        public LayerMask enemyLayer;
-        GameObject[] autoAttackVFX = null;
-        AudioClip[] weakAttackAudio = null;
-        AudioClip[] mediumAttackAudio = null;
-
-        public Projectile_SO projectile_SO = null;
-        public Transform hitboxPoint = null;
         public float[] autoAttackHitRadiuses = null;
-        public float[] autoAttackDamageFraction = null;
+        public float[] autoAttackDamageFractions = null;
 
         public void SetIsInAutoAttackState(bool value) => isInAutoAttackState = value;
         public bool GetCanTriggerNextAutoAttack() => canTriggerNextAutoAttack;
@@ -91,40 +97,7 @@ namespace RPG.Control
             return false;
         }
 
-
-        public void AutoAttack(int index)
-        {
-            if (fightingType == FightingType.Melee) InflictMeleeDamage(index);
-            if (fightingType == FightingType.Projectile) ShootProjectile(index);
-        }
-
-        private void ShootProjectile(int index)
-        {
-            if (!objectPooler) Debug.Log("Object Pooler not found.");
-            // Spawn a GameObject from ObjectPool then access as Projectile
-            Projectile proj = objectPooler.SpawnFromPool(projectile_SO.prefab.name).GetComponent<Projectile>();
-
-            if (!proj) Debug.Log("Projectile not found.");
-            LayerMask terrainLayer = LayerMask.GetMask("Terrain");
-            RaycastHit ray = raycaster.GetRaycastMousePoint(terrainLayer);
-
-            proj.Initialize(transform.position, ray.point, projectile_SO.speed, baseStats.GetDamage(), "Enemy", projectile_SO.maxLifeTime);
-        }
-
-        public void InflictMeleeDamage(int index)
-        {
-            float radius = autoAttackHitRadiuses[index];
-            Collider[] hitEnemies = Physics.OverlapSphere(hitboxPoint.position, radius, enemyLayer);
-
-            foreach (Collider enemy in hitEnemies)
-            {
-                AIManager AIEnemy = enemy.GetComponent<AIManager>();
-                float damage = Mathf.Round(baseStats.GetDamage() * autoAttackDamageFraction[index]);
-
-                AIEnemy.TakeDamage((int)damage);
-            }
-        }
-
+        // Animation Event Triggered Functions
         public void Attack1()
         {
             audioPlayer.SelectAndPlayCharacterClip(weakAttackAudio);
@@ -143,5 +116,36 @@ namespace RPG.Control
             SetCanTriggerNextAutoAttack(true);
             SetIsInAutoAttackState(false);
         }
+
+        public void AutoAttack(int comboIndex)
+        {
+            if (fightingType == FightingType.Melee) InflictMeleeDamage(comboIndex);
+            if (fightingType == FightingType.Projectile) ShootProjectile(comboIndex);
+        }
+        private void ShootProjectile(int comboIndex)
+        {
+            Projectile proj = objectPooler.SpawnFromPool(projectile_SO.prefab.name).GetComponent<Projectile>();
+
+            LayerMask terrainLayer = LayerMask.GetMask("Terrain");
+            RaycastHit ray = raycaster.GetRaycastMousePoint(terrainLayer);
+
+            proj.Initialize(transform.position, ray.point, projectile_SO.speed, baseStats.GetDamage(), "Enemy", projectile_SO.maxLifeTime);
+        }
+        public void InflictMeleeDamage(int comboIndex)
+        {
+            print("Inflict melee called");
+            float radius = autoAttackHitRadiuses[comboIndex];
+            Collider[] hitEnemies = Physics.OverlapSphere(hitboxPoint.position, radius, enemyLayer);
+
+            foreach (Collider enemy in hitEnemies)
+            {
+                print("Enemy Detected");
+                AIManager AIEnemy = enemy.GetComponent<AIManager>();
+                float damage = Mathf.Round(baseStats.GetDamage() * autoAttackDamageFractions[comboIndex]);
+
+                AIEnemy.TakeDamage((int)damage);
+            }
+        }
+
     }
 }

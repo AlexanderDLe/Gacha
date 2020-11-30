@@ -67,6 +67,7 @@ namespace RPG.Control
         AudioClip movementSkillVocalAudio;
         AudioClip movementSkillActionAudio;
         GameObject movementSkillVFX = null;
+
         public void MovementSkillStart()
         {
             Instantiate(movementSkillVFX, transform.position, transform.rotation);

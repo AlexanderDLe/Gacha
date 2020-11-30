@@ -49,7 +49,7 @@ namespace RPG.UI
 
         public void InitializeCharacterUI()
         {
-            baseStats = stateManager.currBaseStats;
+            baseStats = stateManager.baseStats;
             baseStats.OnHealthChange += UpdateCurrentHealth;
 
             movementMask.enabled = false;

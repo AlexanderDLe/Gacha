@@ -51,7 +51,7 @@ namespace RPG.Combat
                 if (tagToHarm == "Player")
                 {
                     BaseStats target = null;
-                    target = other.gameObject.GetComponent<StateManager>().currBaseStats;
+                    target = other.gameObject.GetComponent<StateManager>().baseStats;
                     target.TakeDamage(damage);
                 }
                 else if (tagToHarm == "Enemy")

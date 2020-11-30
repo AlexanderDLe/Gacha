@@ -7,17 +7,14 @@ namespace RPG.Control
 {
     public class DashManager : MonoBehaviour
     {
-
         private void Start()
         {
             currentDashCharges = maxDashCharges;
         }
-
         public void LinkReferences(AudioPlayer audioPlayer)
         {
             this.audioPlayer = audioPlayer;
         }
-
         public void Initialize(CharacterManager character)
         {
             this.dashAudio = character.script.dashAudio;
@@ -26,8 +23,8 @@ namespace RPG.Control
         #region Dash Mechanics
         public int maxDashCharges = 3;
         public int currentDashCharges = 3;
-        public float dashSpeed = 20f;
         public float dashRegenRate = 3f;
+        public float dashSpeed = 20f;
         public bool isDashing = false;
 
         public bool GetCanDash() => currentDashCharges > 0;
@@ -67,6 +64,7 @@ namespace RPG.Control
             audioPlayer.SelectAndPlayCharacterClip(dashAudio);
             StartCoroutine(TriggerDashAudio());
         }
+
         IEnumerator TriggerDashAudio()
         {
             dashAudioJustPlayed = true;

@@ -1021,7 +1021,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 581876909}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.3863347, y: -1.8650687, z: -2.5607734}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 381527345}
@@ -3897,11 +3897,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15be8723f1bddf246a9f0099768b8e03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dashSpeed: 20
   maxDashCharges: 3
+  currentDashCharges: 3
+  dashSpeed: 20
   dashRegenRate: 3
   isDashing: 0
-  currentDashCharges: 3
 --- !u!95 &5605697787432900269
 Animator:
   serializedVersion: 3

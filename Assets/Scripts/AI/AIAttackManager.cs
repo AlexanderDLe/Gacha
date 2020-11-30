@@ -92,7 +92,7 @@ namespace RPG.AI
             foreach (Collider hit in hitResults)
             {
                 print(hit);
-                BaseStats player = hit.GetComponent<StateManager>().currBaseStats;
+                BaseStats player = hit.GetComponent<StateManager>().baseStats;
                 float damage = Mathf.Round(baseStats.GetDamage());
 
                 player.TakeDamage((int)damage);

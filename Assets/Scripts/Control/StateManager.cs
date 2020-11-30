@@ -10,36 +10,54 @@ namespace RPG.Control
 {
     public class StateManager : MonoBehaviour
     {
-        #region Start
-        Animator animator = null;
-        ActionManager actionManager = null;
+        #region Management Systems
         RaycastMousePosition raycaster = null;
-        CharacterBuilder builder = null;
+        Animator animator = null;
         Vector3 mousePosition = Vector3.zero;
-        public BaseStats currBaseStats = null;
+
+        [FoldoutGroup("Management Systems")]
+        ActionManager actionManager = null;
+        [FoldoutGroup("Management Systems")]
+        CharacterBuilder build = null;
+        [FoldoutGroup("Management Systems")]
+        public BaseStats baseStats = null;
+        [FoldoutGroup("Management Systems")]
         public DashManager dasher = null;
+        [FoldoutGroup("Management Systems")]
         public AttackManager attacker = null;
+        [FoldoutGroup("Management Systems")]
         public AimManager aimer = null;
+        [FoldoutGroup("Management Systems")]
         public InitializeManager initialize = null;
-        ObjectPooler objectPooler = null;
+        [FoldoutGroup("Management Systems")]
+        public ObjectPooler objectPooler = null;
+        #endregion
 
+        #region Audio
+        [FoldoutGroup("Audio Sources")]
         public AudioSource characterAudioSource = null;
+        [FoldoutGroup("Audio Sources")]
         public AudioSource actionAudioSource = null;
-        AudioPlayer audioPlayer = null;
+        [FoldoutGroup("Audio Sources")]
+        public AudioPlayer audioPlayer = null;
+        #endregion
 
+        #region Character Scripts
         [FoldoutGroup("Character Scripts")]
         public PlayableCharacter_SO char1_SO = null;
         [FoldoutGroup("Character Scripts")]
         public PlayableCharacter_SO char2_SO = null;
         [FoldoutGroup("Character Scripts")]
         public PlayableCharacter_SO char3_SO = null;
+        #endregion
 
+        #region Start
         private void Awake()
         {
             animator = GetComponent<Animator>();
             actionManager = GetComponent<ActionManager>();
             raycaster = GetComponent<RaycastMousePosition>();
-            builder = GetComponent<CharacterBuilder>();
+            build = GetComponent<CharacterBuilder>();
             initialize = GetComponent<InitializeManager>();
             audioPlayer = GetComponent<AudioPlayer>();
             dasher = GetComponent<DashManager>();
@@ -59,7 +77,7 @@ namespace RPG.Control
             audioPlayer.SetAudioSources(characterAudioSource, actionAudioSource);
             actionManager.LinkReferences(audioPlayer, raycaster, objectPooler);
             attacker.LinkReferences(audioPlayer, raycaster, animator, objectPooler);
-            builder.LinkReferences(animator, objectPooler);
+            build.LinkReferences(animator, objectPooler);
             dasher.LinkReferences(audioPlayer);
             aimer.LinkReferences(raycaster);
         }
@@ -68,32 +86,23 @@ namespace RPG.Control
         #region Initializations
         private void BuildAllCharacters()
         {
-            chars[0] = builder.BuildCharacter(char_GOs[0], char1_SO, out char_PFs[0]);
-            chars[1] = builder.BuildCharacter(char_GOs[1], char2_SO, out char_PFs[1]);
-            chars[2] = builder.BuildCharacter(char_GOs[2], char3_SO, out char_PFs[2]);
+            chars[0] = build.BuildCharacter(char_GOs[0], char1_SO, out char_PFs[0]);
+            chars[1] = build.BuildCharacter(char_GOs[1], char2_SO, out char_PFs[1]);
+            chars[2] = build.BuildCharacter(char_GOs[2], char3_SO, out char_PFs[2]);
         }
 
         public event Action CharacterInitializationComplete;
         public void InitializeCharacter(CharacterManager character)
         {
             initialize.CurrentCharacter(character);
-
             initialize.CharacterPrefab(out currentCharPrefab, char_PFs, currentCharIndex);
-
-            initialize.CharacterStats(out currBaseStats, out currCharName, out currCharImage);
-
+            initialize.CharacterStats(out baseStats, out currCharName, out currCharImage);
             initialize.CharacterSkills(out movementSkill, out primarySkill, out ultimateSkill);
-
             initialize.CharacterAnimation(animator);
-
-            actionManager.Initialize(character, currBaseStats);
-
-            attacker.Initialize(character, currBaseStats);
-
+            actionManager.Initialize(character, baseStats);
+            attacker.Initialize(character, baseStats);
             aimer.Initialize(character);
-
             dasher.Initialize(character);
-
             CharacterInitializationComplete();
         }
         #endregion
