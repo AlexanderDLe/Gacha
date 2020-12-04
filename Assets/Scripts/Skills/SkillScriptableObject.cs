@@ -26,6 +26,6 @@ namespace RPG.Core
 
         public abstract void Initialize(GameObject playerGameObject, string str);
 
-        public abstract void TriggerSkill();
+        public abstract void TriggerSkill(string skillType);
     }
 }

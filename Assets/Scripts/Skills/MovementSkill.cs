@@ -5,17 +5,22 @@ namespace RPG.Core
     [CreateAssetMenu(menuName = "Abilities/Create New Movement Skill", order = 2)]
     public class MovementSkill : SkillScriptableObject
     {
-        private UseMovementSkill useMovementSkill;
+        RaycastMousePosition raycaster = null;
+        Animator animator = null;
+        GameObject player = null;
 
         public override void Initialize(GameObject player_GO, string skillType)
         {
-            useMovementSkill = player_GO.GetComponent<UseMovementSkill>();
-            useMovementSkill.Initialize(player_GO, skillType);
+            this.raycaster = player_GO.GetComponent<RaycastMousePosition>();
+            this.animator = player_GO.GetComponent<Animator>();
+            this.player = player_GO;
         }
 
-        public override void TriggerSkill()
+        public override void TriggerSkill(string skillType)
         {
-            useMovementSkill.Activate();
+            RaycastHit hit = raycaster.GetRaycastMousePoint();
+            player.transform.LookAt(hit.point);
+            animator.SetTrigger(skillType);
         }
     }
 }

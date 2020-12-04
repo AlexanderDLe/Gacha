@@ -3741,13 +3741,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e550dab93791e84bace0693dea4ed3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currBaseStats: {fileID: 0}
+  baseStats: {fileID: 0}
   dasher: {fileID: 0}
   attacker: {fileID: 0}
   aimer: {fileID: 0}
   initialize: {fileID: 0}
+  objectPooler: {fileID: 0}
   characterAudioSource: {fileID: 5605697787432900273}
   actionAudioSource: {fileID: 5605697787079883622}
+  audioPlayer: {fileID: 0}
   char1_SO: {fileID: 11400000, guid: 4374901d27a667e41b44f67605ca5c68, type: 2}
   char2_SO: {fileID: 11400000, guid: 39b0444cb962c6040b956bb47f75ed67, type: 2}
   char3_SO: {fileID: 0}
@@ -3786,9 +3788,6 @@ GameObject:
   - component: {fileID: 1752829621050655995}
   - component: {fileID: 5605697787432900251}
   - component: {fileID: 5605697787432900259}
-  - component: {fileID: 5605697787432900262}
-  - component: {fileID: 5605697787432900264}
-  - component: {fileID: 5605697787432900265}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -3808,18 +3807,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f180fd76bf413347af7d4b9665d2c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5605697787432900262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5605697787432900260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc261d0e103dd9246b64eba05d03d5ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &5605697787432900263
 Transform:
   m_ObjectHideFlags: 0
@@ -3835,30 +3822,6 @@ Transform:
   m_Father: {fileID: 1688260497600006291}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90.00001, z: 0}
---- !u!114 &5605697787432900264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5605697787432900260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ac9c53fd8f67ca40afec586a64219df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5605697787432900265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5605697787432900260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5759d371d88ca64284231c61640415c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!136 &5605697787432900266
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3899,8 +3862,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxDashCharges: 3
   currentDashCharges: 3
-  dashSpeed: 20
   dashRegenRate: 3
+  dashSpeed: 20
   isDashing: 0
 --- !u!95 &5605697787432900269
 Animator:
@@ -3950,15 +3913,8 @@ MonoBehaviour:
   comboNum: 0
   numberOfAutoAttackHits: 0
   autoAttackArray: []
-  fightingType: 0
-  weapon: {fileID: 0}
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  projectile_SO: {fileID: 0}
-  hitboxPoint: {fileID: 0}
   autoAttackHitRadiuses: []
-  autoAttackDamageFraction: []
+  autoAttackDamageFractions: []
 --- !u!114 &5605697787432900272
 MonoBehaviour:
   m_ObjectHideFlags: 0

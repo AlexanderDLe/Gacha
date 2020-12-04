@@ -37,11 +37,11 @@ namespace RPG.Control
             skill.Initialize(player_GO, skillType);
         }
 
-        [Header("Skill Cooldown")]
         public SkillScriptableObject skill = null;
-
-        public string skillName;
         public bool isUsingSkill = false;
+        public string skillName;
+
+        [Header("Skill Cooldown")]
         private bool skillInCooldown = false;
         public float cooldownResetTime = 3f;
         public float skillCountdownTimer = 0f;
@@ -85,7 +85,7 @@ namespace RPG.Control
 
         public void TriggerSkill()
         {
-            skill.TriggerSkill();
+            skill.TriggerSkill(skillType);
             SetIsUsingSkill(true);
             StartCoroutine(SkillCountdown());
         }
