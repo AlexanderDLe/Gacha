@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 581da331296c35b4cafa512e1a0a250b, type: 3}
+  m_Name: MCUltimateSkill
+  m_EditorClassIdentifier: 
+  skillName: MC Omnislash
+  skillSprite: {fileID: 21300000, guid: 6f98b3e70c3ad8a48a0396785dad48e8, type: 3}
+  baseCooldownTime: 3
+  skillVFX: {fileID: 1011191742018456, guid: f988294dae7c8064c9b3ba230abe029d, type: 3}
+  skillVocalAudio: {fileID: 8300000, guid: a1146034d8f08f84baeca9c889e091db, type: 3}
+  skillActionAudio: {fileID: 8300000, guid: 202f1bc95c809b44d9b6710a2921038d, type: 3}
+  requiresSkillShot: 0
+  skillShotImage: {fileID: 21300000, guid: bb1ec69d19687aa4e87879f0aff1ff9d, type: 3}
+  requiresRangeShot: 0
+  skillRangeImage: {fileID: 0}
+  skillReticleImage: {fileID: 0}

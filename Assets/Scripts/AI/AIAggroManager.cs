@@ -8,9 +8,9 @@ public class AIAggroManager : MonoBehaviour
     GameObject player = null;
     float weaponRange = 0f;
 
-    private void Start()
+    private void Update()
     {
-        InvokeRepeating("UpdateTimers", .2f, .2f);
+        UpdateTimers();
     }
 
     private void UpdateTimers()

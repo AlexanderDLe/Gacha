@@ -1,34 +1,64 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace RPG.Core
 {
     public class RaycastMousePosition : MonoBehaviour
     {
+        LayerMask terrainLayer;
         public static Camera cam = null;
+
+        [Header("Debug")]
+        [SerializeField] bool isDebugging = false;
+        [SerializeField] GameObject debugObject = null;
+
+        private float maxDistance = 1000f;
+        static private Vector3 pointDepth = new Vector3(0, 0, 10f);
 
         private void Awake()
         {
             if (!cam) cam = Camera.main;
+            terrainLayer = LayerMask.GetMask("Terrain");
+        }
+
+        public void RotateObjectTowardsMousePosition(GameObject gameObject)
+        {
+            RaycastHit hit = GetRaycastMousePoint(terrainLayer);
+
+            Vector3 hitpoint = new Vector3(hit.point.x, 0, hit.point.z);
+            Vector3 objectPos = gameObject.transform.position;
+            Vector3 pospoint = new Vector3(objectPos.x, 0, objectPos.z);
+            Vector3 destination = (hitpoint - pospoint).normalized;
+
+            gameObject.transform.rotation = Quaternion.LookRotation(destination);
+
+            if (isDebugging) RunDebug(gameObject, hit.point);
+        }
+
+        private void RunDebug(GameObject gameObject, Vector3 destination)
+        {
+            Debug.DrawRay(gameObject.transform.position, gameObject.transform.forward, Color.red, 3f);
+            GameObject obj = Instantiate(debugObject, destination, debugObject.transform.rotation);
         }
 
         public RaycastHit GetRaycastMousePoint()
         {
             // Raycast using mouse position
             RaycastHit hit;
-            bool hasHit = Physics.Raycast(GetMouseRay(), out hit);
+            bool hasHit = Physics.Raycast(GetMouseRay(), out hit, maxDistance);
             return hit;
         }
         public RaycastHit GetRaycastMousePoint(LayerMask layerMask)
         {
             // Raycast using mouse position
             RaycastHit hit;
-            bool hasHit = Physics.Raycast(GetMouseRay(), out hit, 1000, layerMask);
+            bool hasHit = Physics.Raycast(GetMouseRay(), out hit, maxDistance, layerMask);
             return hit;
         }
 
         private static Ray GetMouseRay()
         {
-            return cam.ScreenPointToRay(Input.mousePosition);
+            return cam.ScreenPointToRay(Input.mousePosition + pointDepth);
         }
     }
 }

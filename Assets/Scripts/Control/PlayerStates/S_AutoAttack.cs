@@ -1,4 +1,5 @@
-﻿using RPG.Control;
+﻿using System;
+using RPG.Control;
 using RPG.Core;
 using UnityEngine;
 
@@ -34,7 +35,10 @@ namespace RPG.PlayerStates
             this.autoAttackArray = attacker.GetAutoAttackArray();
         }
 
-        public void Enter() { }
+        public void Enter()
+        {
+            Debug.Log("Entering Attack");
+        }
 
         public void Execute()
         {
@@ -63,8 +67,8 @@ namespace RPG.PlayerStates
         {
             if (!attacker.GetCanTriggerNextAutoAttack()) return;
             attacker.SetCanTriggerNextAutoAttack(false);
-            RaycastHit hit = raycaster.GetRaycastMousePoint();
-            gameObject.transform.LookAt(hit.point);
+
+            raycaster.RotateObjectTowardsMousePosition(gameObject);
 
             int currentComboNum = attacker.GetComboNum();
             animator.SetTrigger(autoAttackArray[currentComboNum]);
@@ -83,6 +87,7 @@ namespace RPG.PlayerStates
 
         public void Exit()
         {
+            Debug.Log("Exiting Attack");
             attacker.SetCanTriggerNextAutoAttack(true);
             attacker.SetIsInAutoAttackState(false);
             ResetAutoAttack();

@@ -3,7 +3,7 @@
 namespace RPG.Core
 {
     [CreateAssetMenu(menuName = "Abilities/Create New AOE Skill", order = 1)]
-    public class AOESkill : SkillScriptableObject
+    public class AOESkill : Skill_SO
     {
         RaycastMousePosition raycaster = null;
         Animator animator = null;
@@ -18,8 +18,7 @@ namespace RPG.Core
 
         public override void TriggerSkill(string skillType)
         {
-            RaycastHit hit = raycaster.GetRaycastMousePoint();
-            player.transform.LookAt(hit.point);
+            raycaster.RotateObjectTowardsMousePosition(player);
             animator.SetTrigger(skillType);
         }
     }

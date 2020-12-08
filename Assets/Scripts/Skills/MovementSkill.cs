@@ -3,7 +3,7 @@
 namespace RPG.Core
 {
     [CreateAssetMenu(menuName = "Abilities/Create New Movement Skill", order = 2)]
-    public class MovementSkill : SkillScriptableObject
+    public class MovementSkill : Skill_SO
     {
         RaycastMousePosition raycaster = null;
         Animator animator = null;
@@ -18,8 +18,8 @@ namespace RPG.Core
 
         public override void TriggerSkill(string skillType)
         {
-            RaycastHit hit = raycaster.GetRaycastMousePoint();
-            player.transform.LookAt(hit.point);
+            raycaster.RotateObjectTowardsMousePosition(player);
+            // Debug.Log("After Raycast Rotation: " + player.transform.rotation);
             animator.SetTrigger(skillType);
         }
     }

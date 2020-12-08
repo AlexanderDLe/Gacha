@@ -8,6 +8,9 @@ namespace RPG.Characters
     [CreateAssetMenu(fileName = "CharacterScriptableObject", menuName = "Character/Create New Playable Character", order = 0)]
     public class PlayableCharacter_SO : BaseCharacter_SO
     {
+        [FoldoutGroup("Metadata")]
+        public PlayableCharEnum characterEnum;
+
         #region Character FX
         [FoldoutGroup("Character FX")]
         public AudioClip[] dashAudio;
@@ -15,10 +18,10 @@ namespace RPG.Characters
 
         #region Auto Attack
         [FoldoutGroup("Auto Attack")]
-        public FightingType fightingType;
+        public FightTypeEnum fightingType;
         [FoldoutGroup("Auto Attack")]
         public Weapon weapon;
-        [FoldoutGroup("Auto Attack"), ShowIf("fightingType", FightingType.Projectile)]
+        [FoldoutGroup("Auto Attack"), ShowIf("fightingType", FightTypeEnum.Projectile)]
         public Projectile_SO projectile;
 
         [InfoBox("The number of the attack hits MUST BE THE SAME as the array length of the damage fractions and hit radiuses!")]
@@ -26,7 +29,7 @@ namespace RPG.Characters
         public int numberOfAutoAttackHits;
         [FoldoutGroup("Auto Attack")]
         public float[] autoAttackDamageFractions;
-        [FoldoutGroup("Auto Attack"), ShowIf("fightingType", FightingType.Melee)]
+        [FoldoutGroup("Auto Attack"), ShowIf("fightingType", FightTypeEnum.Melee)]
         public float[] autoAttackHitRadiuses;
 
         [Header("Auto Attack FX")]
@@ -40,11 +43,11 @@ namespace RPG.Characters
 
         #region Skills
         [FoldoutGroup("Skills")]
-        public SkillScriptableObject movementSkill;
+        public Skill_SO movementSkill;
         [FoldoutGroup("Skills")]
-        public SkillScriptableObject primarySkill;
+        public Skill_SO primarySkill;
         [FoldoutGroup("Skills")]
-        public SkillScriptableObject ultimateSkill;
+        public Skill_SO ultimateSkill;
         #endregion
     }
 }

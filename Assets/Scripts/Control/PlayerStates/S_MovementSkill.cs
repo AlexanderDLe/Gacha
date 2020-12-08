@@ -28,6 +28,7 @@ namespace RPG.PlayerStates
         public void Enter()
         {
             stateManager.TriggerSkill(skill);
+            navMeshAgent.updateRotation = false;
         }
 
         public void Execute()
@@ -41,9 +42,9 @@ namespace RPG.PlayerStates
 
         public void Exit()
         {
+            navMeshAgent.updateRotation = true;
             skill.SetIsUsingSkill(false);
             animator.ResetTrigger("movementSkill");
-            animator.SetTrigger("resetAttack");
         }
     }
 }

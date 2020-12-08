@@ -14,10 +14,10 @@ namespace RPG.Characters
         public Rarity EnemyRarity;
 
         [FoldoutGroup("Attack")]
-        public FightingType fightingType;
-        [FoldoutGroup("Attack"), ShowIf("fightingType", FightingType.Projectile)]
+        public FightTypeEnum fightingType;
+        [FoldoutGroup("Attack"), ShowIf("fightingType", FightTypeEnum.Projectile)]
         public Projectile_SO projectile_SO;
-        [FoldoutGroup("Attack"), ShowIf("fightingType", FightingType.Melee)]
+        [FoldoutGroup("Attack"), ShowIf("fightingType", FightTypeEnum.Melee)]
         public float hitboxRadius;
         [FoldoutGroup("Attack")]
         public Weapon weapon;

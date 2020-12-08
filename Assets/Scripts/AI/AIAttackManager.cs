@@ -16,7 +16,7 @@ namespace RPG.AI
         GameObject prefab = null;
 
         public LayerMask playerLayer;
-        public FightingType fightingType;
+        public FightTypeEnum fightingType;
         public Weapon weapon;
         public float weaponRange = 1f;
         public float attackCooldownTime = 3f;
@@ -56,7 +56,7 @@ namespace RPG.AI
 
             GameObject projectilePrefab = script.projectile_SO.prefab;
 
-            if (fightingType == FightingType.Projectile)
+            if (fightingType == FightTypeEnum.Projectile)
             {
                 objectPooler.AddToPool(projectilePrefab, 10);
             }
@@ -81,8 +81,8 @@ namespace RPG.AI
 
         public void Attack()
         {
-            if (fightingType == FightingType.Projectile) ShootProjectile();
-            if (fightingType == FightingType.Melee) InflictMelee();
+            if (fightingType == FightTypeEnum.Projectile) ShootProjectile();
+            if (fightingType == FightTypeEnum.Melee) InflictMelee();
         }
 
         private void InflictMelee()

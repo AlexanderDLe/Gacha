@@ -32,7 +32,6 @@ namespace RPG.PlayerStates
         {
             skill.SetIsUsingSkill(false);
             animator.ResetTrigger("primarySkill");
-            animator.SetTrigger("resetAttack");
         }
     }
 }

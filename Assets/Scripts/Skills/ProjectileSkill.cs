@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using RPG.Combat;
+using RPG.Control;
+using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace RPG.Core
 {
     [CreateAssetMenu(menuName = "Abilities/Create New Projectile Skill", order = 0)]
-    public class ProjectileSkill : SkillScriptableObject
+    public class ProjectileSkill : Skill_SO
     {
         RaycastMousePosition raycaster = null;
         Animator animator = null;
@@ -18,8 +21,7 @@ namespace RPG.Core
 
         public override void TriggerSkill(string skillType)
         {
-            RaycastHit hit = raycaster.GetRaycastMousePoint();
-            player.transform.LookAt(hit.point);
+            raycaster.RotateObjectTowardsMousePosition(player);
             animator.SetTrigger(skillType);
         }
     }
