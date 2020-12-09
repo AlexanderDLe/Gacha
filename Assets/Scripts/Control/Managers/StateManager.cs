@@ -14,9 +14,8 @@ namespace RPG.Control
         RaycastMousePosition raycaster = null;
         Animator animator = null;
         Vector3 mousePosition = Vector3.zero;
+        public GameObject environment = null;
 
-        [FoldoutGroup("Management Systems")]
-        ActionManager actionManager = null;
         [FoldoutGroup("Management Systems")]
         CharacterBuilder build = null;
         [FoldoutGroup("Management Systems")]
@@ -31,6 +30,8 @@ namespace RPG.Control
         public InitializeManager initialize = null;
         [FoldoutGroup("Management Systems")]
         public ObjectPooler objectPooler = null;
+        [FoldoutGroup("Management Systems")]
+        public MeleeAttacker meleeAttacker = null;
         #endregion
 
         #region Audio
@@ -39,7 +40,7 @@ namespace RPG.Control
         [FoldoutGroup("Audio Sources")]
         public AudioSource actionAudioSource = null;
         [FoldoutGroup("Audio Sources")]
-        public AudioManager audioPlayer = null;
+        public AudioManager audioManager = null;
         #endregion
 
         #region Character Scripts
@@ -55,11 +56,10 @@ namespace RPG.Control
         private void Awake()
         {
             animator = GetComponent<Animator>();
-            actionManager = GetComponent<ActionManager>();
             raycaster = GetComponent<RaycastMousePosition>();
             build = GetComponent<CharacterBuilder>();
             initialize = GetComponent<InitializeManager>();
-            audioPlayer = GetComponent<AudioManager>();
+            audioManager = GetComponent<AudioManager>();
             dasher = GetComponent<DashManager>();
             attacker = GetComponent<AttackManager>();
             aimer = GetComponent<AimManager>();
@@ -74,11 +74,10 @@ namespace RPG.Control
         }
         public void SetUpReferences()
         {
-            audioPlayer.SetAudioSources(characterAudioSource, actionAudioSource);
-            actionManager.LinkReferences(audioPlayer, raycaster, objectPooler);
-            attacker.LinkReferences(audioPlayer, raycaster, animator, objectPooler);
+            audioManager.SetAudioSources(characterAudioSource, actionAudioSource);
+            attacker.LinkReferences(audioManager, raycaster, animator, objectPooler);
+            dasher.LinkReferences(audioManager);
             build.LinkReferences(animator, objectPooler);
-            dasher.LinkReferences(audioPlayer);
             aimer.LinkReferences(raycaster);
         }
         #endregion
@@ -99,7 +98,6 @@ namespace RPG.Control
             initialize.CharacterStats(out baseStats, out currCharName, out currCharImage);
             initialize.CharacterSkills(out movementSkill, out primarySkill, out ultimateSkill);
             initialize.CharacterAnimation(animator);
-            actionManager.Initialize(character, baseStats);
             attacker.Initialize(character, baseStats);
             aimer.Initialize(character);
             dasher.Initialize(character);
@@ -127,6 +125,10 @@ namespace RPG.Control
         [SerializeField] float charSwapCooldownTime = 2f;
         [FoldoutGroup("Character Swap")]
         [SerializeField] bool charSwapInCooldown = false;
+        [FoldoutGroup("FX")]
+        [SerializeField] GameObject swapVisualFX = null;
+        [FoldoutGroup("FX")]
+        [SerializeField] AudioClip swapAudioFX = null;
 
         public CharacterManager GetCharacter(int charIndex)
         {
@@ -138,18 +140,24 @@ namespace RPG.Control
             if (charIndex == 1 && !chars[1]) return;
             if (charIndex == 2 && !chars[2]) return;
 
-            TransitionCharacter(charIndex);
+            DeinitializeCharacter(charIndex);
             InitializeCharacter(currentCharacter);
             StartCoroutine(StartSwapCooldown());
         }
 
-        private void TransitionCharacter(int charIndex)
+        private void DeinitializeCharacter(int charIndex)
         {
             currentCharacter.CancelSkillAiming();
             currentCharPrefab.SetActive(false);
             currentCharIndex = charIndex;
             currentCharacter = GetCharacter(charIndex);
-            actionManager.ActivateSwapFX();
+            ActivateSwapFX();
+        }
+        public void ActivateSwapFX()
+        {
+            GameObject swapVFX = Instantiate(swapVisualFX, transform);
+            swapVFX.transform.SetParent(environment.transform);
+            audioManager.PlayAudio(AudioEnum.Character, swapAudioFX);
         }
 
         IEnumerator StartSwapCooldown()
@@ -258,17 +266,30 @@ namespace RPG.Control
         }
 
         // Animation Event
-        public void PrimarySkillActivate()
+        public void PrimarySkillTriggered()
         {
             primarySkill.SetIsUsingSkill(false);
         }
-        public void UltimateSkillActivate()
+        public void UltimateSkillTriggered()
         {
             ultimateSkill.SetIsUsingSkill(false);
         }
-        public void MovementSkillActivate()
+        public void MovementSkillTriggered()
         {
             movementSkill.SetIsUsingSkill(false);
+        }
+
+        [FoldoutGroup("FX")]
+        [SerializeField] AudioClip[] footstepClips = default;
+
+        private void PlayRandomFootstepClip()
+        {
+            int num = UnityEngine.Random.Range(0, footstepClips.Length);
+            audioManager.PlayAudio(AudioEnum.Character, footstepClips[num]);
+        }
+        private void Footstep()
+        {
+            PlayRandomFootstepClip();
         }
         #endregion        
     }

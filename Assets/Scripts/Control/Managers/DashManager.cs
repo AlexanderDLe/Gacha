@@ -59,9 +59,9 @@ namespace RPG.Control
 
         private void DashStart()
         {
-            if (!audioPlayer.RandomlyDecideIfPlay()) return;
+            if (!audioPlayer.RandomlyDecideIfPlay(.5f)) return;
             if (audioPlayer.characterAudioSource.isPlaying || dashAudioJustPlayed) return;
-            audioPlayer.SelectAndPlayCharacterClip(dashAudio);
+            audioPlayer.PlayAudio(AudioEnum.Character, dashAudio);
             StartCoroutine(TriggerDashAudio());
         }
 

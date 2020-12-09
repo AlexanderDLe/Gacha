@@ -14,7 +14,14 @@ namespace RPG.Control
         AudioManager audioPlayer = null;
         ObjectPooler objectPooler = null;
         RaycastMousePosition raycaster = null;
+        MeleeAttacker meleeAttacker = null;
+        ProjectileLauncher projectileLauncher = null;
 
+        private void Awake()
+        {
+            this.meleeAttacker = GetComponent<MeleeAttacker>();
+            this.projectileLauncher = GetComponent<ProjectileLauncher>();
+        }
         private void Start()
         {
             enemyLayer = LayerMask.GetMask("Enemy");
@@ -100,13 +107,13 @@ namespace RPG.Control
         // Animation Event Triggered Functions
         public void Attack1()
         {
-            audioPlayer.SelectAndPlayCharacterClip(weakAttackAudio);
+            audioPlayer.PlayAudio(AudioEnum.Character, weakAttackAudio);
             Instantiate(autoAttackVFX[0], transform.position, transform.rotation);
             AutoAttack(0);
         }
         public void Attack2()
         {
-            audioPlayer.SelectAndPlayCharacterClip(mediumAttackAudio);
+            audioPlayer.PlayAudio(AudioEnum.Character, mediumAttackAudio);
             Instantiate(autoAttackVFX[1], transform.position, transform.rotation);
             AutoAttack(1);
         }
@@ -124,28 +131,33 @@ namespace RPG.Control
         }
         private void ShootProjectile(int comboIndex)
         {
-            Projectile proj = objectPooler.SpawnFromPool(projectile_SO.prefab.name).GetComponent<Projectile>();
-
             LayerMask terrainLayer = LayerMask.GetMask("Terrain");
             RaycastHit ray = raycaster.GetRaycastMousePoint(terrainLayer);
 
-            proj.Initialize(transform.position, ray.point, projectile_SO.speed, baseStats.GetDamage(), "Enemy", projectile_SO.maxLifeTime);
+            string prefabName = projectile_SO.prefab.name;
+            Vector3 projOrigin = transform.position;
+            Vector3 projDestination = ray.point;
+
+            float speed = projectile_SO.speed;
+            float damage = CalculateDamage(comboIndex);
+            float lifetime = projectile_SO.maxLifeTime;
+            string layerToHarm = "Enemy";
+
+            projectileLauncher.Shoot(prefabName, projOrigin, projDestination, speed, damage, lifetime, layerToHarm);
         }
+
         public void InflictMeleeDamage(int comboIndex)
         {
-            print("Inflict melee called");
+            // Configure Melee Parameters then trigger Melee Strike
             float radius = autoAttackHitRadiuses[comboIndex];
-            Collider[] hitEnemies = Physics.OverlapSphere(hitboxPoint.position, radius, enemyLayer);
+            float damage = CalculateDamage(comboIndex);
 
-            foreach (Collider enemy in hitEnemies)
-            {
-                print("Enemy Detected");
-                AIManager AIEnemy = enemy.GetComponent<AIManager>();
-                float damage = Mathf.Round(baseStats.GetDamage() * autoAttackDamageFractions[comboIndex]);
-
-                AIEnemy.TakeDamage((int)damage);
-            }
+            meleeAttacker.Strike(hitboxPoint.position, radius, enemyLayer, damage);
         }
 
+        private float CalculateDamage(int comboIndex)
+        {
+            return Mathf.Round(baseStats.GetDamage() * autoAttackDamageFractions[comboIndex]);
+        }
     }
 }

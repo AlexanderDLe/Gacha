@@ -14,10 +14,11 @@ namespace RPG.AI
         GameObject player = null;
         BaseStats baseStats = null;
         GameObject prefab = null;
-
+        MeleeAttacker meleeAttacker = null;
         public LayerMask playerLayer;
         public FightTypeEnum fightingType;
         public Weapon weapon;
+
         public float weaponRange = 1f;
         public float attackCooldownTime = 3f;
         public bool inAttackCooldown = false;
@@ -37,6 +38,7 @@ namespace RPG.AI
         {
             this.script = script;
             this.AIManager = GetComponent<AIManager>();
+            this.meleeAttacker = GetComponent<MeleeAttacker>();
             this.objectPooler = objectPooler;
             this.player = player;
             this.baseStats = baseStats;
@@ -54,22 +56,20 @@ namespace RPG.AI
         {
             fightingType = script.fightingType;
 
-            GameObject projectilePrefab = script.projectile_SO.prefab;
-
-            if (fightingType == FightTypeEnum.Projectile)
-            {
-                objectPooler.AddToPool(projectilePrefab, 10);
-            }
-
-            this.projectile = projectilePrefab.GetComponent<Projectile>();
-
-            this.projectileSpeed = script.projectile_SO.speed;
-            this.projectileLifetime = script.projectile_SO.maxLifeTime;
-
             this.hitboxPoint = prefab.GetComponent<WeaponHolder>().holdWeapon_GO.transform;
             this.hitboxRadius = script.hitboxRadius;
 
-            this.projectileSpawnTransform = hitboxPoint;
+            if (fightingType == FightTypeEnum.Projectile)
+            {
+                GameObject projectilePrefab = script.projectile_SO.prefab;
+                objectPooler.AddToPool(projectilePrefab, 10);
+
+                this.projectile = projectilePrefab.GetComponent<Projectile>();
+
+                this.projectileSpeed = script.projectile_SO.speed;
+                this.projectileLifetime = script.projectile_SO.maxLifeTime;
+                this.projectileSpawnTransform = hitboxPoint;
+            }
         }
 
         public event Action OnAttackTriggered;
@@ -87,23 +87,16 @@ namespace RPG.AI
 
         private void InflictMelee()
         {
-            Collider[] hitResults = Physics.OverlapSphere(hitboxPoint.position, hitboxRadius, playerLayer);
-
-            foreach (Collider hit in hitResults)
-            {
-                print(hit);
-                BaseStats player = hit.GetComponent<StateManager>().baseStats;
-                float damage = Mathf.Round(baseStats.GetDamage());
-
-                player.TakeDamage((int)damage);
-            }
+            float damage = Mathf.Round(baseStats.GetDamage());
+            meleeAttacker.Strike(hitboxPoint.position, hitboxRadius, playerLayer, damage);
         }
 
         private void ShootProjectile()
         {
             Projectile proj = objectPooler.SpawnFromPool(projectile.name).GetComponent<Projectile>();
+            string layerToHarm = "Player";
 
-            proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, baseStats.GetDamage(), "Player", projectileLifetime);
+            proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, baseStats.GetDamage(), projectileLifetime, layerToHarm);
         }
 
         public void AttackStart() { }

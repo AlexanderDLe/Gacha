@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MCPrimarySkillSlash
+  m_Name: BasePrimarySkill
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -84947,14 +84947,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0.8
-    functionName: PrimarySkillActivate
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 1.2333333
-    functionName: PrimarySkillEnd
+    functionName: PrimarySkillTriggered
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

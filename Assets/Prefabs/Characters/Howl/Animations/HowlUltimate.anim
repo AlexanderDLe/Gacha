@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BaseUltimate
+  m_Name: HowlUltimate
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -105244,13 +105244,20 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
-    functionName: UltimateSkillStart
+    functionName: HowlUltimateStart
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 2.55
+    functionName: HowlUltimateTrigger
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 2.6166666
     functionName: UltimateSkillTriggered
     data: 
     objectReferenceParameter: {fileID: 0}

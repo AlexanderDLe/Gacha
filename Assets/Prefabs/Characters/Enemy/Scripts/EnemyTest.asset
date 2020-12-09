@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12c207dcf2f19254f8677f769f7c9c1a, type: 3}
   m_Name: EnemyTest
   m_EditorClassIdentifier: 
-  progression: {fileID: 11400000, guid: e5cbe46b7c4eb0f43bee0db2902a9e2a, type: 2}
   name: Test Dummy
+  progression: {fileID: 11400000, guid: e5cbe46b7c4eb0f43bee0db2902a9e2a, type: 2}
   prefab: {fileID: 7672909014984375895, guid: 3b29ddf4cd50f7b4ebca6cfc35268cff, type: 3}
   image: {fileID: 0}
   characterAvatar: {fileID: 9000000, guid: 63aa49e7dff477e44bae8fba4d50324d, type: 2}
+  animatorController: {fileID: 0}
   animatorOverride: {fileID: 0}
   movementSpeed: 4
   experienceGiven: 0
@@ -29,3 +30,4 @@ MonoBehaviour:
   weaponRange: 5
   chaseDistance: 5
   aggroCooldownTime: 3
+  suspicionTime: 0

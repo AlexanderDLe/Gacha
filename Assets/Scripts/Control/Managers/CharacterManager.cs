@@ -1,4 +1,5 @@
-﻿using RPG.Attributes;
+﻿using System;
+using RPG.Attributes;
 using RPG.Combat;
 using RPG.Control;
 using RPG.Core;
@@ -49,33 +50,55 @@ namespace RPG.Characters
 
         public void Initialize(GameObject player_GO, GameObject char_GO, Animator animator, PlayableCharacter_SO char_SO, Weapon weapon, AnimationEventHandler animEventHandler)
         {
-            this.baseStats = char_GO.AddComponent<BaseStats>();
-            this.baseStats.Initialize(char_SO);
-            this.animEventHandler = animEventHandler;
+            InitializeMetadata(char_SO);
+            InitializeBaseStats(char_GO);
+            InitializeEventHandler(animEventHandler);
+            InitializeAttack(weapon);
+            InitializeAllSkills(player_GO, char_GO, animator);
+        }
 
-            this.weapon = weapon;
-
+        private void InitializeMetadata(PlayableCharacter_SO char_SO)
+        {
             this.script = char_SO;
             this.avatar = char_SO.characterAvatar;
             this.name = char_SO.name;
             this.image = char_SO.image;
-            this.numberOfAutoAttackHits = char_SO.numberOfAutoAttackHits;
-            this.autoAttackArray = GenerateAutoAttackArray(numberOfAutoAttackHits);
-
             this.animatorOverride = char_SO.animatorOverride;
+        }
 
-            this.movementSkillSprite = char_SO.movementSkill.skillSprite;
-            this.primarySkillSprite = char_SO.primarySkill.skillSprite;
-            this.ultimateSkillSprite = char_SO.ultimateSkill.skillSprite;
+        private void InitializeBaseStats(GameObject char_GO)
+        {
+            this.baseStats = char_GO.AddComponent<BaseStats>();
+            this.baseStats.Initialize(script);
+        }
+
+        private void InitializeEventHandler(AnimationEventHandler animEventHandler)
+        {
+            this.animEventHandler = animEventHandler;
+            this.animEventHandler.Initialize(baseStats, script);
+        }
+
+        private void InitializeAttack(Weapon weapon)
+        {
+            this.weapon = weapon;
+            this.numberOfAutoAttackHits = script.numberOfAutoAttackHits;
+            this.autoAttackArray = GenerateAutoAttackArray(numberOfAutoAttackHits);
+        }
+
+        private void InitializeAllSkills(GameObject player_GO, GameObject char_GO, Animator animator)
+        {
+            this.movementSkillSprite = script.movementSkill.skillSprite;
+            this.primarySkillSprite = script.primarySkill.skillSprite;
+            this.ultimateSkillSprite = script.ultimateSkill.skillSprite;
 
             movementSkill = InitializeSkill(player_GO, char_GO, animator,
-                char_SO.movementSkill, "movementSkill", movementSkillSprite);
+                script.movementSkill, "movementSkill", movementSkillSprite);
 
             primarySkill = InitializeSkill(player_GO, char_GO, animator,
-                char_SO.primarySkill, "primarySkill", primarySkillSprite);
+                script.primarySkill, "primarySkill", primarySkillSprite);
 
             ultimateSkill = InitializeSkill(player_GO, char_GO, animator,
-                char_SO.ultimateSkill, "ultimateSkill", ultimateSkillSprite);
+                script.ultimateSkill, "ultimateSkill", ultimateSkillSprite);
         }
 
         private SkillManager InitializeSkill(GameObject player_GO, GameObject character_GO, Animator animator, Skill_SO skillSO, string skillType, Sprite skillImage)

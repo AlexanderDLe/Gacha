@@ -14,6 +14,7 @@ namespace RPG.Combat
         string tagToHarm;
         float projectileLifetime = 5f;
         float currentLifetime = 0f;
+        string layerToHarm;
 
         void Update()
         {
@@ -30,7 +31,7 @@ namespace RPG.Combat
             }
         }
 
-        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, float damage, string tagToHarm, float projectileLifetime)
+        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, float damage, float projectileLifetime, string layerToHarm)
         {
             this.destination = destination;
             transform.position = spawnPos;
@@ -38,29 +39,45 @@ namespace RPG.Combat
 
             this.speed = speed;
             this.damage = damage;
-            this.tagToHarm = tagToHarm;
 
             this.currentLifetime = 0;
             this.projectileLifetime = projectileLifetime;
+
+            this.layerToHarm = layerToHarm;
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag(tagToHarm))
+            if (other.gameObject.layer == LayerMask.NameToLayer(layerToHarm))
             {
-                if (tagToHarm == "Player")
+                if (layerToHarm == "Player")
                 {
                     BaseStats target = null;
                     target = other.gameObject.GetComponent<StateManager>().baseStats;
                     target.TakeDamage(damage);
                 }
-                else if (tagToHarm == "Enemy")
+                else if (layerToHarm == "Enemy")
                 {
                     AIManager target = null;
                     target = other.gameObject.GetComponent<AIManager>();
                     target.TakeDamage((int)damage);
                 }
             }
+            // if (other.CompareTag(tagToHarm))
+            // {
+            //     if (tagToHarm == "Player")
+            //     {
+            //         BaseStats target = null;
+            //         target = other.gameObject.GetComponent<StateManager>().baseStats;
+            //         target.TakeDamage(damage);
+            //     }
+            //     else if (tagToHarm == "Enemy")
+            //     {
+            //         AIManager target = null;
+            //         target = other.gameObject.GetComponent<AIManager>();
+            //         target.TakeDamage((int)damage);
+            //     }
+            // }
         }
     }
 }

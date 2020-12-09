@@ -18,7 +18,7 @@ MonoBehaviour:
   image: {fileID: 21300000, guid: f216b48aaeff2054eadb3bb27c9a1431, type: 3}
   characterAvatar: {fileID: 9000000, guid: 8181a60873ee9534e8bbaae5f51cd066, type: 2}
   animatorController: {fileID: 0}
-  animatorOverride: {fileID: 0}
+  animatorOverride: {fileID: 22100000, guid: 0c045d28aa369de48b0a4a0002d47f53, type: 2}
   movementSpeed: 6
   characterEnum: 2
   dashAudio:

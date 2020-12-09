@@ -17,7 +17,7 @@ namespace RPG.AI
         ObjectPooler objectPooler = null;
         DamageTextSpawner damageTextSpawner = null;
         public BaseStats baseStats = null;
-        public EnemyCharacter_SO enemy_SO = null;
+        public EnemyCharacter_SO script = null;
         public AIAggroManager aggro = null;
         public AIAttackManager attacker = null;
         public AIFlinchManager flincher = null;
@@ -38,7 +38,7 @@ namespace RPG.AI
         }
         private void Start()
         {
-            BuildCharacter(enemy_SO);
+            BuildCharacter(script);
             placeholder.SetActive(false);
         }
 
@@ -56,7 +56,7 @@ namespace RPG.AI
         #region Initialization
         public void BuildCharacter(EnemyCharacter_SO enemy_SO)
         {
-            InitializeModel(prefab, animator, enemy_SO);
+            InitializeModel(prefab, animator);
 
             baseStats.Initialize(enemy_SO);
 
@@ -65,7 +65,7 @@ namespace RPG.AI
             attacker.Initialize(enemy_SO, objectPooler, player, baseStats, prefab);
         }
 
-        public void InitializeModel(GameObject prefab, Animator animator, EnemyCharacter_SO script)
+        public void InitializeModel(GameObject prefab, Animator animator)
         {
             this.prefab = Instantiate(script.prefab, transform);
 

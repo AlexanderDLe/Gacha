@@ -87,7 +87,6 @@ namespace RPG.PlayerStates
 
         public void Exit()
         {
-            Debug.Log("Exiting Attack");
             attacker.SetCanTriggerNextAutoAttack(true);
             attacker.SetIsInAutoAttackState(false);
             ResetAutoAttack();
