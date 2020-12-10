@@ -1,5 +1,6 @@
 ﻿using RPG.Combat;
 using RPG.Core;
+using RPG.Skill;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

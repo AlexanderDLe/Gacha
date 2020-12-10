@@ -1,9 +1,9 @@
 ﻿using RPG.Combat;
-using RPG.Control;
+using RPG.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace RPG.Core
+namespace RPG.Skill
 {
     [CreateAssetMenu(menuName = "Abilities/Create New Projectile Skill", order = 0)]
     public class ProjectileSkill : Skill_SO
@@ -11,6 +11,9 @@ namespace RPG.Core
         RaycastMousePosition raycaster = null;
         Animator animator = null;
         GameObject player = null;
+
+        [FoldoutGroup("Projectile")]
+        public Projectile_SO projectile_SO = null;
 
         public override void Initialize(GameObject player_GO, string skillType)
         {

@@ -23,3 +23,4 @@ MonoBehaviour:
   requiresRangeShot: 0
   skillRangeImage: {fileID: 21300000, guid: d0f4f45c3e531e44f945d47d855a63c8, type: 3}
   skillReticleImage: {fileID: 21300000, guid: d0f4f45c3e531e44f945d47d855a63c8, type: 3}
+  projectile_SO: {fileID: 11400000, guid: 7f730cfa55aa23b48a748ee37b4e25f7, type: 2}

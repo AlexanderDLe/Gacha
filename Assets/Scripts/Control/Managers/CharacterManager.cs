@@ -3,6 +3,7 @@ using RPG.Attributes;
 using RPG.Combat;
 using RPG.Control;
 using RPG.Core;
+using RPG.Skill;
 using Sirenix.OdinInspector;
 using UnityEngine;
 

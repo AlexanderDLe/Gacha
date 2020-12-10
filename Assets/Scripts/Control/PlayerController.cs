@@ -2,6 +2,7 @@
 using UnityEngine.AI;
 using RPG.PlayerStates;
 using RPG.Core;
+using RPG.Combat;
 
 namespace RPG.Control
 {
@@ -217,15 +218,15 @@ namespace RPG.Control
         {
             EnterMovementState();
         }
-        public void MovementSkillEnd()
+        public void MovementSkillTriggered()
         {
             EnterMovementState();
         }
-        public void PrimarySkillEnd()
+        public void PrimarySkillTriggered()
         {
             EnterMovementState();
         }
-        public void UltimateSkillEnd()
+        public void UltimateSkillTriggered()
         {
             EnterMovementState();
         }

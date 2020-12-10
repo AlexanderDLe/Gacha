@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using RPG.Core;
+using RPG.Skill;
 using UnityEngine;
 
 namespace RPG.Control

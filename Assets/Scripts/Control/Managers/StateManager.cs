@@ -76,8 +76,8 @@ namespace RPG.Control
         {
             audioManager.SetAudioSources(characterAudioSource, actionAudioSource);
             attacker.LinkReferences(audioManager, raycaster, animator, objectPooler);
+            build.LinkReferences(animator, objectPooler, audioManager);
             dasher.LinkReferences(audioManager);
-            build.LinkReferences(animator, objectPooler);
             aimer.LinkReferences(raycaster);
         }
         #endregion
@@ -276,6 +276,7 @@ namespace RPG.Control
         }
         public void MovementSkillTriggered()
         {
+            print("Deactivate Movement Skill");
             movementSkill.SetIsUsingSkill(false);
         }
 

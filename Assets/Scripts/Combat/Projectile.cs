@@ -13,7 +13,7 @@ namespace RPG.Combat
         float damage = 0f;
         string tagToHarm;
         float projectileLifetime = 5f;
-        float currentLifetime = 0f;
+        public float currentLifetime = 0f;
         string layerToHarm;
 
         void Update()

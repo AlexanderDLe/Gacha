@@ -9,11 +9,13 @@ namespace RPG.Control
     {
         Animator animator = null;
         ObjectPooler objectPooler = null;
+        AudioManager audioManager = null;
 
-        public void LinkReferences(Animator animator, ObjectPooler objectPooler)
+        public void LinkReferences(Animator animator, ObjectPooler objectPooler, AudioManager audioManager)
         {
             this.animator = animator;
             this.objectPooler = objectPooler;
+            this.audioManager = audioManager;
         }
 
         public CharacterManager BuildCharacter(GameObject char_GO,
@@ -79,6 +81,7 @@ namespace RPG.Control
 
             // 2. Set up the Character Skill Script
             AnimationEventHandler animEventHandler = AddCharEventHandler(char_SO);
+            animEventHandler.LinkReferences(audioManager, objectPooler);
 
             // 3. Initialize the CharacterManager with the necessary data
             charManager.Initialize(gameObject, char_GO, animator, char_SO, weapon, animEventHandler);

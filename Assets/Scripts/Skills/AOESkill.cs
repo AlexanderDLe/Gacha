@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using RPG.Core;
+using UnityEngine;
 
-namespace RPG.Core
+namespace RPG.Skill
 {
     [CreateAssetMenu(menuName = "Abilities/Create New AOE Skill", order = 1)]
     public class AOESkill : Skill_SO

@@ -9,19 +9,21 @@ namespace RPG.Characters
         public AudioManager audioManager;
         public BaseStats baseStats;
         public PlayableCharacter_SO script;
+        public ObjectPooler objectPooler;
 
-        private void Awake()
+        public override void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler)
         {
-            audioManager = GetComponent<AudioManager>();
+            this.audioManager = audioManager;
+            this.objectPooler = objectPooler;
         }
         public override void Initialize(BaseStats baseStats, PlayableCharacter_SO script)
         {
             this.baseStats = baseStats;
             this.script = script;
-            InitializeFX();
+            InitializeSkills();
         }
 
-        public override void InitializeFX()
+        public override void InitializeSkills()
         {
             this.movementSkillVFX = script.movementSkill.skillVFX;
             this.movementSkillVocalAudio = script.movementSkill.skillVocalAudio;
