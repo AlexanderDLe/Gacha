@@ -1,20 +1,34 @@
 ﻿using RPG.Attributes;
+using RPG.Combat;
 using RPG.Control;
+using RPG.Core;
 using UnityEngine;
 
 namespace RPG.Characters
 {
-    public class HowlEventHandler : AnimationEventHandler
+    public class HowlEventHandler : SkillEventHandler
     {
         public AudioManager audioManager;
         public BaseStats baseStats;
         public PlayableCharacter_SO script;
         public ObjectPooler objectPooler;
+        public RaycastMousePosition raycaster;
+        public Animator animator;
 
-        public override void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler)
+        public MeleeAttacker meleeAttacker = null;
+        public ProjectileLauncher projectileLauncher = null;
+        public AOECaster aoeCaster = null;
+
+        public override void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler, RaycastMousePosition raycaster, Animator animator, MeleeAttacker meleeAttacker, ProjectileLauncher projectileLauncher, AOECaster aoeCaster)
         {
             this.audioManager = audioManager;
             this.objectPooler = objectPooler;
+            this.raycaster = raycaster;
+            this.animator = animator;
+
+            this.meleeAttacker = meleeAttacker;
+            this.projectileLauncher = projectileLauncher;
+            this.aoeCaster = aoeCaster;
         }
         public override void Initialize(BaseStats baseStats, PlayableCharacter_SO script)
         {
@@ -43,6 +57,11 @@ namespace RPG.Characters
         AudioClip movementSkillActionAudio;
         GameObject movementSkillVFX = null;
 
+        public override void TriggerMovementSkill()
+        {
+            raycaster.RotateObjectTowardsMousePosition(gameObject);
+            animator.SetTrigger("movementSkill");
+        }
         public void HowlMovementStart()
         {
             Instantiate(movementSkillVFX, transform.position, transform.rotation);
@@ -56,6 +75,11 @@ namespace RPG.Characters
         AudioClip primarySkillActionAudio = null;
         AudioClip primarySkillVocalAudio = null;
 
+        public override void TriggerPrimarySkill()
+        {
+            raycaster.RotateObjectTowardsMousePosition(gameObject);
+            animator.SetTrigger("primarySkill");
+        }
         public void HowlPrimaryStart()
         {
             audioManager.PlayAudio(AudioEnum.Character, primarySkillVocalAudio);
@@ -71,6 +95,12 @@ namespace RPG.Characters
         GameObject ultimateSkillVFX = null;
         AudioClip ultimateSkillActionAudio = null;
         AudioClip ultimateSkillVocalAudio = null;
+
+        public override void TriggerUltimateSkill()
+        {
+            raycaster.RotateObjectTowardsMousePosition(gameObject);
+            animator.SetTrigger("ultimateSkill");
+        }
         public void HowlUltimateStart()
         {
             audioManager.PlayAudio(AudioEnum.Character, ultimateSkillVocalAudio);
@@ -80,6 +110,7 @@ namespace RPG.Characters
             Instantiate(ultimateSkillVFX, transform.position, transform.rotation);
             audioManager.PlayAudio(AudioEnum.Action, ultimateSkillActionAudio);
         }
+
         #endregion
     }
 }

@@ -102,7 +102,7 @@ namespace RPG.UI
         }
         private void PollSkillCountdown(SkillManager skill, Image mask, Text text)
         {
-            if (skill.GetIsSkillInCooldown())
+            if (skill.IsSkillInCooldown())
             {
                 mask.enabled = true;
                 text.enabled = true;

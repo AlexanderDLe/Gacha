@@ -5,6 +5,7 @@ using Sirenix.OdinInspector;
 using RPG.Characters;
 using RPG.Attributes;
 using RPG.Core;
+using RPG.Combat;
 
 namespace RPG.Control
 {
@@ -17,7 +18,7 @@ namespace RPG.Control
         public GameObject environment = null;
 
         [FoldoutGroup("Management Systems")]
-        CharacterBuilder build = null;
+        CharacterBuilder builder = null;
         [FoldoutGroup("Management Systems")]
         public BaseStats baseStats = null;
         [FoldoutGroup("Management Systems")]
@@ -30,8 +31,15 @@ namespace RPG.Control
         public InitializeManager initialize = null;
         [FoldoutGroup("Management Systems")]
         public ObjectPooler objectPooler = null;
-        [FoldoutGroup("Management Systems")]
+        #endregion
+
+        #region Combat Tools
+        [FoldoutGroup("Combat Tools")]
         public MeleeAttacker meleeAttacker = null;
+        [FoldoutGroup("Combat Tools")]
+        public ProjectileLauncher projectileLauncher = null;
+        [FoldoutGroup("Combat Tools")]
+        public AOECaster aoeCaster = null;
         #endregion
 
         #region Audio
@@ -57,12 +65,17 @@ namespace RPG.Control
         {
             animator = GetComponent<Animator>();
             raycaster = GetComponent<RaycastMousePosition>();
-            build = GetComponent<CharacterBuilder>();
+            builder = GetComponent<CharacterBuilder>();
             initialize = GetComponent<InitializeManager>();
             audioManager = GetComponent<AudioManager>();
             dasher = GetComponent<DashManager>();
             attacker = GetComponent<AttackManager>();
             aimer = GetComponent<AimManager>();
+
+            meleeAttacker = GetComponent<MeleeAttacker>();
+            projectileLauncher = GetComponent<ProjectileLauncher>();
+            aoeCaster = GetComponent<AOECaster>();
+
             objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
         private void Start()
@@ -75,8 +88,8 @@ namespace RPG.Control
         public void SetUpReferences()
         {
             audioManager.SetAudioSources(characterAudioSource, actionAudioSource);
-            attacker.LinkReferences(audioManager, raycaster, animator, objectPooler);
-            build.LinkReferences(animator, objectPooler, audioManager);
+            attacker.LinkReferences(audioManager, raycaster, animator, objectPooler, meleeAttacker, projectileLauncher);
+            builder.LinkReferences(animator, objectPooler, audioManager, raycaster, meleeAttacker, projectileLauncher, aoeCaster);
             dasher.LinkReferences(audioManager);
             aimer.LinkReferences(raycaster);
         }
@@ -85,9 +98,9 @@ namespace RPG.Control
         #region Initializations
         private void BuildAllCharacters()
         {
-            chars[0] = build.BuildCharacter(char_GOs[0], char1_SO, out char_PFs[0]);
-            chars[1] = build.BuildCharacter(char_GOs[1], char2_SO, out char_PFs[1]);
-            chars[2] = build.BuildCharacter(char_GOs[2], char3_SO, out char_PFs[2]);
+            chars[0] = builder.BuildCharacter(char_GOs[0], char1_SO, out char_PFs[0]);
+            chars[1] = builder.BuildCharacter(char_GOs[1], char2_SO, out char_PFs[1]);
+            chars[2] = builder.BuildCharacter(char_GOs[2], char3_SO, out char_PFs[2]);
         }
 
         public event Action CharacterInitializationComplete;
@@ -204,29 +217,29 @@ namespace RPG.Control
         public bool CanUseMovementSkill()
         {
             if (dasher.IsDashing()) return false;
-            if (movementSkill.GetIsSkillInCooldown()) return false;
+            if (movementSkill.IsSkillInCooldown()) return false;
             if (IsUsingAnySkill()) return false;
             return true;
         }
         public bool CanUsePrimarySkill()
         {
             if (dasher.IsDashing()) return false;
-            if (primarySkill.GetIsSkillInCooldown()) return false;
+            if (primarySkill.IsSkillInCooldown()) return false;
             if (IsUsingAnySkill()) return false;
             return true;
         }
         public bool CanUseUltimateSkill()
         {
             if (dasher.IsDashing()) return false;
-            if (ultimateSkill.GetIsSkillInCooldown()) return false;
+            if (ultimateSkill.IsSkillInCooldown()) return false;
             if (IsUsingAnySkill()) return false;
             return true;
         }
         public bool IsUsingAnySkill()
         {
-            if (movementSkill.GetIsUsingSkill()) return true;
-            if (primarySkill.GetIsUsingSkill()) return true;
-            if (ultimateSkill.GetIsUsingSkill()) return true;
+            if (movementSkill.IsUsingSkill()) return true;
+            if (primarySkill.IsUsingSkill()) return true;
+            if (ultimateSkill.IsUsingSkill()) return true;
             return false;
         }
         public bool IsInAnySkillAnimation()
@@ -250,36 +263,28 @@ namespace RPG.Control
         {
             skill.SetAimingEnabled(true);
             aimer.InitializeAimImage(skill);
-            string aimType = skill.requiresSkillShot ? aimer.SKILLSHOT : aimer.RANGESHOT;
+            string aimType = GetSkillType(skill);
             aimer.SetAimingEnabled(aimType, true);
         }
         public void DeactivateSkillAim(SkillManager skill)
         {
             skill.SetAimingEnabled(false);
-            string skillType = skill.requiresSkillShot ? aimer.SKILLSHOT : aimer.RANGESHOT;
+            string skillType = GetSkillType(skill);
             aimer.SetAimingEnabled(skillType, false);
         }
-        public void TriggerSkill(SkillManager skill)
+        private string GetSkillType(SkillManager skill)
         {
-            skill.TriggerSkill();
-            DeactivateSkillAim(skill);
+            return skill.requiresSkillShot ? aimer.SKILLSHOT : aimer.RANGESHOT;
         }
 
-        // Animation Event
-        public void PrimarySkillTriggered()
-        {
-            primarySkill.SetIsUsingSkill(false);
-        }
-        public void UltimateSkillTriggered()
-        {
-            ultimateSkill.SetIsUsingSkill(false);
-        }
-        public void MovementSkillTriggered()
-        {
-            print("Deactivate Movement Skill");
-            movementSkill.SetIsUsingSkill(false);
-        }
+        // Animation Events
+        public void MovementSkillTriggered() => movementSkill.SetIsUsingSkill(false);
+        public void PrimarySkillTriggered() => primarySkill.SetIsUsingSkill(false);
+        public void UltimateSkillTriggered() => ultimateSkill.SetIsUsingSkill(false);
 
+        #endregion        
+
+        #region Footsteps
         [FoldoutGroup("FX")]
         [SerializeField] AudioClip[] footstepClips = default;
 
@@ -292,6 +297,6 @@ namespace RPG.Control
         {
             PlayRandomFootstepClip();
         }
-        #endregion        
+        #endregion
     }
 }

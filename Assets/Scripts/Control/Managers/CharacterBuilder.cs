@@ -1,6 +1,7 @@
 ﻿using System;
 using RPG.Characters;
 using RPG.Combat;
+using RPG.Core;
 using UnityEngine;
 
 namespace RPG.Control
@@ -10,12 +11,21 @@ namespace RPG.Control
         Animator animator = null;
         ObjectPooler objectPooler = null;
         AudioManager audioManager = null;
+        RaycastMousePosition raycaster = null;
+        ProjectileLauncher projectileLauncher;
+        MeleeAttacker meleeAttacker;
+        AOECaster aoeCaster;
 
-        public void LinkReferences(Animator animator, ObjectPooler objectPooler, AudioManager audioManager)
+        public void LinkReferences(Animator animator, ObjectPooler objectPooler, AudioManager audioManager, RaycastMousePosition raycaster, MeleeAttacker meleeAttacker, ProjectileLauncher projectileLauncher, AOECaster aoeCaster)
         {
             this.animator = animator;
             this.objectPooler = objectPooler;
             this.audioManager = audioManager;
+            this.raycaster = raycaster;
+
+            this.meleeAttacker = meleeAttacker;
+            this.projectileLauncher = projectileLauncher;
+            this.aoeCaster = aoeCaster;
         }
 
         public CharacterManager BuildCharacter(GameObject char_GO,
@@ -80,8 +90,8 @@ namespace RPG.Control
             CharacterManager charManager = char_GO.AddComponent<CharacterManager>();
 
             // 2. Set up the Character Skill Script
-            AnimationEventHandler animEventHandler = AddCharEventHandler(char_SO);
-            animEventHandler.LinkReferences(audioManager, objectPooler);
+            SkillEventHandler animEventHandler = AddCharEventHandler(char_SO);
+            animEventHandler.LinkReferences(audioManager, objectPooler, raycaster, animator, meleeAttacker, projectileLauncher, aoeCaster);
 
             // 3. Initialize the CharacterManager with the necessary data
             charManager.Initialize(gameObject, char_GO, animator, char_SO, weapon, animEventHandler);
@@ -97,7 +107,7 @@ namespace RPG.Control
             }
         }
 
-        private AnimationEventHandler AddCharEventHandler(PlayableCharacter_SO char_SO)
+        private Characters.SkillEventHandler AddCharEventHandler(PlayableCharacter_SO char_SO)
         {
             PlayableCharEnum charEnum = char_SO.characterEnum;
 

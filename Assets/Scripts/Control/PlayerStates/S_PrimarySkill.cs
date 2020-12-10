@@ -23,7 +23,8 @@ namespace RPG.PlayerStates
 
         public void Enter()
         {
-            stateManager.TriggerSkill(skill);
+            stateManager.DeactivateSkillAim(skill);
+            stateManager.currentCharacter.TriggerPrimarySkill();
         }
 
         public void Execute() { }

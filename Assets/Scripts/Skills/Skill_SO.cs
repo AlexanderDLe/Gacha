@@ -28,9 +28,5 @@ namespace RPG.Skill
         public Sprite skillRangeImage;
         [ShowIf("requiresRangeShot"), FoldoutGroup("Aim Mechanics")]
         public Sprite skillReticleImage;
-
-        public abstract void Initialize(GameObject playerGameObject, string str);
-
-        public abstract void TriggerSkill(string skillType);
     }
 }

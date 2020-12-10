@@ -24,15 +24,25 @@ namespace RPG.Core
         public void RotateObjectTowardsMousePosition(GameObject gameObject)
         {
             RaycastHit hit = GetRaycastMousePoint(terrainLayer);
+            Vector3 destination = GetRotationWithoutY(gameObject, ref hit);
+            gameObject.transform.rotation = Quaternion.LookRotation(destination);
+            if (isDebugging) RunDebug(gameObject, hit.point);
+        }
 
+        public void RotateObjectTowardsMousePosition(GameObject gameObject, RaycastHit hit)
+        {
+            Vector3 destination = GetRotationWithoutY(gameObject, ref hit);
+            gameObject.transform.rotation = Quaternion.LookRotation(destination);
+            if (isDebugging) RunDebug(gameObject, hit.point);
+        }
+
+        private static Vector3 GetRotationWithoutY(GameObject gameObject, ref RaycastHit hit)
+        {
             Vector3 hitpoint = new Vector3(hit.point.x, 0, hit.point.z);
             Vector3 objectPos = gameObject.transform.position;
             Vector3 pospoint = new Vector3(objectPos.x, 0, objectPos.z);
             Vector3 destination = (hitpoint - pospoint).normalized;
-
-            gameObject.transform.rotation = Quaternion.LookRotation(destination);
-
-            if (isDebugging) RunDebug(gameObject, hit.point);
+            return destination;
         }
 
         private void RunDebug(GameObject gameObject, Vector3 destination)

@@ -27,7 +27,8 @@ namespace RPG.PlayerStates
 
         public void Enter()
         {
-            stateManager.TriggerSkill(skill);
+            stateManager.DeactivateSkillAim(skill);
+            stateManager.currentCharacter.TriggerMovementSkill();
             navMeshAgent.updateRotation = false;
         }
 

@@ -88,19 +88,19 @@ namespace RPG.Control
 
         private void HandleLeftMouseClick()
         {
-            if (primarySkill.GetAimingEnabled() &&
+            if (primarySkill.IsAimingEnabled() &&
                 stateManager.CanUsePrimarySkill())
             {
                 EnterPrimarySkillState();
                 return;
             }
-            if (movementSkill.GetAimingEnabled() &&
+            if (movementSkill.IsAimingEnabled() &&
                 stateManager.CanUseMovementSkill())
             {
                 EnterMovementSkillState();
                 return;
             }
-            if (ultimateSkill.GetAimingEnabled() &&
+            if (ultimateSkill.IsAimingEnabled() &&
                 stateManager.CanUseUltimateSkill())
             {
                 EnterUltimateSkillState();
@@ -115,7 +115,7 @@ namespace RPG.Control
         {
             if (!stateManager.CanUseMovementSkill()) return;
             if (movementSkill.SkillRequiresAim() &&
-               !movementSkill.GetAimingEnabled())
+               !movementSkill.IsAimingEnabled())
             {
                 stateManager.ActivateSkillAim(movementSkill, "movementSkill");
                 return;
@@ -126,7 +126,7 @@ namespace RPG.Control
         {
             if (!stateManager.CanUsePrimarySkill()) return;
             if (primarySkill.SkillRequiresAim() &&
-               !primarySkill.GetAimingEnabled())
+               !primarySkill.IsAimingEnabled())
             {
                 stateManager.ActivateSkillAim(primarySkill, "primarySkill");
                 return;
@@ -137,7 +137,7 @@ namespace RPG.Control
         {
             if (!stateManager.CanUseUltimateSkill()) return;
             if (ultimateSkill.SkillRequiresAim() &&
-               !ultimateSkill.GetAimingEnabled())
+               !ultimateSkill.IsAimingEnabled())
             {
                 stateManager.ActivateSkillAim(ultimateSkill, "ultimateSkill");
                 return;

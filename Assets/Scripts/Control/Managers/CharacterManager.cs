@@ -31,7 +31,7 @@ namespace RPG.Characters
 
         #region Skills
         [FoldoutGroup("MetaData")]
-        public AnimationEventHandler animEventHandler;
+        public SkillEventHandler skillEventHandler;
         [FoldoutGroup("Skills")]
         public SkillManager movementSkill;
         [FoldoutGroup("Skills")]
@@ -49,7 +49,7 @@ namespace RPG.Characters
 
         public PlayableCharacter_SO script = null;
 
-        public void Initialize(GameObject player_GO, GameObject char_GO, Animator animator, PlayableCharacter_SO char_SO, Weapon weapon, AnimationEventHandler animEventHandler)
+        public void Initialize(GameObject player_GO, GameObject char_GO, Animator animator, PlayableCharacter_SO char_SO, Weapon weapon, SkillEventHandler animEventHandler)
         {
             InitializeMetadata(char_SO);
             InitializeBaseStats(char_GO);
@@ -73,10 +73,10 @@ namespace RPG.Characters
             this.baseStats.Initialize(script);
         }
 
-        private void InitializeEventHandler(AnimationEventHandler animEventHandler)
+        private void InitializeEventHandler(SkillEventHandler animEventHandler)
         {
-            this.animEventHandler = animEventHandler;
-            this.animEventHandler.Initialize(baseStats, script);
+            this.skillEventHandler = animEventHandler;
+            this.skillEventHandler.Initialize(baseStats, script);
         }
 
         private void InitializeAttack(Weapon weapon)
@@ -125,6 +125,23 @@ namespace RPG.Characters
                 autoAttackTempArray[i] = ("attack" + (i + 1).ToString());
             }
             return autoAttackTempArray;
+        }
+
+        // Skill Triggers
+        public void TriggerMovementSkill()
+        {
+            movementSkill.TriggerSkill();
+            skillEventHandler.TriggerMovementSkill();
+        }
+        public void TriggerPrimarySkill()
+        {
+            primarySkill.TriggerSkill();
+            skillEventHandler.TriggerPrimarySkill();
+        }
+        public void TriggerUltimateSkill()
+        {
+            ultimateSkill.TriggerSkill();
+            skillEventHandler.TriggerUltimateSkill();
         }
     }
 }

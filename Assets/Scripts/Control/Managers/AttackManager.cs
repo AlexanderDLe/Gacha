@@ -17,22 +17,19 @@ namespace RPG.Control
         MeleeAttacker meleeAttacker = null;
         ProjectileLauncher projectileLauncher = null;
 
-        private void Awake()
-        {
-            this.meleeAttacker = GetComponent<MeleeAttacker>();
-            this.projectileLauncher = GetComponent<ProjectileLauncher>();
-        }
         private void Start()
         {
             enemyLayer = LayerMask.GetMask("Enemy");
         }
 
-        public void LinkReferences(AudioManager audioPlayer, RaycastMousePosition raycaster, Animator animator, ObjectPooler objectPooler)
+        public void LinkReferences(AudioManager audioPlayer, RaycastMousePosition raycaster, Animator animator, ObjectPooler objectPooler, MeleeAttacker meleeAttacker, ProjectileLauncher projectileLauncher)
         {
             this.audioPlayer = audioPlayer;
             this.raycaster = raycaster;
             this.animator = animator;
             this.objectPooler = objectPooler;
+            this.meleeAttacker = meleeAttacker;
+            this.projectileLauncher = projectileLauncher;
         }
 
         public void Initialize(CharacterManager character, BaseStats baseStats)

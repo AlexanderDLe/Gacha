@@ -34,7 +34,6 @@ namespace RPG.Control
                 this.rangeImage = skill.skillRangeImage;
                 this.reticleImage = skill.skillReticleImage;
             }
-            skill.Initialize(player_GO, skillType);
         }
 
         public Skill_SO skill = null;
@@ -56,15 +55,15 @@ namespace RPG.Control
         public Sprite rangeImage = null;
         public Sprite reticleImage = null;
 
-        public bool GetIsSkillInCooldown() => skillInCooldown;
+        public bool IsSkillInCooldown() => skillInCooldown;
 
         public void SetIsUsingSkill(bool value) => isUsingSkill = value;
 
-        public bool GetIsUsingSkill() => isUsingSkill;
+        public bool IsUsingSkill() => isUsingSkill;
 
         public bool SkillRequiresAim() => requiresSkillShot || requiresRangeShot;
 
-        public bool GetAimingEnabled() => isAimingSkill;
+        public bool IsAimingEnabled() => isAimingSkill;
 
         public void SetAimingEnabled(bool value) => isAimingSkill = value;
 
@@ -85,12 +84,11 @@ namespace RPG.Control
 
         public void TriggerSkill()
         {
-            skill.TriggerSkill(skillType);
             SetIsUsingSkill(true);
-            StartCoroutine(SkillCountdown());
+            StartCoroutine(TriggerSkillCooldown());
         }
 
-        IEnumerator SkillCountdown()
+        IEnumerator TriggerSkillCooldown()
         {
             skillInCooldown = true;
             skillCountdownTimer = cooldownResetTime;
