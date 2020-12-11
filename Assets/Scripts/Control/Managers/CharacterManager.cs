@@ -26,6 +26,8 @@ namespace RPG.Characters
         [FoldoutGroup("Metadata")]
         public Avatar avatar;
         [FoldoutGroup("Metadata")]
+        public RuntimeAnimatorController animatorController;
+        [FoldoutGroup("Metadata")]
         public AnimatorOverrideController animatorOverride;
         #endregion
 
@@ -64,7 +66,7 @@ namespace RPG.Characters
             this.avatar = char_SO.characterAvatar;
             this.name = char_SO.name;
             this.image = char_SO.image;
-            this.animatorOverride = char_SO.animatorOverride;
+            this.animatorController = char_SO.animatorController;
         }
 
         private void InitializeBaseStats(GameObject char_GO)

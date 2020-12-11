@@ -9,9 +9,8 @@ namespace RPG.Skill
         public Sprite skillSprite;
         public float baseCooldownTime = 3f;
 
-
         [FoldoutGroup("Skill FX")]
-        public GameObject skillVFX;
+        public GameObject skillPrefab;
         [FoldoutGroup("Skill FX")]
         public AudioClip skillVocalAudio;
         [FoldoutGroup("Skill FX")]

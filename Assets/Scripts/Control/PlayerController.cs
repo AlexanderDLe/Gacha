@@ -218,15 +218,15 @@ namespace RPG.Control
         {
             EnterMovementState();
         }
-        public void MovementSkillTriggered()
+        public void MovementSkillEnd()
         {
             EnterMovementState();
         }
-        public void PrimarySkillTriggered()
+        public void PrimarySkillEnd()
         {
             EnterMovementState();
         }
-        public void UltimateSkillTriggered()
+        public void UltimateSkillEnd()
         {
             EnterMovementState();
         }

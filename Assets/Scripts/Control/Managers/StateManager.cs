@@ -92,6 +92,9 @@ namespace RPG.Control
             builder.LinkReferences(animator, objectPooler, audioManager, raycaster, meleeAttacker, projectileLauncher, aoeCaster);
             dasher.LinkReferences(audioManager);
             aimer.LinkReferences(raycaster);
+            meleeAttacker.LinkReferences(objectPooler);
+            projectileLauncher.LinkReferences(objectPooler);
+            aoeCaster.LinkReferences(objectPooler);
         }
         #endregion
 

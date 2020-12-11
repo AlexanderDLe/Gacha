@@ -3743,6 +3743,8 @@ MonoBehaviour:
   initialize: {fileID: 0}
   objectPooler: {fileID: 0}
   meleeAttacker: {fileID: 0}
+  projectileLauncher: {fileID: 0}
+  aoeCaster: {fileID: 0}
   characterAudioSource: {fileID: 5605697787432900273}
   actionAudioSource: {fileID: 5605697787079883622}
   audioManager: {fileID: 0}
@@ -3794,6 +3796,7 @@ GameObject:
   - component: {fileID: 5605697787432900259}
   - component: {fileID: 5605697787432900262}
   - component: {fileID: 5605697787432900264}
+  - component: {fileID: 5605697787432900265}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -3850,6 +3853,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc8e1419ca1f51c45a49e8dda29ab8aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5605697787432900265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5605697787432900260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73fc7557749fa784c9e76d29a87fcfb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!136 &5605697787432900266

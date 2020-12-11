@@ -17,8 +17,6 @@ namespace RPG.Characters
         public Avatar characterAvatar;
         [FoldoutGroup("Metadata")]
         public RuntimeAnimatorController animatorController;
-        [FoldoutGroup("Metadata")]
-        public AnimatorOverrideController animatorOverride;
 
         [FoldoutGroup("Attributes")]
         public float movementSpeed;

@@ -105257,7 +105257,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 4.75
+  - time: 4.6666665
     functionName: UltimateSkillEnd
     data: 
     objectReferenceParameter: {fileID: 0}

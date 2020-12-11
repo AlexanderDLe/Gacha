@@ -7,6 +7,13 @@ namespace RPG.Combat
 {
     public class MeleeAttacker : MonoBehaviour
     {
+        ObjectPooler objectPooler = null;
+
+        public void LinkReferences(ObjectPooler objectPooler)
+        {
+            this.objectPooler = objectPooler;
+        }
+
         public void Strike(Vector3 hitboxPosition, float radius, LayerMask layer, float damage)
         {
             Collider[] hits = Physics.OverlapSphere(hitboxPosition, radius, layer);

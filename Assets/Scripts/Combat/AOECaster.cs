@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace RPG.Combat
 {
@@ -8,14 +6,19 @@ namespace RPG.Combat
     {
         ObjectPooler objectPooler = null;
 
-        private void Awake()
+        public void LinkReferences(ObjectPooler objectPooler)
         {
-            objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
+            this.objectPooler = objectPooler;
         }
 
         public void Cast()
         {
+            GameObject VFX = ExtractFromObjectPool("TO DO");
+        }
 
+        private GameObject ExtractFromObjectPool(string prefabName)
+        {
+            return objectPooler.SpawnFromPool(prefabName);
         }
     }
 }

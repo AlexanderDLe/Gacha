@@ -105251,7 +105251,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 2.55
-    functionName: HowlUltimateTrigger
+    functionName: HowlUltimateTriggered
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -105259,6 +105259,13 @@ AnimationClip:
     messageOptions: 0
   - time: 2.6166666
     functionName: UltimateSkillTriggered
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 4.7
+    functionName: UltimateSkillEnd
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

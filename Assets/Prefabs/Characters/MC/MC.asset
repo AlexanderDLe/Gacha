@@ -17,7 +17,7 @@ MonoBehaviour:
   prefab: {fileID: 1684900974663898214, guid: f8f6f8e0fc98a964295d46d819471eae, type: 3}
   image: {fileID: 21300000, guid: 0ed99b0d1ac4c524aa622e002b7e1ca8, type: 3}
   characterAvatar: {fileID: 9000000, guid: 1ed82881ee80afd4db3fc3108994a6dc, type: 2}
-  animatorController: {fileID: 0}
+  animatorController: {fileID: 9100000, guid: d4e0d75485837ac4a90649a3995a2968, type: 2}
   animatorOverride: {fileID: 22100000, guid: 06af5b907c159034f9e82c993ff60e3a, type: 2}
   movementSpeed: 6
   characterEnum: 1

@@ -36,10 +36,14 @@ namespace RPG.Control
         public void CharacterAnimation(Animator animator)
         {
             animator.avatar = character.avatar;
-            if (character.animatorOverride != null)
+            if (character.animatorController != null)
             {
-                animator.runtimeAnimatorController = character.animatorOverride;
+                animator.runtimeAnimatorController = character.animatorController;
             }
+            // if (character.animatorOverride != null)
+            // {
+            //     animator.runtimeAnimatorController = character.animatorOverride;
+            // }
             animator.Rebind();
         }
     }

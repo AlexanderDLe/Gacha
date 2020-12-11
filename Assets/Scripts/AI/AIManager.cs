@@ -71,9 +71,9 @@ namespace RPG.AI
 
             this.animator.avatar = script.characterAvatar;
 
-            if (script.animatorOverride != null)
+            if (script.animatorController != null)
             {
-                animator.runtimeAnimatorController = script.animatorOverride;
+                animator.runtimeAnimatorController = script.animatorController;
             }
 
             animator.Rebind();
@@ -118,15 +118,20 @@ namespace RPG.AI
         }
         IEnumerator StartAttackCooldown()
         {
-            attacker.attackCooldownCounter = attacker.attackCooldownTime;
+            ResetAttackCountdown();
             attacker.inAttackCooldown = true;
             while (attacker.attackCooldownCounter > 0)
             {
-                if (flincher.isFlinching) attacker.attackCooldownCounter = attacker.attackCooldownTime;
+                if (flincher.isFlinching) ResetAttackCountdown();
                 attacker.attackCooldownCounter -= Time.deltaTime;
                 yield return null;
             }
             attacker.inAttackCooldown = false;
+        }
+
+        private void ResetAttackCountdown()
+        {
+            attacker.attackCooldownCounter = attacker.attackCooldownTime;
         }
     }
 }

@@ -39,17 +39,14 @@ namespace RPG.Characters
             this.script = script;
             InitializeSkills();
             InitializePrimarySkill();
+            InitializeUltimateSkill();
         }
 
         public override void InitializeSkills()
         {
-            this.movementSkillVFX = script.movementSkill.skillVFX;
+            this.movementSkillVFX = script.movementSkill.skillPrefab;
             this.movementSkillVocalAudio = script.movementSkill.skillVocalAudio;
             this.movementSkillActionAudio = script.movementSkill.skillActionAudio;
-
-            this.ultimateSkillVFX = script.ultimateSkill.skillVFX;
-            this.ultimateSkillVocalAudio = script.ultimateSkill.skillVocalAudio;
-            this.ultimateSkillActionAudio = script.ultimateSkill.skillActionAudio;
         }
 
         private void InitializePrimarySkill()
@@ -59,11 +56,22 @@ namespace RPG.Characters
             this.primarySkill = script.primarySkill as ProjectileSkill;
             this.primaryProjectile = primarySkill.projectile_SO;
 
-            objectPooler.AddToPool(primarySkill.projectile_SO.prefab, 3);
+            objectPooler.AddToPool(primarySkill.projectile_SO.prefab, 5);
 
-            this.primarySkillVFX = primarySkill.skillVFX;
+            this.primarySkillVFX = primarySkill.skillPrefab;
             this.primarySkillVocalAudio = primarySkill.skillVocalAudio;
             this.primarySkillActionAudio = primarySkill.skillActionAudio;
+        }
+
+        private void InitializeUltimateSkill()
+        {
+            this.ultimateSkill = script.ultimateSkill as AOESkill;
+
+            objectPooler.AddToPool(ultimateSkill.skillPrefab, 2);
+
+            this.ultimateSkillVFX = script.ultimateSkill.skillPrefab;
+            this.ultimateSkillVocalAudio = script.ultimateSkill.skillVocalAudio;
+            this.ultimateSkillActionAudio = script.ultimateSkill.skillActionAudio;
         }
 
         #region Movement Skill
@@ -124,6 +132,7 @@ namespace RPG.Characters
         GameObject ultimateSkillVFX = null;
         AudioClip ultimateSkillActionAudio = null;
         AudioClip ultimateSkillVocalAudio = null;
+        AOESkill ultimateSkill;
 
         public override void TriggerUltimateSkill()
         {

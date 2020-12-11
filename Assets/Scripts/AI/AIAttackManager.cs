@@ -48,8 +48,14 @@ namespace RPG.AI
             this.attackCooldownTime = script.attackCooldownTime;
             this.weapon = script.weapon;
             this.weaponRange = script.weaponRange;
-
+            
+            SetUpReferences();
             InitializeFighter();
+        }
+
+        public void SetUpReferences()
+        {
+            meleeAttacker.LinkReferences(objectPooler);
         }
 
         public void InitializeFighter()

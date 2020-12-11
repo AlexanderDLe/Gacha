@@ -39,15 +39,15 @@ namespace RPG.Characters
 
         public override void InitializeSkills()
         {
-            this.movementSkillVFX = script.movementSkill.skillVFX;
+            this.movementSkillVFX = script.movementSkill.skillPrefab;
             this.movementSkillVocalAudio = script.movementSkill.skillVocalAudio;
             this.movementSkillActionAudio = script.movementSkill.skillActionAudio;
 
-            this.primarySkillVFX = script.primarySkill.skillVFX;
+            this.primarySkillVFX = script.primarySkill.skillPrefab;
             this.primarySkillVocalAudio = script.primarySkill.skillVocalAudio;
             this.primarySkillActionAudio = script.primarySkill.skillActionAudio;
 
-            this.ultimateSkillVFX = script.ultimateSkill.skillVFX;
+            this.ultimateSkillVFX = script.ultimateSkill.skillPrefab;
             this.ultimateSkillVocalAudio = script.ultimateSkill.skillVocalAudio;
             this.ultimateSkillActionAudio = script.ultimateSkill.skillActionAudio;
         }
@@ -84,7 +84,7 @@ namespace RPG.Characters
         {
             audioManager.PlayAudio(AudioEnum.Character, primarySkillVocalAudio);
         }
-        public void HowlPrimaryTrigger()
+        public void HowlPrimaryTriggered()
         {
             Instantiate(primarySkillVFX, transform.position, transform.rotation);
             audioManager.PlayAudio(AudioEnum.Action, primarySkillActionAudio);
@@ -105,7 +105,7 @@ namespace RPG.Characters
         {
             audioManager.PlayAudio(AudioEnum.Character, ultimateSkillVocalAudio);
         }
-        public void HowlUltimateTrigger()
+        public void HowlUltimateTriggered()
         {
             Instantiate(ultimateSkillVFX, transform.position, transform.rotation);
             audioManager.PlayAudio(AudioEnum.Action, ultimateSkillActionAudio);
