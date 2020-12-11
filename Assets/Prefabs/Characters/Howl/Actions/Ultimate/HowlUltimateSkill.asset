@@ -15,7 +15,8 @@ MonoBehaviour:
   skillName: Howl Sword Rain
   skillSprite: {fileID: 21300000, guid: 437e323ff4fa58647b91093db20a50fb, type: 3}
   baseCooldownTime: 3
-  skillVFX: {fileID: 1802202330807574, guid: 93381f5a39abcb04399973b40c39b376, type: 3}
+  skillPrefab: {fileID: 1802202330807574, guid: 93381f5a39abcb04399973b40c39b376,
+    type: 3}
   skillVocalAudio: {fileID: 8300000, guid: a1146034d8f08f84baeca9c889e091db, type: 3}
   skillActionAudio: {fileID: 8300000, guid: 202f1bc95c809b44d9b6710a2921038d, type: 3}
   requiresSkillShot: 0
@@ -23,3 +24,4 @@ MonoBehaviour:
   requiresRangeShot: 0
   skillRangeImage: {fileID: 0}
   skillReticleImage: {fileID: 0}
+  aoeTargetEnum: 0

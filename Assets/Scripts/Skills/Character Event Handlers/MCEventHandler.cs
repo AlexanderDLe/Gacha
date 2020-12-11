@@ -17,61 +17,27 @@ namespace RPG.Characters
         public RaycastMousePosition raycaster;
         public Animator animator;
 
-        public MeleeAttacker meleeAttacker = null;
+        public AOECreator aoeCreator = null;
         public ProjectileLauncher projectileLauncher = null;
-        public AOECaster aoeCaster = null;
 
-        public override void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler, RaycastMousePosition raycaster, Animator animator, MeleeAttacker meleeAttacker, ProjectileLauncher projectileLauncher, AOECaster aoeCaster)
+        public override void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler, RaycastMousePosition raycaster, Animator animator, AOECreator aoeCreator, ProjectileLauncher projectileLauncher)
         {
             this.audioManager = audioManager;
             this.objectPooler = objectPooler;
             this.raycaster = raycaster;
             this.animator = animator;
 
-            this.meleeAttacker = meleeAttacker;
+            this.aoeCreator = aoeCreator;
             this.projectileLauncher = projectileLauncher;
-            this.aoeCaster = aoeCaster;
         }
 
         public override void Initialize(BaseStats baseStats, PlayableCharacter_SO script)
         {
             this.baseStats = baseStats;
             this.script = script;
-            InitializeSkills();
+            InitializeMovementSkill();
             InitializePrimarySkill();
             InitializeUltimateSkill();
-        }
-
-        public override void InitializeSkills()
-        {
-            this.movementSkillVFX = script.movementSkill.skillPrefab;
-            this.movementSkillVocalAudio = script.movementSkill.skillVocalAudio;
-            this.movementSkillActionAudio = script.movementSkill.skillActionAudio;
-        }
-
-        private void InitializePrimarySkill()
-        {
-            /* Cast Skill_SO as ProjectileSkill 
-            ProjectileSkill inherits from abstract class Skill_SO */
-            this.primarySkill = script.primarySkill as ProjectileSkill;
-            this.primaryProjectile = primarySkill.projectile_SO;
-
-            objectPooler.AddToPool(primarySkill.projectile_SO.prefab, 5);
-
-            this.primarySkillVFX = primarySkill.skillPrefab;
-            this.primarySkillVocalAudio = primarySkill.skillVocalAudio;
-            this.primarySkillActionAudio = primarySkill.skillActionAudio;
-        }
-
-        private void InitializeUltimateSkill()
-        {
-            this.ultimateSkill = script.ultimateSkill as AOESkill;
-
-            objectPooler.AddToPool(ultimateSkill.skillPrefab, 2);
-
-            this.ultimateSkillVFX = script.ultimateSkill.skillPrefab;
-            this.ultimateSkillVocalAudio = script.ultimateSkill.skillVocalAudio;
-            this.ultimateSkillActionAudio = script.ultimateSkill.skillActionAudio;
         }
 
         #region Movement Skill
@@ -79,6 +45,12 @@ namespace RPG.Characters
         AudioClip movementSkillActionAudio;
         GameObject movementSkillVFX = null;
 
+        public override void InitializeMovementSkill()
+        {
+            this.movementSkillVFX = script.movementSkill.skillPrefab;
+            this.movementSkillVocalAudio = script.movementSkill.skillVocalAudio;
+            this.movementSkillActionAudio = script.movementSkill.skillActionAudio;
+        }
         public override void TriggerMovementSkill()
         {
             raycaster.RotateObjectTowardsMousePosition(gameObject);
@@ -100,6 +72,19 @@ namespace RPG.Characters
         Projectile_SO primaryProjectile;
         Vector3 primaryProjDestination = Vector3.zero;
 
+        private void InitializePrimarySkill()
+        {
+            /* Cast Skill_SO as ProjectileSkill 
+            ProjectileSkill inherits from abstract class Skill_SO */
+            this.primarySkill = script.primarySkill as ProjectileSkill;
+            this.primaryProjectile = primarySkill.projectile_SO;
+
+            objectPooler.AddToPool(primarySkill.projectile_SO.prefab, 5);
+
+            this.primarySkillVFX = primarySkill.skillPrefab;
+            this.primarySkillVocalAudio = primarySkill.skillVocalAudio;
+            this.primarySkillActionAudio = primarySkill.skillActionAudio;
+        }
         public override void TriggerPrimarySkill()
         {
             RaycastHit hit = raycaster.GetRaycastMousePoint(LayerMask.GetMask("Terrain"));
@@ -112,18 +97,17 @@ namespace RPG.Characters
         public void MCPrimaryTriggered()
         {
             string prefabName = primaryProjectile.prefab.name;
+            LayerMask layerToharm = LayerMask.GetMask("Enemy");
             Vector3 origin = new Vector3(transform.position.x, 0f, transform.position.z);
             Vector3 destination = primaryProjDestination;
             float speed = primaryProjectile.speed;
             float damage = 20f;
             float lifetime = primaryProjectile.maxLifeTime;
-            string layerToharm = "Enemy";
             bool hasActiveTime = primaryProjectile.hasActiveTime;
             float activeTime = primaryProjectile.activeTime;
 
             projectileLauncher.Shoot(prefabName, origin, destination, speed, damage, lifetime, layerToharm, hasActiveTime, activeTime);
 
-            // Instantiate(primarySkillVFX, transform.position, transform.rotation);
             audioManager.PlayAudio(AudioEnum.Action, primarySkillActionAudio);
         }
         #endregion
@@ -134,6 +118,16 @@ namespace RPG.Characters
         AudioClip ultimateSkillVocalAudio = null;
         AOESkill ultimateSkill;
 
+        private void InitializeUltimateSkill()
+        {
+            this.ultimateSkill = script.ultimateSkill as AOESkill;
+
+            objectPooler.AddToPool(ultimateSkill.skillPrefab, 2);
+
+            this.ultimateSkillVFX = script.ultimateSkill.skillPrefab;
+            this.ultimateSkillVocalAudio = script.ultimateSkill.skillVocalAudio;
+            this.ultimateSkillActionAudio = script.ultimateSkill.skillActionAudio;
+        }
         public override void TriggerUltimateSkill()
         {
             audioManager.PlayAudio(AudioEnum.Character, ultimateSkillVocalAudio);
@@ -142,7 +136,11 @@ namespace RPG.Characters
         }
         public void MCUltimateTriggered()
         {
-            Instantiate(ultimateSkillVFX, transform.position, transform.rotation);
+            AOEObject aoeObj = objectPooler.SpawnFromPool(ultimateSkillVFX.name).GetComponent<AOEObject>();
+
+            aoeObj.Initialize(transform.position, transform.rotation, 3);
+            aoeCreator.Invoke(aoeObj.aoeCenterPoint.position, 10f, LayerMask.GetMask("Enemy"), 20f);
+
             audioManager.PlayAudio(AudioEnum.Action, ultimateSkillActionAudio);
         }
         #endregion

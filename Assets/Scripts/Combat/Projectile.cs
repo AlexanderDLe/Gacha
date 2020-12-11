@@ -9,7 +9,7 @@ namespace RPG.Combat
     {
         Vector3 projectileHeightAdjustment = new Vector3(0, .6f, 0);
         Vector3 destination = Vector3.zero;
-        string layerToHarm;
+        LayerMask layerToHarm;
         float speed = 0f;
         float damage = 0f;
         float currentLifetime = 0f;
@@ -34,13 +34,13 @@ namespace RPG.Combat
         }
 
         // Initialize without active lifetime (entire proj will be disabled altogether)
-        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, float damage, float projectileLifetime, string layerToHarm)
+        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, float damage, float projectileLifetime, LayerMask layerToHarm)
         {
             InitProj(spawnPos, destination, speed, damage, projectileLifetime, layerToHarm);
         }
 
         // Initialize with active lifetime (hitbox will become inactive before proj is disabled)
-        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, float damage, float projectileLifetime, string layerToHarm, bool hasActiveLifetime, float activeLifetime)
+        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, float damage, float projectileLifetime, LayerMask layerToHarm, bool hasActiveLifetime, float activeLifetime)
         {
             InitProj(spawnPos, destination, speed, damage, projectileLifetime, layerToHarm);
 
@@ -48,7 +48,7 @@ namespace RPG.Combat
             this.activeLifetime = activeLifetime;
         }
 
-        private void InitProj(Vector3 spawnPos, Vector3 destination, float speed, float damage, float projectileLifetime, string layerToHarm)
+        private void InitProj(Vector3 spawnPos, Vector3 destination, float speed, float damage, float projectileLifetime, LayerMask layerToHarm)
         {
             this.destination = destination;
             transform.position = spawnPos;
@@ -76,15 +76,17 @@ namespace RPG.Combat
         private void OnTriggerEnter(Collider other)
         {
             if (!HitboxIsActive()) return;
-            if (other.gameObject.layer == LayerMask.NameToLayer(layerToHarm))
+            /*  Strangely layer.value returns a value to the second power (x ^ 2).
+                Therefore, we must take the log of that value before comparison.*/
+            if (other.gameObject.layer == Mathf.Log(layerToHarm.value, 2))
             {
-                if (layerToHarm == "Player")
+                if (layerToHarm == LayerMask.GetMask("Player"))
                 {
                     BaseStats target = null;
                     target = other.gameObject.GetComponent<StateManager>().baseStats;
                     target.TakeDamage(damage);
                 }
-                else if (layerToHarm == "Enemy")
+                else if (layerToHarm == LayerMask.GetMask("Enemy"))
                 {
                     AIManager target = null;
                     target = other.gameObject.GetComponent<AIManager>();
@@ -95,7 +97,7 @@ namespace RPG.Combat
 
         private bool HitboxIsActive()
         {
-            if (!hasActiveLifetime) return false;
+            if (!hasActiveLifetime) return true;
             else return currentLifetime < activeLifetime;
         }
     }

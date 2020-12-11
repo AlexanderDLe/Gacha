@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RPG.Combat
 {
-    public class MeleeAttacker : MonoBehaviour
+    public class AOECreator : MonoBehaviour
     {
         ObjectPooler objectPooler = null;
 
@@ -14,7 +14,7 @@ namespace RPG.Combat
             this.objectPooler = objectPooler;
         }
 
-        public void Strike(Vector3 hitboxPosition, float radius, LayerMask layer, float damage)
+        public void Invoke(Vector3 hitboxPosition, float radius, LayerMask layer, float damage)
         {
             Collider[] hits = Physics.OverlapSphere(hitboxPosition, radius, layer);
 

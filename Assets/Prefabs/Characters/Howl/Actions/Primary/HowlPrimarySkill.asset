@@ -15,7 +15,8 @@ MonoBehaviour:
   skillName: Howl Primary
   skillSprite: {fileID: 21300000, guid: 12dc3644b4e241e4b88e40a771764a5f, type: 3}
   baseCooldownTime: 3
-  skillVFX: {fileID: 1949624779417528, guid: 5a9d92790b4dfd64284553d68fe6f0cd, type: 3}
+  skillPrefab: {fileID: 1949624779417528, guid: 5a9d92790b4dfd64284553d68fe6f0cd,
+    type: 3}
   skillVocalAudio: {fileID: 8300000, guid: 4732cfc266ced3d4fa6143e1d236d02a, type: 3}
   skillActionAudio: {fileID: 8300000, guid: d142106998c21e64e883bb28274a68f2, type: 3}
   requiresSkillShot: 1
@@ -23,3 +24,4 @@ MonoBehaviour:
   requiresRangeShot: 0
   skillRangeImage: {fileID: 21300000, guid: d0f4f45c3e531e44f945d47d855a63c8, type: 3}
   skillReticleImage: {fileID: 21300000, guid: d0f4f45c3e531e44f945d47d855a63c8, type: 3}
+  projectile_SO: {fileID: 0}

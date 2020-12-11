@@ -11,7 +11,7 @@ namespace RPG.Combat
             this.objectPooler = objectPooler;
         }
 
-        public void Shoot(string prefabName, Vector3 origin, Vector3 destination, float speed, float damage, float lifetime, string layerToHarm)
+        public void Shoot(string prefabName, Vector3 origin, Vector3 destination, float speed, float damage, float lifetime, LayerMask layerToHarm)
         {
             Projectile proj = ExtractFromObjectPool(prefabName);
 
@@ -19,7 +19,7 @@ namespace RPG.Combat
             proj.transform.LookAt(destination);
         }
 
-        public void Shoot(string prefabName, Vector3 origin, Vector3 destination, float speed, float damage, float lifetime, string layerToHarm, bool hasActiveLifetime, float activeLifetime)
+        public void Shoot(string prefabName, Vector3 origin, Vector3 destination, float speed, float damage, float lifetime, LayerMask layerToHarm, bool hasActiveLifetime, float activeLifetime)
         {
             Projectile proj = ExtractFromObjectPool(prefabName);
 

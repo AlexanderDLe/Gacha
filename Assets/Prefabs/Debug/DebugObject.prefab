@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 715534180313805675}
   - component: {fileID: 8055687662254769601}
   - component: {fileID: 221342972611129120}
-  - component: {fileID: -5033394907364189259}
+  - component: {fileID: -1488291749621034099}
+  - component: {fileID: 6857554956086694850}
   m_Layer: 0
   m_Name: DebugObject
   m_TagString: Untagged
@@ -94,7 +95,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-5033394907364189259
+--- !u!114 &-1488291749621034099
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,7 +104,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 2344632610373806237}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e831185bb3e6b043949a5b08b63cd5b, type: 3}
+  m_Script: {fileID: 11500000, guid: ffa64013ff90f8747a920f1151b0782f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToDestroy: 3
+--- !u!114 &6857554956086694850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2344632610373806237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52a4c096d7ca60048ab63f1843b87b8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -15,7 +15,8 @@ MonoBehaviour:
   skillName: MC Blink
   skillSprite: {fileID: 21300000, guid: 62ce59ce09148c847b198159a3abc9f6, type: 3}
   baseCooldownTime: 1
-  skillVFX: {fileID: 1934977346563538, guid: 95bce127e4c29554499840ffd8ec9c40, type: 3}
+  skillPrefab: {fileID: 1934977346563538, guid: 95bce127e4c29554499840ffd8ec9c40,
+    type: 3}
   skillVocalAudio: {fileID: 8300000, guid: 8022360c05ad2af4989b17ee0dc700f7, type: 3}
   skillActionAudio: {fileID: 8300000, guid: 27313bac3859aee469bcfd5abe09030d, type: 3}
   requiresSkillShot: 0

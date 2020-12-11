@@ -28919,7 +28919,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.6166667
+  - time: 0.5
     functionName: MovementSkillEnd
     data: 
     objectReferenceParameter: {fileID: 0}

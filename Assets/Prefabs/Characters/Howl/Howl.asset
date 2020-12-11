@@ -17,8 +17,7 @@ MonoBehaviour:
   prefab: {fileID: 1458085392994294953, guid: 24eaedfc6a3c2db4eb8e3acc4dd3e994, type: 3}
   image: {fileID: 21300000, guid: f216b48aaeff2054eadb3bb27c9a1431, type: 3}
   characterAvatar: {fileID: 9000000, guid: 8181a60873ee9534e8bbaae5f51cd066, type: 2}
-  animatorController: {fileID: 0}
-  animatorOverride: {fileID: 22100000, guid: 0c045d28aa369de48b0a4a0002d47f53, type: 2}
+  animatorController: {fileID: 9100000, guid: fc536b52059a8474190ff46352460982, type: 2}
   movementSpeed: 6
   characterEnum: 2
   dashAudio:

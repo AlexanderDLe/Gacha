@@ -15,29 +15,27 @@ namespace RPG.Characters
         public RaycastMousePosition raycaster;
         public Animator animator;
 
-        public MeleeAttacker meleeAttacker = null;
+        public AOECreator aoeCreator = null;
         public ProjectileLauncher projectileLauncher = null;
-        public AOECaster aoeCaster = null;
 
-        public override void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler, RaycastMousePosition raycaster, Animator animator, MeleeAttacker meleeAttacker, ProjectileLauncher projectileLauncher, AOECaster aoeCaster)
+        public override void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler, RaycastMousePosition raycaster, Animator animator, AOECreator aoeCreator, ProjectileLauncher projectileLauncher)
         {
             this.audioManager = audioManager;
             this.objectPooler = objectPooler;
             this.raycaster = raycaster;
             this.animator = animator;
 
-            this.meleeAttacker = meleeAttacker;
+            this.aoeCreator = aoeCreator;
             this.projectileLauncher = projectileLauncher;
-            this.aoeCaster = aoeCaster;
         }
         public override void Initialize(BaseStats baseStats, PlayableCharacter_SO script)
         {
             this.baseStats = baseStats;
             this.script = script;
-            InitializeSkills();
+            InitializeMovementSkill();
         }
 
-        public override void InitializeSkills()
+        public override void InitializeMovementSkill()
         {
             this.movementSkillVFX = script.movementSkill.skillPrefab;
             this.movementSkillVocalAudio = script.movementSkill.skillVocalAudio;

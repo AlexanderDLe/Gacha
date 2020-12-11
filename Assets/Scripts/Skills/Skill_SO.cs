@@ -5,8 +5,11 @@ namespace RPG.Skill
 {
     public abstract class Skill_SO : ScriptableObject
     {
+        [FoldoutGroup("Metadata")]
         public string skillName = "New Skill";
+        [FoldoutGroup("Metadata")]
         public Sprite skillSprite;
+        [FoldoutGroup("Metadata")]
         public float baseCooldownTime = 3f;
 
         [FoldoutGroup("Skill FX")]

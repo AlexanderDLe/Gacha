@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2035111234}
-  m_IndirectSpecularColor: {r: 131.16855, g: 162.52502, b: 215.10977, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1664,7 +1664,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ebae09b8264aa340883c3480a8987a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pools: []
+  pools:
+  - prefab: {fileID: 2344632610373806237, guid: 66cb012dc8348f04ca3a574e921bc3a5,
+      type: 3}
+    size: 10
 --- !u!4 &1347320112
 Transform:
   m_ObjectHideFlags: 0
@@ -3742,9 +3745,8 @@ MonoBehaviour:
   aimer: {fileID: 0}
   initialize: {fileID: 0}
   objectPooler: {fileID: 0}
-  meleeAttacker: {fileID: 0}
+  aoeCreator: {fileID: 0}
   projectileLauncher: {fileID: 0}
-  aoeCaster: {fileID: 0}
   characterAudioSource: {fileID: 5605697787432900273}
   actionAudioSource: {fileID: 5605697787079883622}
   audioManager: {fileID: 0}
@@ -3796,7 +3798,6 @@ GameObject:
   - component: {fileID: 5605697787432900259}
   - component: {fileID: 5605697787432900262}
   - component: {fileID: 5605697787432900264}
-  - component: {fileID: 5605697787432900265}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -3853,18 +3854,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc8e1419ca1f51c45a49e8dda29ab8aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5605697787432900265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5605697787432900260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73fc7557749fa784c9e76d29a87fcfb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!136 &5605697787432900266

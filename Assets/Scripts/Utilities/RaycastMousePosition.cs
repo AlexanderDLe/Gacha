@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using RPG.Utility;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace RPG.Core
@@ -6,6 +7,7 @@ namespace RPG.Core
     public class RaycastMousePosition : MonoBehaviour
     {
         LayerMask terrainLayer;
+        ObjectPooler objectPooler = null;
         public static Camera cam = null;
 
         [Header("Debug")]
@@ -19,6 +21,11 @@ namespace RPG.Core
         {
             if (!cam) cam = Camera.main;
             terrainLayer = LayerMask.GetMask("Terrain");
+        }
+        public void LinkReferences(ObjectPooler objectPooler)
+        {
+            this.objectPooler = objectPooler;
+            objectPooler.AddToPool(debugObject, 10);
         }
 
         public void RotateObjectTowardsMousePosition(GameObject gameObject)
@@ -48,7 +55,9 @@ namespace RPG.Core
         private void RunDebug(GameObject gameObject, Vector3 destination)
         {
             Debug.DrawRay(gameObject.transform.position, gameObject.transform.forward, Color.red, 3f);
-            GameObject obj = Instantiate(debugObject, destination, debugObject.transform.rotation);
+            GameObject obj = objectPooler.SpawnFromPool(debugObject.name);
+            DebugObject debugObj = obj.GetComponent<DebugObject>();
+            debugObj.Initialize(destination, .5f, 3);
         }
 
         public RaycastHit GetRaycastMousePoint()

@@ -14,7 +14,7 @@ namespace RPG.Control
         AudioManager audioPlayer = null;
         ObjectPooler objectPooler = null;
         RaycastMousePosition raycaster = null;
-        MeleeAttacker meleeAttacker = null;
+        AOECreator aoeCreator = null;
         ProjectileLauncher projectileLauncher = null;
 
         private void Start()
@@ -22,13 +22,13 @@ namespace RPG.Control
             enemyLayer = LayerMask.GetMask("Enemy");
         }
 
-        public void LinkReferences(AudioManager audioPlayer, RaycastMousePosition raycaster, Animator animator, ObjectPooler objectPooler, MeleeAttacker meleeAttacker, ProjectileLauncher projectileLauncher)
+        public void LinkReferences(AudioManager audioPlayer, RaycastMousePosition raycaster, Animator animator, ObjectPooler objectPooler, AOECreator aoeCreator, ProjectileLauncher projectileLauncher)
         {
             this.audioPlayer = audioPlayer;
             this.raycaster = raycaster;
             this.animator = animator;
             this.objectPooler = objectPooler;
-            this.meleeAttacker = meleeAttacker;
+            this.aoeCreator = aoeCreator;
             this.projectileLauncher = projectileLauncher;
         }
 
@@ -138,7 +138,7 @@ namespace RPG.Control
             float speed = projectile_SO.speed;
             float damage = CalculateDamage(comboIndex);
             float lifetime = projectile_SO.maxLifeTime;
-            string layerToHarm = "Enemy";
+            LayerMask layerToHarm = LayerMask.GetMask("Enemy");
 
             projectileLauncher.Shoot(prefabName, projOrigin, projDestination, speed, damage, lifetime, layerToHarm);
         }
@@ -149,7 +149,7 @@ namespace RPG.Control
             float radius = autoAttackHitRadiuses[comboIndex];
             float damage = CalculateDamage(comboIndex);
 
-            meleeAttacker.Strike(hitboxPoint.position, radius, enemyLayer, damage);
+            aoeCreator.Invoke(hitboxPoint.position, radius, enemyLayer, damage);
         }
 
         private float CalculateDamage(int comboIndex)

@@ -14,7 +14,7 @@ namespace RPG.AI
         GameObject player = null;
         BaseStats baseStats = null;
         GameObject prefab = null;
-        MeleeAttacker meleeAttacker = null;
+        AOECreator meleeAttacker = null;
         public LayerMask playerLayer;
         public FightTypeEnum fightingType;
         public Weapon weapon;
@@ -38,7 +38,7 @@ namespace RPG.AI
         {
             this.script = script;
             this.AIManager = GetComponent<AIManager>();
-            this.meleeAttacker = GetComponent<MeleeAttacker>();
+            this.meleeAttacker = GetComponent<AOECreator>();
             this.objectPooler = objectPooler;
             this.player = player;
             this.baseStats = baseStats;
@@ -48,7 +48,7 @@ namespace RPG.AI
             this.attackCooldownTime = script.attackCooldownTime;
             this.weapon = script.weapon;
             this.weaponRange = script.weaponRange;
-            
+
             SetUpReferences();
             InitializeFighter();
         }
@@ -94,13 +94,13 @@ namespace RPG.AI
         private void InflictMelee()
         {
             float damage = Mathf.Round(baseStats.GetDamage());
-            meleeAttacker.Strike(hitboxPoint.position, hitboxRadius, playerLayer, damage);
+            meleeAttacker.Invoke(hitboxPoint.position, hitboxRadius, playerLayer, damage);
         }
 
         private void ShootProjectile()
         {
             Projectile proj = objectPooler.SpawnFromPool(projectile.name).GetComponent<Projectile>();
-            string layerToHarm = "Player";
+            LayerMask layerToHarm = LayerMask.GetMask("Player");
 
             proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, baseStats.GetDamage(), projectileLifetime, layerToHarm);
         }

@@ -13,10 +13,9 @@ namespace RPG.Control
         AudioManager audioManager = null;
         RaycastMousePosition raycaster = null;
         ProjectileLauncher projectileLauncher;
-        MeleeAttacker meleeAttacker;
-        AOECaster aoeCaster;
+        AOECreator meleeAttacker;
 
-        public void LinkReferences(Animator animator, ObjectPooler objectPooler, AudioManager audioManager, RaycastMousePosition raycaster, MeleeAttacker meleeAttacker, ProjectileLauncher projectileLauncher, AOECaster aoeCaster)
+        public void LinkReferences(Animator animator, ObjectPooler objectPooler, AudioManager audioManager, RaycastMousePosition raycaster, AOECreator meleeAttacker, ProjectileLauncher projectileLauncher)
         {
             this.animator = animator;
             this.objectPooler = objectPooler;
@@ -25,7 +24,6 @@ namespace RPG.Control
 
             this.meleeAttacker = meleeAttacker;
             this.projectileLauncher = projectileLauncher;
-            this.aoeCaster = aoeCaster;
         }
 
         public CharacterManager BuildCharacter(GameObject char_GO,
@@ -91,7 +89,7 @@ namespace RPG.Control
 
             // 2. Set up the Character Skill Script
             SkillEventHandler animEventHandler = AddCharEventHandler(char_SO);
-            animEventHandler.LinkReferences(audioManager, objectPooler, raycaster, animator, meleeAttacker, projectileLauncher, aoeCaster);
+            animEventHandler.LinkReferences(audioManager, objectPooler, raycaster, animator, meleeAttacker, projectileLauncher);
 
             // 3. Initialize the CharacterManager with the necessary data
             charManager.Initialize(gameObject, char_GO, animator, char_SO, weapon, animEventHandler);
