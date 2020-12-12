@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 
-public class FacingCamera : MonoBehaviour
+namespace RPG.Utility
 {
-    void LateUpdate()
+    public class FacingCamera : MonoBehaviour
     {
-        transform.forward = Camera.main.transform.forward;
+        void LateUpdate()
+        {
+            transform.forward = Camera.main.transform.forward;
+        }
     }
 }

@@ -64,11 +64,11 @@ public class ObjectPooler : MonoBehaviour
         poolDictionary.Add(prefab.name, objectPool);
     }
 
-    public void RemoveFromPool(GameObject prefab)
+    public void RemoveFromPool(string prefabName)
     {
-        if (poolDictionary.ContainsKey(prefab.name))
+        if (poolDictionary.ContainsKey(prefabName))
         {
-            poolDictionary.Remove(prefab.name);
+            poolDictionary.Remove(prefabName);
         }
     }
 

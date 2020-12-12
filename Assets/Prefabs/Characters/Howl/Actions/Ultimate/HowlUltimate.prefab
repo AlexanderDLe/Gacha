@@ -14422,7 +14422,7 @@ GameObject:
   - component: {fileID: 198907460874799738}
   - component: {fileID: 199225957835480208}
   - component: {fileID: 114863731552111706}
-  - component: {fileID: 1988184486878151579}
+  - component: {fileID: 8865079258766848353}
   m_Layer: 0
   m_Name: HowlUltimate
   m_TagString: Untagged
@@ -19338,7 +19338,7 @@ MonoBehaviour:
   useOnlyRotationOffset: 0
   UseFirePointRotation: 0
   DestoyMainEffect: 0
---- !u!114 &1988184486878151579
+--- !u!114 &8865079258766848353
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -19347,7 +19347,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1802202330807574}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e831185bb3e6b043949a5b08b63cd5b, type: 3}
+  m_Script: {fileID: 11500000, guid: d43487f6887d5b149ba18a9d5fedf409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToDestroy: 3
+  aoeCenterPoint: {fileID: 0}

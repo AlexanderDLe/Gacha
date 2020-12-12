@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace RPG.Utility
 {
     public class DebugObject : MonoBehaviour
     {
-        float currentLifetime = 0f;
-        float maxLifetime = 10f;
+        public float currentLifetime = 0f;
+        public float maxLifetime = 10f;
 
         private void Update()
         {
             currentLifetime += Time.deltaTime;
             if (currentLifetime > maxLifetime)
             {
-                ResetScale();
+                Reset();
                 gameObject.SetActive(false);
             }
         }
@@ -24,13 +21,12 @@ namespace RPG.Utility
         {
             gameObject.transform.position = spawnPos;
             gameObject.transform.localScale *= scale;
-
-            this.currentLifetime = 0;
             this.maxLifetime = maxLifetime;
         }
 
-        private void ResetScale()
+        private void Reset()
         {
+            currentLifetime = 0;
             gameObject.transform.localScale = new Vector3(1, 1, 1);
         }
     }

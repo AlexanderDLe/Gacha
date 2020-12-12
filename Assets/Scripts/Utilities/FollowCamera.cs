@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RPG.Core
+namespace RPG.Utility
 {
     public class FollowCamera : MonoBehaviour
     {

@@ -25,3 +25,4 @@ MonoBehaviour:
   skillRangeImage: {fileID: 0}
   skillReticleImage: {fileID: 0}
   aoeTargetEnum: 2
+  effectChain: []

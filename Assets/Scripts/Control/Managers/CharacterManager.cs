@@ -55,9 +55,9 @@ namespace RPG.Characters
         {
             InitializeMetadata(char_SO);
             InitializeBaseStats(char_GO);
-            InitializeEventHandler(animEventHandler);
             InitializeAttack(weapon);
             InitializeAllSkills(player_GO, char_GO, animator);
+            InitializeSkillEventHandler(animEventHandler);
         }
 
         private void InitializeMetadata(PlayableCharacter_SO char_SO)
@@ -73,12 +73,6 @@ namespace RPG.Characters
         {
             this.baseStats = char_GO.AddComponent<BaseStats>();
             this.baseStats.Initialize(script);
-        }
-
-        private void InitializeEventHandler(SkillEventHandler animEventHandler)
-        {
-            this.skillEventHandler = animEventHandler;
-            this.skillEventHandler.Initialize(baseStats, script);
         }
 
         private void InitializeAttack(Weapon weapon)
@@ -110,6 +104,12 @@ namespace RPG.Characters
             skill.Initialize(player_GO, animator, skillType, skillSO, skillImage);
 
             return skill;
+        }
+
+        private void InitializeSkillEventHandler(SkillEventHandler animEventHandler)
+        {
+            this.skillEventHandler = animEventHandler;
+            this.skillEventHandler.Initialize(baseStats, script);
         }
 
         public void CancelSkillAiming()

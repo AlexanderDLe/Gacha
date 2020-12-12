@@ -12,10 +12,9 @@ namespace RPG.Control
         ObjectPooler objectPooler = null;
         AudioManager audioManager = null;
         RaycastMousePosition raycaster = null;
-        ProjectileLauncher projectileLauncher;
-        AOECreator meleeAttacker;
+        AOEInvoker meleeAttacker;
 
-        public void LinkReferences(Animator animator, ObjectPooler objectPooler, AudioManager audioManager, RaycastMousePosition raycaster, AOECreator meleeAttacker, ProjectileLauncher projectileLauncher)
+        public void LinkReferences(Animator animator, ObjectPooler objectPooler, AudioManager audioManager, RaycastMousePosition raycaster, AOEInvoker meleeAttacker)
         {
             this.animator = animator;
             this.objectPooler = objectPooler;
@@ -23,7 +22,6 @@ namespace RPG.Control
             this.raycaster = raycaster;
 
             this.meleeAttacker = meleeAttacker;
-            this.projectileLauncher = projectileLauncher;
         }
 
         public CharacterManager BuildCharacter(GameObject char_GO,
@@ -74,7 +72,7 @@ namespace RPG.Control
             weapon = Instantiate(char_SO.weapon, holdWeaponTransform);
 
             // 5. If Projectile fighter, then add to Object Pool
-            AddProjectilesToPool(char_SO);
+            AddObjectsToPool(char_SO);
 
             char_PF.SetActive(false);
             return char_PF;
@@ -89,15 +87,23 @@ namespace RPG.Control
 
             // 2. Set up the Character Skill Script
             SkillEventHandler animEventHandler = AddCharEventHandler(char_SO);
-            animEventHandler.LinkReferences(audioManager, objectPooler, raycaster, animator, meleeAttacker, projectileLauncher);
+            animEventHandler.LinkReferences(audioManager, objectPooler, raycaster, animator, meleeAttacker);
 
             // 3. Initialize the CharacterManager with the necessary data
             charManager.Initialize(gameObject, char_GO, animator, char_SO, weapon, animEventHandler);
             return charManager;
         }
 
-        private void AddProjectilesToPool(PlayableCharacter_SO char_SO)
+        private void AddObjectsToPool(PlayableCharacter_SO char_SO)
         {
+            // Add attack VFX to pool
+            GameObject[] attackVFXArr = char_SO.autoAttackVFX;
+            foreach (GameObject attackVFX in attackVFXArr)
+            {
+                objectPooler.AddToPool(attackVFX, 3);
+            }
+
+            // If projectile user, then add projectiles to pool
             if (char_SO.fightingType == FightTypeEnum.Projectile)
             {
                 GameObject projectile = char_SO.projectile.prefab;

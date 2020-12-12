@@ -4821,7 +4821,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4673061110187000}
-  - component: {fileID: 3958461028174061668}
+  - component: {fileID: -4797725238889565248}
   m_Layer: 0
   m_Name: Ekard_RightAttack
   m_TagString: Untagged
@@ -4849,7 +4849,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3958461028174061668
+--- !u!114 &-4797725238889565248
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4858,10 +4858,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1107296871017770}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e831185bb3e6b043949a5b08b63cd5b, type: 3}
+  m_Script: {fileID: 11500000, guid: d43487f6887d5b149ba18a9d5fedf409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToDestroy: 3
+  aoeCenterPoint: {fileID: 0}
 --- !u!1 &1471532546853156
 GameObject:
   m_ObjectHideFlags: 0

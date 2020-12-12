@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RPG.Combat
 {
-    public class AOECreator : MonoBehaviour
+    public class AOEInvoker : MonoBehaviour
     {
         ObjectPooler objectPooler = null;
 
@@ -18,11 +18,11 @@ namespace RPG.Combat
         {
             Collider[] hits = Physics.OverlapSphere(hitboxPosition, radius, layer);
 
-            if (layer == LayerMask.GetMask("Enemy")) HitEnemies(damage, hits);
-            if (layer == LayerMask.GetMask("Player")) HitPlayer(damage, hits);
+            if (layer == LayerMask.GetMask("Enemy")) AffectEnemies(damage, hits);
+            if (layer == LayerMask.GetMask("Player")) AffectPlayer(damage, hits);
         }
 
-        private static void HitPlayer(float damage, Collider[] hits)
+        private static void AffectPlayer(float damage, Collider[] hits)
         {
             foreach (Collider hit in hits)
             {
@@ -31,7 +31,7 @@ namespace RPG.Combat
             }
         }
 
-        private static void HitEnemies(float damage, Collider[] hits)
+        private static void AffectEnemies(float damage, Collider[] hits)
         {
             foreach (Collider hit in hits)
             {

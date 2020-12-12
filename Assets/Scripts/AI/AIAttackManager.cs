@@ -14,7 +14,7 @@ namespace RPG.AI
         GameObject player = null;
         BaseStats baseStats = null;
         GameObject prefab = null;
-        AOECreator meleeAttacker = null;
+        AOEInvoker meleeAttacker = null;
         public LayerMask playerLayer;
         public FightTypeEnum fightingType;
         public Weapon weapon;
@@ -38,7 +38,7 @@ namespace RPG.AI
         {
             this.script = script;
             this.AIManager = GetComponent<AIManager>();
-            this.meleeAttacker = GetComponent<AOECreator>();
+            this.meleeAttacker = GetComponent<AOEInvoker>();
             this.objectPooler = objectPooler;
             this.player = player;
             this.baseStats = baseStats;

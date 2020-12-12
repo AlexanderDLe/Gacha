@@ -52,7 +52,9 @@ namespace RPG.Combat
         {
             this.destination = destination;
             transform.position = spawnPos;
-            transform.LookAt(destination + projectileHeightAdjustment);
+
+            // We want it to look at the same level as the spawn position so it doesn't angle upwards or downwards as it moves.
+            transform.LookAt(new Vector3(destination.x, spawnPos.y, destination.z));
 
             this.speed = speed;
             this.damage = damage;

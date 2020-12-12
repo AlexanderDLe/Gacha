@@ -35,9 +35,7 @@ namespace RPG.Control
 
         #region Combat Tools
         [FoldoutGroup("Combat Tools")]
-        public AOECreator aoeCreator = null;
-        [FoldoutGroup("Combat Tools")]
-        public ProjectileLauncher projectileLauncher = null;
+        public AOEInvoker aoeCreator = null;
         #endregion
 
         #region Audio
@@ -69,9 +67,7 @@ namespace RPG.Control
             dasher = GetComponent<DashManager>();
             attacker = GetComponent<AttackManager>();
             aimer = GetComponent<AimManager>();
-
-            aoeCreator = GetComponent<AOECreator>();
-            projectileLauncher = GetComponent<ProjectileLauncher>();
+            aoeCreator = GetComponent<AOEInvoker>();
 
             objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
@@ -85,12 +81,11 @@ namespace RPG.Control
         public void SetUpReferences()
         {
             audioManager.SetAudioSources(characterAudioSource, actionAudioSource);
-            attacker.LinkReferences(audioManager, raycaster, animator, objectPooler, aoeCreator, projectileLauncher);
-            builder.LinkReferences(animator, objectPooler, audioManager, raycaster, aoeCreator, projectileLauncher);
+            attacker.LinkReferences(audioManager, raycaster, animator, objectPooler, aoeCreator);
+            builder.LinkReferences(animator, objectPooler, audioManager, raycaster, aoeCreator);
             dasher.LinkReferences(audioManager);
             aimer.LinkReferences(raycaster);
             aoeCreator.LinkReferences(objectPooler);
-            projectileLauncher.LinkReferences(objectPooler);
             raycaster.LinkReferences(objectPooler);
         }
         #endregion

@@ -1,5 +1,4 @@
 ﻿using RPG.Utility;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace RPG.Core

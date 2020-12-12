@@ -1,4 +1,5 @@
-﻿using RPG.Core;
+﻿using System.Collections.Generic;
+using RPG.Combat;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -15,5 +16,9 @@ namespace RPG.Skill
     {
         [FoldoutGroup("AOE")]
         public AOETargetEnum aoeTargetEnum;
+
+        [FoldoutGroup("AOE")]
+        public List<Effect> effectChain;
+
     }
 }

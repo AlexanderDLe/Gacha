@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class AOEObject : MonoBehaviour
+public class FXObject : MonoBehaviour
 {
     public Transform aoeCenterPoint = null;
     float currentTimer = 0;

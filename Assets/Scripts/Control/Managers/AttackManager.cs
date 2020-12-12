@@ -14,22 +14,20 @@ namespace RPG.Control
         AudioManager audioPlayer = null;
         ObjectPooler objectPooler = null;
         RaycastMousePosition raycaster = null;
-        AOECreator aoeCreator = null;
-        ProjectileLauncher projectileLauncher = null;
+        AOEInvoker aoeCreator = null;
 
         private void Start()
         {
             enemyLayer = LayerMask.GetMask("Enemy");
         }
 
-        public void LinkReferences(AudioManager audioPlayer, RaycastMousePosition raycaster, Animator animator, ObjectPooler objectPooler, AOECreator aoeCreator, ProjectileLauncher projectileLauncher)
+        public void LinkReferences(AudioManager audioPlayer, RaycastMousePosition raycaster, Animator animator, ObjectPooler objectPooler, AOEInvoker aoeCreator)
         {
             this.audioPlayer = audioPlayer;
             this.raycaster = raycaster;
             this.animator = animator;
             this.objectPooler = objectPooler;
             this.aoeCreator = aoeCreator;
-            this.projectileLauncher = projectileLauncher;
         }
 
         public void Initialize(CharacterManager character, BaseStats baseStats)
@@ -105,20 +103,24 @@ namespace RPG.Control
         public void Attack1()
         {
             audioPlayer.PlayAudio(AudioEnum.Character, weakAttackAudio);
-            Instantiate(autoAttackVFX[0], transform.position, transform.rotation);
-            AutoAttack(0);
+            int comboIndex = 0;
+
+            SpawnAttackVFXObj(comboIndex);
+            AutoAttack(comboIndex);
         }
         public void Attack2()
         {
             audioPlayer.PlayAudio(AudioEnum.Character, mediumAttackAudio);
-            Instantiate(autoAttackVFX[1], transform.position, transform.rotation);
-            AutoAttack(1);
+            int comboIndex = 1;
+
+            SpawnAttackVFXObj(comboIndex);
+            AutoAttack(comboIndex);
         }
-        public void AttackStart() { }
-        public void AttackEnd()
+
+        private void SpawnAttackVFXObj(int index)
         {
-            SetCanTriggerNextAutoAttack(true);
-            SetIsInAutoAttackState(false);
+            FXObject aoeObj = objectPooler.SpawnFromPool(autoAttackVFX[index].name).GetComponent<FXObject>();
+            aoeObj.Initialize(transform.position, transform.rotation, 1);
         }
 
         public void AutoAttack(int comboIndex)
@@ -126,6 +128,7 @@ namespace RPG.Control
             if (fightingType == FightTypeEnum.Melee) InflictMeleeDamage(comboIndex);
             if (fightingType == FightTypeEnum.Projectile) ShootProjectile(comboIndex);
         }
+
         private void ShootProjectile(int comboIndex)
         {
             LayerMask terrainLayer = LayerMask.GetMask("Terrain");
@@ -140,7 +143,8 @@ namespace RPG.Control
             float lifetime = projectile_SO.maxLifeTime;
             LayerMask layerToHarm = LayerMask.GetMask("Enemy");
 
-            projectileLauncher.Shoot(prefabName, projOrigin, projDestination, speed, damage, lifetime, layerToHarm);
+            Projectile proj = objectPooler.SpawnFromPool(prefabName).GetComponent<Projectile>();
+            proj.Initialize(projOrigin, projDestination, speed, damage, lifetime, layerToHarm);
         }
 
         public void InflictMeleeDamage(int comboIndex)
@@ -155,6 +159,13 @@ namespace RPG.Control
         private float CalculateDamage(int comboIndex)
         {
             return Mathf.Round(baseStats.GetDamage() * autoAttackDamageFractions[comboIndex]);
+        }
+
+        public void AttackStart() { }
+        public void AttackEnd()
+        {
+            SetCanTriggerNextAutoAttack(true);
+            SetIsInAutoAttackState(false);
         }
     }
 }
