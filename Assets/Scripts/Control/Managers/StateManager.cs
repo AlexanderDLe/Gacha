@@ -9,7 +9,7 @@ using RPG.Combat;
 
 namespace RPG.Control
 {
-    public class StateManager : MonoBehaviour
+    public class StateManager : BaseManager
     {
         #region Management Systems
         RaycastMousePosition raycaster = null;
@@ -110,6 +110,13 @@ namespace RPG.Control
             aimer.Initialize(character);
             dasher.Initialize(character);
             CharacterInitializationComplete();
+        }
+        #endregion
+
+        #region Functions
+        public override void TakeDamage(int damage)
+        {
+            baseStats.TakeDamage(damage);
         }
         #endregion
 

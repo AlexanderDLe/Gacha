@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using RPG.Combat;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using RPG.Combat;
 
 namespace RPG.Skill
 {
@@ -18,7 +18,8 @@ namespace RPG.Skill
         public AOETargetEnum aoeTargetEnum;
 
         [FoldoutGroup("AOE")]
+        public bool repeatChain;
+        [FoldoutGroup("AOE")]
         public List<Effect> effectChain;
-
     }
 }

@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: MC Omnislash
   skillSprite: {fileID: 21300000, guid: 6f98b3e70c3ad8a48a0396785dad48e8, type: 3}
+  numberInPool: 2
   baseCooldownTime: 3
+  lifetime: 3
   skillPrefab: {fileID: 1011191742018456, guid: f988294dae7c8064c9b3ba230abe029d,
     type: 3}
   skillVocalAudio: {fileID: 8300000, guid: a1146034d8f08f84baeca9c889e091db, type: 3}
@@ -25,4 +27,26 @@ MonoBehaviour:
   skillRangeImage: {fileID: 0}
   skillReticleImage: {fileID: 0}
   aoeTargetEnum: 2
-  effectChain: []
+  effectChain:
+  - fxEnum: 0
+    val: 0
+  - fxEnum: 0
+    val: 0
+  - fxEnum: 0
+    val: 0
+  - fxEnum: 0
+    val: 0
+  - fxEnum: 0
+    val: 0
+  - fxEnum: 0
+    val: 0
+  - fxEnum: 0
+    val: 0
+  - fxEnum: 0
+    val: 0
+  - fxEnum: 0
+    val: 0
+  - fxEnum: 0
+    val: 0
+  - fxEnum: 0
+    val: 0

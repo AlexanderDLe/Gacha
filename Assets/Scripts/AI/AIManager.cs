@@ -8,7 +8,7 @@ using UnityEngine.AI;
 
 namespace RPG.AI
 {
-    public class AIManager : MonoBehaviour
+    public class AIManager : BaseManager
     {
         GameObject player = null;
         StateMachine stateMachine = null;
@@ -104,13 +104,16 @@ namespace RPG.AI
 
         public GameObject prefab = null;
 
+        #region Functions
         public event Action OnDamageTaken;
-        public void TakeDamage(int damage)
+        public override void TakeDamage(int damage)
         {
             baseStats.TakeDamage(damage);
             damageTextSpawner.SpawnText(damage);
             OnDamageTaken();
         }
+
+        #endregion
 
         public void StartAttackCooldownCoroutine()
         {

@@ -16,8 +16,7 @@ namespace RPG.Characters
         public ObjectPooler objectPooler;
         public RaycastMousePosition raycaster;
         public Animator animator;
-
-        public AOEInvoker aoeCreator = null;
+        public AOEInvoker aoeInvoker;
 
         public override void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler, RaycastMousePosition raycaster, Animator animator, AOEInvoker aoeCreator)
         {
@@ -25,7 +24,7 @@ namespace RPG.Characters
             this.objectPooler = objectPooler;
             this.raycaster = raycaster;
             this.animator = animator;
-            this.aoeCreator = aoeCreator;
+            this.aoeInvoker = aoeCreator;
         }
 
         public override void Initialize(BaseStats baseStats, PlayableCharacter_SO script)
@@ -46,14 +45,14 @@ namespace RPG.Characters
 
         #region Movement Skill
         SkillManager movementSkill;
-        MovementSkill movementSkillScript;
+        MovementSkill movementScript;
 
         public override void InitializeMovementSkill()
         {
             /*  Cast Skill_SO as MovementSkill:
                 MovementSkill inherits from abstract class Skill_SO */
-            this.movementSkillScript = script.movementSkill as MovementSkill;
-            objectPooler.AddToPool(movementSkillScript.skillPrefab, 4);
+            this.movementScript = script.movementSkill as MovementSkill;
+            objectPooler.AddToPool(movementScript.skillPrefab, movementScript.poolCount);
         }
         public override void TriggerMovementSkill()
         {
@@ -62,12 +61,12 @@ namespace RPG.Characters
         }
         public void MCMovementStart()
         {
-            FXObject fxObj = objectPooler.SpawnFromPool(movementSkillScript.skillPrefab.name).GetComponent<FXObject>();
+            FXObject fxObj = objectPooler.SpawnFromPool(movementScript.skillPrefab.name).GetComponent<FXObject>();
 
-            fxObj.Initialize(transform.position, transform.rotation, 4);
+            fxObj.Initialize(transform.position, transform.rotation, movementScript.lifetime);
 
-            audioManager.PlayAudio(AudioEnum.Action, movementSkillScript.skillActionAudio);
-            audioManager.PlayAudio(AudioEnum.Character, movementSkillScript.skillVocalAudio, probability);
+            audioManager.PlayAudio(AudioEnum.Action, movementScript.skillActionAudio);
+            audioManager.PlayAudio(AudioEnum.Character, movementScript.skillVocalAudio, probability);
         }
         #endregion
 
@@ -118,29 +117,29 @@ namespace RPG.Characters
 
         #region Ultimate Skill
         SkillManager ultimateSkill;
-        AOESkill ultimateSkillScript;
+        AOESkill ultimateScript;
 
         public override void InitializeUltimateSkill()
         {
             /* Cast Skill_SO as AOESkill: 
                 AOESkill inherits from abstract class Skill_SO */
-            this.ultimateSkillScript = script.ultimateSkill as AOESkill;
-            objectPooler.AddToPool(ultimateSkillScript.skillPrefab, 2);
+            this.ultimateScript = script.ultimateSkill as AOESkill;
+            objectPooler.AddToPool(ultimateScript.skillPrefab, ultimateScript.poolCount);
         }
         public override void TriggerUltimateSkill()
         {
-            audioManager.PlayAudio(AudioEnum.Character, ultimateSkillScript.skillVocalAudio);
+            audioManager.PlayAudio(AudioEnum.Character, ultimateScript.skillVocalAudio);
             raycaster.RotateObjectTowardsMousePosition(gameObject);
             animator.SetTrigger("ultimateSkill");
         }
         public void MCUltimateTriggered()
         {
-            FXObject aoeObj = objectPooler.SpawnFromPool(ultimateSkillScript.skillPrefab.name).GetComponent<FXObject>();
+            FXObject aoeObj = objectPooler.SpawnFromPool(ultimateScript.skillPrefab.name).GetComponent<FXObject>();
 
-            aoeObj.Initialize(transform.position, transform.rotation, 3);
-            aoeCreator.Invoke(aoeObj.aoeCenterPoint.position, 12f, LayerMask.GetMask("Enemy"), 20f);
+            aoeObj.Initialize(transform.position, transform.rotation, ultimateScript.lifetime);
+            aoeInvoker.Invoke(aoeObj.aoeCenterPoint.position, 12f, LayerMask.GetMask("Enemy"), 20f);
 
-            audioManager.PlayAudio(AudioEnum.Action, ultimateSkillScript.skillActionAudio);
+            audioManager.PlayAudio(AudioEnum.Action, ultimateScript.skillActionAudio);
         }
         #endregion
     }

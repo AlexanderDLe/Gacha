@@ -2,6 +2,7 @@
 using RPG.Control;
 using UnityEngine;
 using RPG.AI;
+using RPG.Core;
 
 namespace RPG.Combat
 {
@@ -78,22 +79,13 @@ namespace RPG.Combat
         private void OnTriggerEnter(Collider other)
         {
             if (!HitboxIsActive()) return;
-            /*  Strangely layer.value returns a value to the second power (x ^ 2).
+            /*  layer.value returns a value to the second power (x ^ 2).
                 Therefore, we must take the log of that value before comparison.*/
             if (other.gameObject.layer == Mathf.Log(layerToHarm.value, 2))
             {
-                if (layerToHarm == LayerMask.GetMask("Player"))
-                {
-                    BaseStats target = null;
-                    target = other.gameObject.GetComponent<StateManager>().baseStats;
-                    target.TakeDamage(damage);
-                }
-                else if (layerToHarm == LayerMask.GetMask("Enemy"))
-                {
-                    AIManager target = null;
-                    target = other.gameObject.GetComponent<AIManager>();
-                    target.TakeDamage((int)damage);
-                }
+                BaseManager target = null;
+                target = other.gameObject.GetComponent<BaseManager>();
+                target.TakeDamage((int)damage);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RPG.Skill
 {
@@ -10,7 +11,13 @@ namespace RPG.Skill
         [FoldoutGroup("Metadata")]
         public Sprite skillSprite;
         [FoldoutGroup("Metadata")]
+        [FormerlySerializedAs("poolCount")]
+        public int poolCount = 3;
+
+        [FoldoutGroup("Timing")]
         public float baseCooldownTime = 3f;
+        [FoldoutGroup("Timing")]
+        public float lifetime = 3f;
 
         [FoldoutGroup("Skill FX")]
         public GameObject skillPrefab;
