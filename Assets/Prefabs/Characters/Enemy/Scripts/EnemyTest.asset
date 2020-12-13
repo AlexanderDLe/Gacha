@@ -18,7 +18,6 @@ MonoBehaviour:
   image: {fileID: 0}
   characterAvatar: {fileID: 9000000, guid: 63aa49e7dff477e44bae8fba4d50324d, type: 2}
   animatorController: {fileID: 0}
-  animatorOverride: {fileID: 0}
   movementSpeed: 4
   experienceGiven: 0
   EnemyRarity: 0

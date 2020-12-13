@@ -37,20 +37,20 @@ namespace RPG.Characters
 
         public override void InitializeSkillManager(SkillManager movementSkill, SkillManager primarySkill, SkillManager ultimateSkill)
         {
-            this.movementSkill = movementSkill;
-            this.primarySkill = primarySkill;
-            this.ultimateSkill = ultimateSkill;
+            this.movSkill = movementSkill;
+            this.priSkill = primarySkill;
+            this.ultSkill = ultimateSkill;
         }
 
 
         #region Movement Skill
-        SkillManager movementSkill;
-        MovementSkill movementScript;
+        SkillManager movSkill;
+        MovementSkill movScript;
 
         public override void InitializeMovementSkill()
         {
-            movementScript = script.movementSkill as MovementSkill;
-            objectPooler.AddToPool(movementScript.skillPrefab, movementScript.poolCount);
+            movScript = script.movementSkill as MovementSkill;
+            objectPooler.AddToPool(movScript.skillPrefab, movScript.poolCount);
         }
         public override void TriggerMovementSkill()
         {
@@ -59,48 +59,50 @@ namespace RPG.Characters
         }
         public void HowlMovementStart()
         {
-            FXObject fxObj = objectPooler.SpawnFromPool(movementScript.skillPrefab.name).GetComponent<FXObject>();
+            EffectObject fxObj = objectPooler.SpawnFromPool(movScript.skillPrefab.name).GetComponent<EffectObject>();
 
-            fxObj.Initialize(transform.position, transform.rotation, movementScript.lifetime);
+            fxObj.Initialize(transform.position, transform.rotation, movScript.lifetime);
 
-            audioManager.PlayAudio(AudioEnum.Action, movementScript.skillActionAudio);
-            audioManager.PlayAudio(AudioEnum.Character, movementScript.skillVocalAudio, probability);
+            audioManager.PlayAudio(AudioEnum.Action, movScript.skillActionAudio);
+            audioManager.PlayAudio(AudioEnum.Character, movScript.skillVocalAudio, probability);
         }
         #endregion
 
         #region Primary Skill
-        SkillManager primarySkill;
-        ProjectileSkill primaryScript;
+        SkillManager priSkill;
+        AOESkill priScript;
 
         public override void InitializePrimarySkill()
         {
-            this.primaryScript = script.primarySkill as ProjectileSkill;
-            objectPooler.AddToPool(primaryScript.skillPrefab, primaryScript.poolCount);
+            this.priScript = script.primarySkill as AOESkill;
+            objectPooler.AddToPool(priScript.skillPrefab, priScript.poolCount);
         }
         public override void TriggerPrimarySkill()
         {
             raycaster.RotateObjectTowardsMousePosition(gameObject);
             animator.SetTrigger("primarySkill");
-            audioManager.PlayAudio(AudioEnum.Character, primaryScript.skillVocalAudio);
+            audioManager.PlayAudio(AudioEnum.Character, priScript.skillVocalAudio);
 
-            FXObject fxObj = objectPooler.SpawnFromPool(primaryScript.skillPrefab.name).GetComponent<FXObject>();
+            EffectObject fxObj = objectPooler.SpawnFromPool(priScript.skillPrefab.name).GetComponent<EffectObject>();
+            AOEEffect aoeFX = fxObj.GetComponent<AOEEffect>();
 
-            fxObj.Initialize(transform.position + transform.forward * 3, transform.rotation, primaryScript.lifetime);
+            fxObj.Initialize(transform.position + transform.forward * 3, transform.rotation, priScript.lifetime);
+            aoeFX.Initialize(priScript, gameObject);
         }
         public void HowlPrimaryTriggered()
         {
-            audioManager.PlayAudio(AudioEnum.Action, primaryScript.skillActionAudio);
+            audioManager.PlayAudio(AudioEnum.Action, priScript.skillActionAudio);
         }
         #endregion
 
         #region Ultimate Skill
-        SkillManager ultimateSkill;
-        AOESkill ultimateScript;
+        SkillManager ultSkill;
+        AOESkill ultScript;
 
         public override void InitializeUltimateSkill()
         {
-            this.ultimateScript = script.ultimateSkill as AOESkill;
-            objectPooler.AddToPool(ultimateScript.skillPrefab, ultimateScript.poolCount);
+            this.ultScript = script.ultimateSkill as AOESkill;
+            objectPooler.AddToPool(ultScript.skillPrefab, ultScript.poolCount);
         }
         public override void TriggerUltimateSkill()
         {
@@ -109,14 +111,14 @@ namespace RPG.Characters
         }
         public void HowlUltimateStart()
         {
-            audioManager.PlayAudio(AudioEnum.Character, ultimateScript.skillVocalAudio);
+            audioManager.PlayAudio(AudioEnum.Character, ultScript.skillVocalAudio);
         }
         public void HowlUltimateTriggered()
         {
-            FXObject fxObj = objectPooler.SpawnFromPool(ultimateScript.skillPrefab.name).GetComponent<FXObject>();
+            EffectObject fxObj = objectPooler.SpawnFromPool(ultScript.skillPrefab.name).GetComponent<EffectObject>();
 
-            fxObj.Initialize(transform.position, transform.rotation, ultimateScript.lifetime);
-            audioManager.PlayAudio(AudioEnum.Action, ultimateScript.skillActionAudio);
+            fxObj.Initialize(transform.position, transform.rotation, ultScript.lifetime);
+            audioManager.PlayAudio(AudioEnum.Action, ultScript.skillActionAudio);
         }
         #endregion
     }

@@ -24,7 +24,7 @@ namespace RPG.AI
         public bool inAttackCooldown = false;
         public bool isInAttackAnimation = false;
         public float attackCooldownCounter = 0f;
-        public float hitboxRadius = 1f;
+        public float radius = 1f;
         public Transform hitboxPoint = null;
         EnemyCharacter_SO script = null;
 
@@ -63,7 +63,7 @@ namespace RPG.AI
             fightingType = script.fightingType;
 
             this.hitboxPoint = prefab.GetComponent<WeaponHolder>().holdWeapon_GO.transform;
-            this.hitboxRadius = script.hitboxRadius;
+            this.radius = script.hitboxRadius;
 
             if (fightingType == FightTypeEnum.Projectile)
             {
@@ -94,7 +94,9 @@ namespace RPG.AI
         private void InflictMelee()
         {
             float damage = Mathf.Round(baseStats.GetDamage());
-            meleeAttacker.Invoke(hitboxPoint.position, hitboxRadius, playerLayer, damage);
+
+            IEffect dmgEffect = new E_Damage(hitboxPoint.position, radius, playerLayer, damage);
+            dmgEffect.ApplyEffect();
         }
 
         private void ShootProjectile()

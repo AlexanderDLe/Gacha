@@ -11,7 +11,8 @@ namespace RPG.Skill
         [FoldoutGroup("Metadata")]
         public Sprite skillSprite;
         [FoldoutGroup("Metadata")]
-        [FormerlySerializedAs("poolCount")]
+        public bool debug;
+        [FoldoutGroup("Metadata")]
         public int poolCount = 3;
 
         [FoldoutGroup("Timing")]

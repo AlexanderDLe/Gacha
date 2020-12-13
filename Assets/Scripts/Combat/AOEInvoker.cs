@@ -1,7 +1,4 @@
-﻿using RPG.AI;
-using RPG.Attributes;
-using RPG.Control;
-using RPG.Core;
+﻿using RPG.Core;
 using UnityEngine;
 
 namespace RPG.Combat

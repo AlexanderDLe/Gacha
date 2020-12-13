@@ -119,8 +119,8 @@ namespace RPG.Control
 
         private void SpawnAttackVFXObj(int index)
         {
-            FXObject aoeObj = objectPooler.SpawnFromPool(autoAttackVFX[index].name).GetComponent<FXObject>();
-            aoeObj.Initialize(transform.position, transform.rotation, 1);
+            EffectObject fxObj = objectPooler.SpawnFromPool(autoAttackVFX[index].name).GetComponent<EffectObject>();
+            fxObj.Initialize(transform.position, transform.rotation, 1);
         }
 
         public void AutoAttack(int comboIndex)
@@ -153,7 +153,8 @@ namespace RPG.Control
             float radius = autoAttackHitRadiuses[comboIndex];
             float damage = CalculateDamage(comboIndex);
 
-            aoeCreator.Invoke(hitboxPoint.position, radius, enemyLayer, damage);
+            IEffect dmgEffect = new E_Damage(hitboxPoint.position, radius, enemyLayer, damage);
+            dmgEffect.ApplyEffect();
         }
 
         private float CalculateDamage(int comboIndex)

@@ -40,5 +40,5 @@ MonoBehaviour:
   mediumAttackAudio:
   - {fileID: 8300000, guid: 82dbcb26c195a3640a883dbe979cbad2, type: 3}
   movementSkill: {fileID: 11400000, guid: 8773cbf678fed58498a69cbdf28ce5c2, type: 2}
-  primarySkill: {fileID: 11400000, guid: f9cda4e8644aa5241960ecbf94d6bb8d, type: 2}
+  primarySkill: {fileID: 11400000, guid: ac1403fca072a2144a81c0e67f457255, type: 2}
   ultimateSkill: {fileID: 11400000, guid: 35b50c49df84bbc42b651485b382c441, type: 2}
