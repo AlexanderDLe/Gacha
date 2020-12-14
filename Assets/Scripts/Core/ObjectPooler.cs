@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ObjectPooler : MonoBehaviour
 {
+
     [System.Serializable]
     public class Pool
     {
@@ -12,6 +13,7 @@ public class ObjectPooler : MonoBehaviour
     }
 
     [InfoBox("Prefab names must be unique. Objects in the pool are retrieved by name so names cannot be identical.")]
+    public GameObject debugObject;
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
 

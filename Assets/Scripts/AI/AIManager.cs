@@ -2,6 +2,7 @@
 using System.Collections;
 using RPG.Attributes;
 using RPG.Characters;
+using RPG.Combat;
 using RPG.Core;
 using UnityEngine;
 using UnityEngine.AI;
@@ -16,6 +17,7 @@ namespace RPG.AI
         Animator animator = null;
         ObjectPooler objectPooler = null;
         DamageTextSpawner damageTextSpawner = null;
+        EffectExecutor effectExecuter = null;
         public BaseStats baseStats = null;
         public EnemyCharacter_SO script = null;
         public AIAggroManager aggro = null;
@@ -34,6 +36,7 @@ namespace RPG.AI
             aggro = GetComponent<AIAggroManager>();
             attacker = GetComponent<AIAttackManager>();
             flincher = GetComponent<AIFlinchManager>();
+            effectExecuter = GetComponent<EffectExecutor>();
             objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
         private void Start()
@@ -59,6 +62,8 @@ namespace RPG.AI
             InitializeModel(prefab, animator);
 
             baseStats.Initialize(enemy_SO);
+
+            effectExecuter.Initialize(baseStats);
 
             aggro.Initialize(player, enemy_SO);
 
@@ -112,7 +117,10 @@ namespace RPG.AI
             damageTextSpawner.SpawnText(damage);
             OnDamageTaken();
         }
-
+        public override void ExecuteEffectPackage(EffectPackage effectPackage)
+        {
+            print("Execute Effect Package");
+        }
         #endregion
 
         public void StartAttackCooldownCoroutine()

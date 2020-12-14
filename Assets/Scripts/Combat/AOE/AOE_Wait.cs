@@ -2,9 +2,9 @@
 
 namespace RPG.Combat
 {
-    public class E_Wait : I_Effect
+    public class AOE_Wait : AOE_Effect
     {
-        public E_Wait(out bool shouldWait, out float currentWaitDuration, float waitDuration)
+        public AOE_Wait(out bool shouldWait, out float currentWaitDuration, float waitDuration)
         {
             shouldWait = true;
             currentWaitDuration = waitDuration;

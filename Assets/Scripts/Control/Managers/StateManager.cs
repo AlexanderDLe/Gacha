@@ -31,11 +31,8 @@ namespace RPG.Control
         public InitializeManager initialize = null;
         [FoldoutGroup("Management Systems")]
         public ObjectPooler objectPooler = null;
-        #endregion
-
-        #region Combat Tools
-        [FoldoutGroup("Combat Tools")]
-        public AOEInvoker aoeCreator = null;
+        [FoldoutGroup("Management Systems")]
+        EffectExecutor effectExecuter = null;
         #endregion
 
         #region Audio
@@ -67,8 +64,7 @@ namespace RPG.Control
             dasher = GetComponent<DashManager>();
             attacker = GetComponent<AttackManager>();
             aimer = GetComponent<AimManager>();
-            aoeCreator = GetComponent<AOEInvoker>();
-
+            effectExecuter = GetComponent<EffectExecutor>();
             objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
         }
         private void Start()
@@ -81,11 +77,10 @@ namespace RPG.Control
         public void SetUpReferences()
         {
             audioManager.SetAudioSources(characterAudioSource, actionAudioSource);
-            attacker.LinkReferences(audioManager, raycaster, animator, objectPooler, aoeCreator);
-            builder.LinkReferences(animator, objectPooler, audioManager, raycaster, aoeCreator);
+            attacker.LinkReferences(audioManager, raycaster, animator, objectPooler);
+            builder.LinkReferences(animator, objectPooler, audioManager, raycaster);
             dasher.LinkReferences(audioManager);
             aimer.LinkReferences(raycaster);
-            aoeCreator.LinkReferences(objectPooler);
             raycaster.LinkReferences(objectPooler);
         }
         #endregion
@@ -106,6 +101,7 @@ namespace RPG.Control
             initialize.CharacterStats(out baseStats, out currCharName, out currCharImage);
             initialize.CharacterSkills(out movementSkill, out primarySkill, out ultimateSkill);
             initialize.CharacterAnimation(animator);
+            effectExecuter.Initialize(baseStats);
             attacker.Initialize(character, baseStats);
             aimer.Initialize(character);
             dasher.Initialize(character);
@@ -117,6 +113,10 @@ namespace RPG.Control
         public override void TakeDamage(int damage)
         {
             baseStats.TakeDamage(damage);
+        }
+        public override void ExecuteEffectPackage(EffectPackage effectPackage)
+        {
+            print("Execute Effect Package");
         }
         #endregion
 

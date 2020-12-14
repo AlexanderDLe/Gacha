@@ -39,5 +39,7 @@ namespace RPG.Skill
         public float repeatDelay = 3f;
         [FoldoutGroup("AOE")]
         public List<EffectItem> effectChain;
+        [FoldoutGroup("AOE")]
+        public List<AOEPackageItem> aoePackageChain;
     }
 }

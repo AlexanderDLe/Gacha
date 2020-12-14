@@ -14,7 +14,6 @@ namespace RPG.AI
         GameObject player = null;
         BaseStats baseStats = null;
         GameObject prefab = null;
-        AOEInvoker meleeAttacker = null;
         public LayerMask playerLayer;
         public FightTypeEnum fightingType;
         public Weapon weapon;
@@ -38,7 +37,6 @@ namespace RPG.AI
         {
             this.script = script;
             this.AIManager = GetComponent<AIManager>();
-            this.meleeAttacker = GetComponent<AOEInvoker>();
             this.objectPooler = objectPooler;
             this.player = player;
             this.baseStats = baseStats;
@@ -49,13 +47,7 @@ namespace RPG.AI
             this.weapon = script.weapon;
             this.weaponRange = script.weaponRange;
 
-            SetUpReferences();
             InitializeFighter();
-        }
-
-        public void SetUpReferences()
-        {
-            meleeAttacker.LinkReferences(objectPooler);
         }
 
         public void InitializeFighter()
@@ -95,8 +87,8 @@ namespace RPG.AI
         {
             float damage = Mathf.Round(baseStats.GetDamage());
 
-            IEffect dmgEffect = new E_Damage(hitboxPoint.position, radius, playerLayer, damage);
-            dmgEffect.ApplyEffect();
+            // IEffect dmgEffect = new E_Damage(hitboxPoint.position, radius, playerLayer, damage);
+            // dmgEffect.ApplyEffect();
         }
 
         private void ShootProjectile()

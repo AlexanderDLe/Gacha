@@ -56,7 +56,7 @@ namespace RPG.Core
             Debug.DrawRay(gameObject.transform.position, gameObject.transform.forward, Color.red, 3f);
             GameObject obj = objectPooler.SpawnFromPool(debugObject.name);
             DebugObject debugObj = obj.GetComponent<DebugObject>();
-            debugObj.Initialize(destination, .5f, 3);
+            debugObj.Initialize(destination, gameObject.transform.rotation, .5f, 3);
         }
 
         public RaycastHit GetRaycastMousePoint()

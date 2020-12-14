@@ -9,7 +9,7 @@ namespace RPG.Characters
     public abstract class SkillEventHandler : MonoBehaviour
     {
         public float probability = .5f;
-        public abstract void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler, RaycastMousePosition raycaster, Animator animator, AOEInvoker aoeCreator);
+        public abstract void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler, RaycastMousePosition raycaster, Animator animator);
 
         public abstract void Initialize(BaseStats baseStats, PlayableCharacter_SO charScript);
         public abstract void InitializeSkillManager(SkillManager movementSkill, SkillManager primarySkill, SkillManager ultimateSkill);

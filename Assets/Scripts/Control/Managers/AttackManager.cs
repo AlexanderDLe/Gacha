@@ -14,20 +14,18 @@ namespace RPG.Control
         AudioManager audioPlayer = null;
         ObjectPooler objectPooler = null;
         RaycastMousePosition raycaster = null;
-        AOEInvoker aoeCreator = null;
 
         private void Start()
         {
             enemyLayer = LayerMask.GetMask("Enemy");
         }
 
-        public void LinkReferences(AudioManager audioPlayer, RaycastMousePosition raycaster, Animator animator, ObjectPooler objectPooler, AOEInvoker aoeCreator)
+        public void LinkReferences(AudioManager audioPlayer, RaycastMousePosition raycaster, Animator animator, ObjectPooler objectPooler)
         {
             this.audioPlayer = audioPlayer;
             this.raycaster = raycaster;
             this.animator = animator;
             this.objectPooler = objectPooler;
-            this.aoeCreator = aoeCreator;
         }
 
         public void Initialize(CharacterManager character, BaseStats baseStats)
@@ -153,8 +151,8 @@ namespace RPG.Control
             float radius = autoAttackHitRadiuses[comboIndex];
             float damage = CalculateDamage(comboIndex);
 
-            IEffect dmgEffect = new E_Damage(hitboxPoint.position, radius, enemyLayer, damage);
-            dmgEffect.ApplyEffect();
+            // IEffect dmgEffect = new E_Damage(hitboxPoint.position, radius, enemyLayer, damage);
+            // dmgEffect.ApplyEffect();
         }
 
         private float CalculateDamage(int comboIndex)

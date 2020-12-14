@@ -1664,6 +1664,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ebae09b8264aa340883c3480a8987a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugObject: {fileID: 2344632610373806237, guid: 66cb012dc8348f04ca3a574e921bc3a5,
+    type: 3}
   pools:
   - prefab: {fileID: 2344632610373806237, guid: 66cb012dc8348f04ca3a574e921bc3a5,
       type: 3}
@@ -3135,6 +3137,7 @@ GameObject:
   - component: {fileID: 4585278837564367685}
   - component: {fileID: 4585278837564367686}
   - component: {fileID: 4585278837564367690}
+  - component: {fileID: 4585278837564367691}
   m_Layer: 9
   m_Name: Enemy
   m_TagString: Enemy
@@ -3311,7 +3314,7 @@ MonoBehaviour:
   inAttackCooldown: 0
   isInAttackAnimation: 0
   attackCooldownCounter: 0
-  hitboxRadius: 1
+  radius: 1
   hitboxPoint: {fileID: 0}
   projectileSpawnTransform: {fileID: 0}
   projectileSpeed: 1
@@ -3326,6 +3329,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75900e09e164f774bac0e109eece5c17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4585278837564367691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4585278837564367679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e2c772afe8266b41844f6c9c0fa3cac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5605697786661164908
@@ -3796,6 +3811,7 @@ GameObject:
   - component: {fileID: 5605697787432900251}
   - component: {fileID: 5605697787432900259}
   - component: {fileID: 5605697787432900262}
+  - component: {fileID: 5605697787432900264}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -3842,6 +3858,18 @@ Transform:
   m_Father: {fileID: 1688260497600006291}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90.00001, z: 0}
+--- !u!114 &5605697787432900264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5605697787432900260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e2c772afe8266b41844f6c9c0fa3cac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!136 &5605697787432900266
 CapsuleCollider:
   m_ObjectHideFlags: 0

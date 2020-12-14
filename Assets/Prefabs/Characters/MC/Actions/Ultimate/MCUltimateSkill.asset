@@ -35,19 +35,31 @@ MonoBehaviour:
   effectChain:
   - effectEnum: 2
     duration: 0
-    layerToAffect:
-      serializedVersion: 2
-      m_Bits: 512
     value: 10
   - effectEnum: 1
     duration: 0.25
-    layerToAffect:
-      serializedVersion: 2
-      m_Bits: 0
     value: 0
   - effectEnum: 2
     duration: 0
-    layerToAffect:
-      serializedVersion: 2
-      m_Bits: 512
     value: 10
+  aoePackageChain:
+  - aoePackageEnum: 2
+    effectPackage:
+      layerToAffect:
+        serializedVersion: 2
+        m_Bits: 512
+      effectItems:
+      - effectEnum: 2
+        duration: 0
+        value: 10
+    duration: 0
+  - aoePackageEnum: 2
+    effectPackage:
+      layerToAffect:
+        serializedVersion: 2
+        m_Bits: 2048
+      effectItems:
+      - effectEnum: 2
+        duration: 0
+        value: 1
+    duration: 0

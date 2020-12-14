@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: Howl Primary
   skillSprite: {fileID: 21300000, guid: 12dc3644b4e241e4b88e40a771764a5f, type: 3}
-  debug: 0
+  debug: 1
   poolCount: 3
   baseCooldownTime: 3
   lifetime: 3
@@ -35,13 +35,8 @@ MonoBehaviour:
   effectChain:
   - effectEnum: 1
     duration: 0.5
-    layerToAffect:
-      serializedVersion: 2
-      m_Bits: 0
     value: 0
   - effectEnum: 2
     duration: 0
-    layerToAffect:
-      serializedVersion: 2
-      m_Bits: 512
     value: 20
+  aoePackageChain: []

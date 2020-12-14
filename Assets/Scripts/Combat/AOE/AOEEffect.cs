@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using RPG.Control;
 using RPG.Core;
 using RPG.Skill;
 using RPG.Utility;
@@ -19,6 +20,7 @@ namespace RPG.Combat
 
         Vector3 originPoint;
         List<EffectItem> effectChain;
+        List<AOEPackageItem> aoePackageChain;
         bool repeatChain;
         float repeatDelay = 3f;
         float repeatDelayMin = .1f;
@@ -36,7 +38,7 @@ namespace RPG.Combat
             InitializeEffectChain();
             InitializeEffectTime();
             InitializeDebug();
-            StartCoroutine(ExecuteChain());
+            StartCoroutine(ExecuteAOEChain());
         }
 
         private void InitializeCastType()
@@ -88,6 +90,7 @@ namespace RPG.Combat
         private void InitializeEffectChain()
         {
             effectChain = script.effectChain;
+            aoePackageChain = script.aoePackageChain;
             radius = script.radius;
         }
         private void InitializeEffectTime()
@@ -97,33 +100,39 @@ namespace RPG.Combat
         }
         public void Debug()
         {
-            ObjectPooler objectPooler = parentObject.GetComponent<ObjectPooler>();
-            DebugObject debugObj = objectPooler.SpawnFromPool("DebugObject").GetComponent<DebugObject>();
+            ObjectPooler objectPooler = parentObject.GetComponent<StateManager>().objectPooler;
+            DebugObject debugObj = objectPooler.SpawnFromPool(objectPooler.debugObject.name).GetComponent<DebugObject>();
 
-            debugObj.Initialize(originPoint, radius, 1);
+            debugObj.Initialize(originPoint, parentObject.transform.rotation, radius, 2);
+
+            if (aoeCastType == AOECastType.SphereCast)
+            {
+                debugObj.MoveDistance(script.distance);
+            }
         }
         #endregion
 
         #region Execution
-        bool shouldWait = false;
-        float waitDuration = 0f;
 
-        IEnumerator ExecuteChain()
+        IEnumerator ExecuteAOEChain()
         {
-            foreach (EffectItem effect in effectChain)
+            bool shouldWait = false;
+            float waitDuration = 0f;
+
+            foreach (AOEPackageItem effect in aoePackageChain)
             {
                 if (shouldWait)
                 {
                     yield return new WaitForSeconds(waitDuration);
                     shouldWait = false;
                 }
-                switch (effect.effectEnum)
+                switch (effect.aoePackageEnum)
                 {
-                    case EffectEnum.Wait:
-                        Executor(new E_Wait(out shouldWait, out waitDuration, effect.duration));
+                    case AOEPackageEnum.Wait:
+                        Executor(new AOE_Wait(out shouldWait, out waitDuration, effect.duration));
                         break;
-                    case EffectEnum.Damage:
-                        Executor(new E_Damage(GetHits(effect.layerToAffect), effect.value));
+                    case AOEPackageEnum.Executable:
+                        Executor(new AOE_Execute(GetHits(effect.effectPackage.layerToAffect), effect.effectPackage));
                         break;
                     default:
                         break;
@@ -132,7 +141,7 @@ namespace RPG.Combat
             if (repeatChain)
             {
                 yield return new WaitForSeconds(repeatDelay);
-                StartCoroutine(ExecuteChain());
+                StartCoroutine(ExecuteAOEChain());
             }
         }
 
@@ -145,26 +154,30 @@ namespace RPG.Combat
             }
             else if (aoeCastType == AOECastType.SphereCast)
             {
-                // We convert from list to array because lists can dynamically add items.
-                List<Collider> hitResults = new List<Collider>();
-
-                RaycastHit[] rayHits = Physics.SphereCastAll(originPoint, radius, parentObject.transform.forward, script.distance, layer);
-
-                foreach (RaycastHit rayHit in rayHits)
-                {
-                    hitResults.Add(rayHit.collider);
-                }
-
-                return hitResults.ToArray();
+                return GetSphereCastAllHits(layer);
             }
             return null;
         }
 
-        public void Executor(IEffect effect)
+        private Collider[] GetSphereCastAllHits(LayerMask layer)
+        {
+            // We convert from list to array because lists can dynamically add items.
+            List<Collider> hitResults = new List<Collider>();
+
+            RaycastHit[] rayHits = Physics.SphereCastAll(originPoint, radius, parentObject.transform.forward, script.distance, layer);
+
+            foreach (RaycastHit rayHit in rayHits)
+            {
+                hitResults.Add(rayHit.collider);
+            }
+
+            return hitResults.ToArray();
+        }
+
+        public void Executor(AOE_Effect effect)
         {
             effect.ApplyEffect();
         }
-
         #endregion
     }
 }

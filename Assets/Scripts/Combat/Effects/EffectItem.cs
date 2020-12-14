@@ -1,5 +1,4 @@
 ﻿using Sirenix.OdinInspector;
-using UnityEngine;
 
 namespace RPG.Combat
 {
@@ -11,8 +10,6 @@ namespace RPG.Combat
         [ShowIf("effectEnum", EffectEnum.Wait)]
         public float duration;
 
-        [ShowIf("effectEnum", EffectEnum.Damage)]
-        public LayerMask layerToAffect;
         [ShowIf("effectEnum", EffectEnum.Damage)]
         public float value;
     }
