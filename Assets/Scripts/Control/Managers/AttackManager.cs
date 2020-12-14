@@ -1,5 +1,4 @@
-﻿using RPG.AI;
-using RPG.Attributes;
+﻿using RPG.Attributes;
 using RPG.Characters;
 using RPG.Combat;
 using RPG.Core;
@@ -14,6 +13,8 @@ namespace RPG.Control
         AudioManager audioPlayer = null;
         ObjectPooler objectPooler = null;
         RaycastMousePosition raycaster = null;
+        AutoAttack_SO attackScript = null;
+        EffectPackage[] effectPackages = null;
 
         private void Start()
         {
@@ -34,29 +35,31 @@ namespace RPG.Control
 
             this.baseStats = baseStats;
             this.weapon = character.weapon;
-            this.fightingType = script.fightingType;
+            this.fightingType = character.fightingType;
             this.hitboxPoint = weapon.hitboxPoint;
+            this.attackScript = character.attackScript;
 
             this.numberOfAutoAttackHits = character.numberOfAutoAttackHits;
             this.autoAttackArray = character.autoAttackArray;
-            this.autoAttackDamageFractions = script.autoAttackDamageFractions;
-            InitializeAutoAttackFX(script);
+            this.effectPackages = character.effectPackages;
 
             if (this.fightingType == FightTypeEnum.Projectile)
             {
-                this.projectile_SO = script.projectile;
+                this.projectile_SO = character.projectile_SO;
             }
             if (this.fightingType == FightTypeEnum.Melee)
             {
-                this.autoAttackHitRadiuses = script.autoAttackHitRadiuses;
+                this.autoAttackHitRadiuses = character.autoAttackHitRadiuses;
             }
+
+            InitializeAutoAttackFX(attackScript);
         }
 
-        private void InitializeAutoAttackFX(PlayableCharacter_SO script)
+        private void InitializeAutoAttackFX(AutoAttack_SO attackScript)
         {
-            this.autoAttackVFX = script.autoAttackVFX;
-            this.weakAttackAudio = script.weakAttackAudio;
-            this.mediumAttackAudio = script.mediumAttackAudio;
+            this.autoAttackVFX = attackScript.autoAttackVFX;
+            this.weakAttackAudio = attackScript.weakAttackAudio;
+            this.mediumAttackAudio = attackScript.mediumAttackAudio;
         }
 
         GameObject[] autoAttackVFX = null;
@@ -137,27 +140,21 @@ namespace RPG.Control
             Vector3 projDestination = ray.point;
 
             float speed = projectile_SO.speed;
-            float damage = CalculateDamage(comboIndex);
             float lifetime = projectile_SO.maxLifeTime;
             LayerMask layerToHarm = LayerMask.GetMask("Enemy");
+            EffectPackage package = effectPackages[comboIndex];
 
             Projectile proj = objectPooler.SpawnFromPool(prefabName).GetComponent<Projectile>();
-            proj.Initialize(projOrigin, projDestination, speed, damage, lifetime, layerToHarm);
+            proj.Initialize(projOrigin, projDestination, speed, package, lifetime, layerToHarm);
         }
 
         public void InflictMeleeDamage(int comboIndex)
         {
-            // Configure Melee Parameters then trigger Melee Strike
             float radius = autoAttackHitRadiuses[comboIndex];
-            float damage = CalculateDamage(comboIndex);
+            EffectPackage package = effectPackages[comboIndex];
 
-            // IEffect dmgEffect = new E_Damage(hitboxPoint.position, radius, enemyLayer, damage);
-            // dmgEffect.ApplyEffect();
-        }
-
-        private float CalculateDamage(int comboIndex)
-        {
-            return Mathf.Round(baseStats.GetDamage() * autoAttackDamageFractions[comboIndex]);
+            AOE_Effect deliverEffects = new AOE_Execute(hitboxPoint.position, radius, enemyLayer, package);
+            deliverEffects.ApplyEffect();
         }
 
         public void AttackStart() { }

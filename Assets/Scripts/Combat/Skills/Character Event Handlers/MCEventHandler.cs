@@ -73,6 +73,7 @@ namespace RPG.Characters
         ProjectileSkill priScript;
         Projectile_SO primaryProjectile;
         Vector3 primaryProjDestination = Vector3.zero;
+        EffectPackage priEffectPackage;
 
         public override void InitializePrimarySkill()
         {
@@ -80,7 +81,7 @@ namespace RPG.Characters
                 ProjectileSkill inherits from abstract class Skill_SO */
             this.priScript = script.primarySkill as ProjectileSkill;
             this.primaryProjectile = priScript.projectile_SO;
-
+            this.priEffectPackage = priScript.effectPackage;
             objectPooler.AddToPool(priScript.projectile_SO.prefab, 5);
         }
         public override void TriggerPrimarySkill()
@@ -95,19 +96,19 @@ namespace RPG.Characters
 
         public void MCPrimaryTriggered()
         {
-            string prefabName = primaryProjectile.prefab.name;
             LayerMask layerToharm = LayerMask.GetMask("Enemy");
             Vector3 origin = new Vector3(transform.position.x, 0f, transform.position.z);
             Vector3 destination = primaryProjDestination;
 
-            float damage = 20f;
+            string prefabName = primaryProjectile.prefab.name;
             float speed = primaryProjectile.speed;
             float lifetime = primaryProjectile.maxLifeTime;
             float activeTime = primaryProjectile.activeTime;
             bool hasActiveTime = primaryProjectile.hasActiveTime;
 
             Projectile proj = objectPooler.SpawnFromPool(prefabName).GetComponent<Projectile>();
-            proj.Initialize(origin, destination, speed, damage, lifetime, layerToharm, hasActiveTime, activeTime);
+
+            proj.Initialize(origin, destination, speed, priEffectPackage, lifetime, layerToharm, hasActiveTime, activeTime);
 
             audioManager.PlayAudio(AudioEnum.Action, priScript.skillActionAudio);
         }

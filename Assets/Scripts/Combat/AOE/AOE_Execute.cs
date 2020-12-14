@@ -12,7 +12,7 @@ public class AOE_Execute : AOE_Effect
         this.effectPackage = effectPackage;
     }
 
-    public AOE_Execute(Vector3 hitPos, float radius, LayerMask layer, float damage, EffectPackage effectPackage)
+    public AOE_Execute(Vector3 hitPos, float radius, LayerMask layer, EffectPackage effectPackage)
     {
         this.hits = Physics.OverlapSphere(hitPos, radius, layer);
         this.effectPackage = effectPackage;

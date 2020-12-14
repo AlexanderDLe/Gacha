@@ -14,10 +14,7 @@ namespace RPG.Characters
         #region Attributes
         public new string name;
         public float health;
-        public int numberOfAutoAttackHits;
-        public string[] autoAttackArray;
         public BaseStats baseStats;
-        public Weapon weapon;
         #endregion
 
         #region Metadata
@@ -29,6 +26,25 @@ namespace RPG.Characters
         public RuntimeAnimatorController animatorController;
         [FoldoutGroup("Metadata")]
         public AnimatorOverrideController animatorOverride;
+        [FoldoutGroup("Metadata")]
+        public Weapon weapon;
+        #endregion
+
+        #region Auto Attack
+        [FoldoutGroup("Auto Attack")]
+        public FightTypeEnum fightingType;
+        [FoldoutGroup("Auto Attack")]
+        public AutoAttack_SO attackScript;
+        [FoldoutGroup("Auto Attack")]
+        public int numberOfAutoAttackHits;
+        [FoldoutGroup("Auto Attack")]
+        public string[] autoAttackArray;
+        [FoldoutGroup("Auto Attack")]
+        public EffectPackage[] effectPackages;
+        [FoldoutGroup("Auto Attack")]
+        public Projectile_SO projectile_SO;
+        [FoldoutGroup("Auto Attack")]
+        public float[] autoAttackHitRadiuses;
         #endregion
 
         #region Skills
@@ -78,8 +94,23 @@ namespace RPG.Characters
         private void InitializeAttack(Weapon weapon)
         {
             this.weapon = weapon;
-            this.numberOfAutoAttackHits = script.numberOfAutoAttackHits;
+            this.fightingType = script.fightingType;
+            this.attackScript = script.autoAttack_SO;
+
+            this.effectPackages = attackScript.effectPackages;
+            this.numberOfAutoAttackHits = attackScript.numberOfAutoAttackHits;
             this.autoAttackArray = GenerateAutoAttackArray(numberOfAutoAttackHits);
+
+            if (this.fightingType == FightTypeEnum.Projectile)
+            {
+                ProjectileAttack_SO proj_SO = attackScript as ProjectileAttack_SO;
+                this.projectile_SO = proj_SO.projectile;
+            }
+            if (this.fightingType == FightTypeEnum.Melee)
+            {
+                MeleeAttack_SO melee_SO = attackScript as MeleeAttack_SO;
+                this.autoAttackHitRadiuses = melee_SO.autoAttackHitRadiuses;
+            }
         }
 
         private void InitializeAllSkills(GameObject player_GO, GameObject char_GO, Animator animator)

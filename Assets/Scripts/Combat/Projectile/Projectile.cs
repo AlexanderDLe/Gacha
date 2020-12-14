@@ -11,8 +11,8 @@ namespace RPG.Combat
         Vector3 projectileHeightAdjustment = new Vector3(0, .6f, 0);
         Vector3 destination = Vector3.zero;
         LayerMask layerToHarm;
+        EffectPackage effectPackage;
         float speed = 0f;
-        float damage = 0f;
         float currentLifetime = 0f;
         float projectileLifetime = 5f;
 
@@ -35,21 +35,21 @@ namespace RPG.Combat
         }
 
         // Initialize without active lifetime (entire proj will be disabled altogether)
-        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, float damage, float projectileLifetime, LayerMask layerToHarm)
+        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, EffectPackage effectPackage, float projectileLifetime, LayerMask layerToHarm)
         {
-            InitProj(spawnPos, destination, speed, damage, projectileLifetime, layerToHarm);
+            InitProj(spawnPos, destination, speed, effectPackage, projectileLifetime, layerToHarm);
         }
 
         // Initialize with active lifetime (hitbox will become inactive before proj is disabled)
-        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, float damage, float projectileLifetime, LayerMask layerToHarm, bool hasActiveLifetime, float activeLifetime)
+        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, EffectPackage effectPackage, float projectileLifetime, LayerMask layerToHarm, bool hasActiveLifetime, float activeLifetime)
         {
-            InitProj(spawnPos, destination, speed, damage, projectileLifetime, layerToHarm);
+            InitProj(spawnPos, destination, speed, effectPackage, projectileLifetime, layerToHarm);
 
             this.hasActiveLifetime = hasActiveLifetime;
             this.activeLifetime = activeLifetime;
         }
 
-        private void InitProj(Vector3 spawnPos, Vector3 destination, float speed, float damage, float projectileLifetime, LayerMask layerToHarm)
+        private void InitProj(Vector3 spawnPos, Vector3 destination, float speed, EffectPackage effectPackage, float projectileLifetime, LayerMask layerToHarm)
         {
             this.destination = destination;
             transform.position = spawnPos;
@@ -58,7 +58,7 @@ namespace RPG.Combat
             transform.LookAt(new Vector3(destination.x, spawnPos.y, destination.z));
 
             this.speed = speed;
-            this.damage = damage;
+            this.effectPackage = effectPackage;
 
             this.currentLifetime = 0;
             this.projectileLifetime = projectileLifetime;
@@ -83,9 +83,8 @@ namespace RPG.Combat
                 Therefore, we must take the log of that value before comparison.*/
             if (other.gameObject.layer == Mathf.Log(layerToHarm.value, 2))
             {
-                BaseManager target = null;
-                target = other.gameObject.GetComponent<BaseManager>();
-                target.TakeDamage((int)damage);
+                EffectExecutor target = other.gameObject.GetComponent<EffectExecutor>();
+                target.ExecuteEffects(effectPackage);
             }
         }
 

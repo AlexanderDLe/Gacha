@@ -39,7 +39,6 @@ namespace RPG.Characters
             this.ultSkill = ultimateSkill;
         }
 
-
         #region Movement Skill
         SkillManager movSkill;
         MovementSkill movScript;
@@ -115,6 +114,7 @@ namespace RPG.Characters
             EffectObject fxObj = objectPooler.SpawnFromPool(ultScript.skillPrefab.name).GetComponent<EffectObject>();
 
             fxObj.Initialize(transform.position, transform.rotation, ultScript.lifetime);
+
             audioManager.PlayAudio(AudioEnum.Action, ultScript.skillActionAudio);
         }
         #endregion

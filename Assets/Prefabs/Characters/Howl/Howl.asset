@@ -18,6 +18,7 @@ MonoBehaviour:
   image: {fileID: 21300000, guid: f216b48aaeff2054eadb3bb27c9a1431, type: 3}
   characterAvatar: {fileID: 9000000, guid: 8181a60873ee9534e8bbaae5f51cd066, type: 2}
   animatorController: {fileID: 9100000, guid: fc536b52059a8474190ff46352460982, type: 2}
+  autoAttack_SO: {fileID: 11400000, guid: 5216b913af476d1418e8009ea41657ab, type: 2}
   movementSpeed: 6
   characterEnum: 2
   dashAudio:

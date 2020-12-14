@@ -19,7 +19,6 @@ namespace RPG.Combat
         AOECastType aoeCastType;
 
         Vector3 originPoint;
-        List<EffectItem> effectChain;
         List<AOEPackageItem> aoePackageChain;
         bool repeatChain;
         float repeatDelay = 3f;
@@ -89,7 +88,6 @@ namespace RPG.Combat
         }
         private void InitializeEffectChain()
         {
-            effectChain = script.effectChain;
             aoePackageChain = script.aoePackageChain;
             radius = script.radius;
         }

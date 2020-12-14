@@ -27,6 +27,14 @@ MonoBehaviour:
   weapon: {fileID: 0}
   attackCooldownTime: 3
   weaponRange: 5
+  attackEffect:
+    layerToAffect:
+      serializedVersion: 2
+      m_Bits: 2048
+    effectItems:
+    - effectEnum: 2
+      duration: 0
+      value: 20
   chaseDistance: 5
   aggroCooldownTime: 3
   suspicionTime: 0

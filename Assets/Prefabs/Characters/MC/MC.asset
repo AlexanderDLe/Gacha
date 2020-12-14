@@ -18,31 +18,14 @@ MonoBehaviour:
   image: {fileID: 21300000, guid: 0ed99b0d1ac4c524aa622e002b7e1ca8, type: 3}
   characterAvatar: {fileID: 9000000, guid: 1ed82881ee80afd4db3fc3108994a6dc, type: 2}
   animatorController: {fileID: 9100000, guid: d4e0d75485837ac4a90649a3995a2968, type: 2}
-  animatorOverride: {fileID: 22100000, guid: 06af5b907c159034f9e82c993ff60e3a, type: 2}
   movementSpeed: 6
   characterEnum: 1
+  weapon: {fileID: 4279306141280766081, guid: 91eaea4949ca4034989eb2bafece4474, type: 3}
   dashAudio:
   - {fileID: 8300000, guid: 82dbcb26c195a3640a883dbe979cbad2, type: 3}
   - {fileID: 8300000, guid: cd75db6c69d471642b49c020a3da9ce9, type: 3}
   fightingType: 0
-  weapon: {fileID: 4279306141280766081, guid: 91eaea4949ca4034989eb2bafece4474, type: 3}
-  projectile: {fileID: 0}
-  numberOfAutoAttackHits: 2
-  autoAttackDamageFractions:
-  - 0.85
-  - 0.9
-  autoAttackHitRadiuses:
-  - 1.1
-  - 1.1
-  autoAttackVFX:
-  - {fileID: 1819066416490906, guid: 38c92f637b04dc1419efcde39fde5c66, type: 3}
-  - {fileID: 1107296871017770, guid: 4b91df529222fb945b2b8cebe790f720, type: 3}
-  weakAttackAudio:
-  - {fileID: 8300000, guid: 82dbcb26c195a3640a883dbe979cbad2, type: 3}
-  - {fileID: 8300000, guid: abed00d46aaed794eb28cfebad267866, type: 3}
-  mediumAttackAudio:
-  - {fileID: 8300000, guid: a32717dc56565154e975b057dee5304b, type: 3}
-  - {fileID: 8300000, guid: 8022360c05ad2af4989b17ee0dc700f7, type: 3}
+  autoAttack_SO: {fileID: 11400000, guid: 008e040a84466e546a6d0b559a92a857, type: 2}
   movementSkill: {fileID: 11400000, guid: 4eb5743c61a102b4aa5f4c02fd2910ca, type: 2}
   primarySkill: {fileID: 11400000, guid: 2aef882082b24a44daa0b55adba12774, type: 2}
   ultimateSkill: {fileID: 11400000, guid: c9999347cf6038849a2cba3344516caf, type: 2}

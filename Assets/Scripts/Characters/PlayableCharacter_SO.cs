@@ -11,6 +11,8 @@ namespace RPG.Characters
     {
         [FoldoutGroup("Metadata")]
         public PlayableCharEnum characterEnum;
+        [FoldoutGroup("Metadata")]
+        public Weapon weapon;
 
         #region Character FX
         [FoldoutGroup("Character FX")]
@@ -21,25 +23,7 @@ namespace RPG.Characters
         [FoldoutGroup("Auto Attack")]
         public FightTypeEnum fightingType;
         [FoldoutGroup("Auto Attack")]
-        public Weapon weapon;
-        [FoldoutGroup("Auto Attack"), ShowIf("fightingType", FightTypeEnum.Projectile)]
-        public Projectile_SO projectile;
-
-        [InfoBox("The number of the attack hits MUST BE THE SAME as the array length of the damage fractions and hit radiuses!")]
-        [FoldoutGroup("Auto Attack")]
-        public int numberOfAutoAttackHits;
-        [FoldoutGroup("Auto Attack")]
-        public float[] autoAttackDamageFractions;
-        [FoldoutGroup("Auto Attack"), ShowIf("fightingType", FightTypeEnum.Melee)]
-        public float[] autoAttackHitRadiuses;
-
-        [Header("Auto Attack FX")]
-        [FoldoutGroup("Auto Attack")]
-        public GameObject[] autoAttackVFX;
-        [FoldoutGroup("Auto Attack")]
-        public AudioClip[] weakAttackAudio;
-        [FoldoutGroup("Auto Attack")]
-        public AudioClip[] mediumAttackAudio;
+        public AutoAttack_SO autoAttack_SO;
         #endregion
 
         #region Skills

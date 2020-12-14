@@ -26,10 +26,13 @@ namespace RPG.Characters
         [FoldoutGroup("Attack")]
         public float weaponRange;
         [FoldoutGroup("Attack")]
+        public EffectPackage attackEffect;
+
+        [FoldoutGroup("Aggro")]
         public float chaseDistance;
-        [FoldoutGroup("Attack")]
+        [FoldoutGroup("Aggro")]
         public float aggroCooldownTime;
-        [FoldoutGroup("Attack")]
+        [FoldoutGroup("Aggro")]
         public float suspicionTime;
 
     }

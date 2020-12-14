@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c51254673e142424099665c79175a219, type: 3}
+  m_Name: MCAutoAttack
+  m_EditorClassIdentifier: 
+  numberOfAutoAttackHits: 2
+  effectPackages:
+  - layerToAffect:
+      serializedVersion: 2
+      m_Bits: 512
+    effectItems:
+    - effectEnum: 2
+      duration: 0
+      value: 20
+  - layerToAffect:
+      serializedVersion: 2
+      m_Bits: 512
+    effectItems:
+    - effectEnum: 2
+      duration: 0
+      value: 25
+  autoAttackVFX:
+  - {fileID: 1819066416490906, guid: 38c92f637b04dc1419efcde39fde5c66, type: 3}
+  - {fileID: 1107296871017770, guid: 4b91df529222fb945b2b8cebe790f720, type: 3}
+  weakAttackAudio:
+  - {fileID: 8300000, guid: 82dbcb26c195a3640a883dbe979cbad2, type: 3}
+  - {fileID: 8300000, guid: abed00d46aaed794eb28cfebad267866, type: 3}
+  mediumAttackAudio:
+  - {fileID: 8300000, guid: a32717dc56565154e975b057dee5304b, type: 3}
+  - {fileID: 8300000, guid: 8022360c05ad2af4989b17ee0dc700f7, type: 3}
+  autoAttackHitRadiuses:
+  - 1.1
+  - 1.1

@@ -10,5 +10,8 @@ namespace RPG.Skill
     {
         [FoldoutGroup("Projectile")]
         public Projectile_SO projectile_SO = null;
+
+        [FoldoutGroup("Projectile")]
+        public EffectPackage effectPackage;
     }
 }

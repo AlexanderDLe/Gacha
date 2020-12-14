@@ -1,6 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 using RPG.Attributes;
+using RPG.Combat;
 
 namespace RPG.Characters
 {

@@ -3136,7 +3136,6 @@ GameObject:
   - component: {fileID: 4585278837564367684}
   - component: {fileID: 4585278837564367685}
   - component: {fileID: 4585278837564367686}
-  - component: {fileID: 4585278837564367690}
   - component: {fileID: 4585278837564367691}
   m_Layer: 9
   m_Name: Enemy
@@ -3319,18 +3318,6 @@ MonoBehaviour:
   projectileSpawnTransform: {fileID: 0}
   projectileSpeed: 1
   projectileLifetime: 5
---- !u!114 &4585278837564367690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4585278837564367679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75900e09e164f774bac0e109eece5c17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4585278837564367691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3760,7 +3747,6 @@ MonoBehaviour:
   aimer: {fileID: 0}
   initialize: {fileID: 0}
   objectPooler: {fileID: 0}
-  aoeCreator: {fileID: 0}
   characterAudioSource: {fileID: 5605697787432900273}
   actionAudioSource: {fileID: 5605697787079883622}
   audioManager: {fileID: 0}
@@ -3810,7 +3796,6 @@ GameObject:
   - component: {fileID: 5605697787432900272}
   - component: {fileID: 5605697787432900251}
   - component: {fileID: 5605697787432900259}
-  - component: {fileID: 5605697787432900262}
   - component: {fileID: 5605697787432900264}
   m_Layer: 11
   m_Name: Player
@@ -3829,18 +3814,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f180fd76bf413347af7d4b9665d2c29, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5605697787432900262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5605697787432900260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75900e09e164f774bac0e109eece5c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &5605697787432900263

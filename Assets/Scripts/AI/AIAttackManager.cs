@@ -25,6 +25,7 @@ namespace RPG.AI
         public float attackCooldownCounter = 0f;
         public float radius = 1f;
         public Transform hitboxPoint = null;
+        public EffectPackage effectPackage;
         EnemyCharacter_SO script = null;
 
         [Header("Projectile")]
@@ -56,6 +57,7 @@ namespace RPG.AI
 
             this.hitboxPoint = prefab.GetComponent<WeaponHolder>().holdWeapon_GO.transform;
             this.radius = script.hitboxRadius;
+            this.effectPackage = script.attackEffect;
 
             if (fightingType == FightTypeEnum.Projectile)
             {
@@ -87,8 +89,8 @@ namespace RPG.AI
         {
             float damage = Mathf.Round(baseStats.GetDamage());
 
-            // IEffect dmgEffect = new E_Damage(hitboxPoint.position, radius, playerLayer, damage);
-            // dmgEffect.ApplyEffect();
+            AOE_Effect deliverEffects = new AOE_Execute(hitboxPoint.position, radius, playerLayer, effectPackage);
+            deliverEffects.ApplyEffect();
         }
 
         private void ShootProjectile()
@@ -96,7 +98,7 @@ namespace RPG.AI
             Projectile proj = objectPooler.SpawnFromPool(projectile.name).GetComponent<Projectile>();
             LayerMask layerToHarm = LayerMask.GetMask("Player");
 
-            proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, baseStats.GetDamage(), projectileLifetime, layerToHarm);
+            proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, effectPackage, projectileLifetime, layerToHarm);
         }
 
         public void AttackStart() { }
