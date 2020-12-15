@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using RPG.Control;
 using RPG.Core;
-using RPG.Skill;
 using RPG.Utility;
 using UnityEngine;
 
@@ -16,14 +14,14 @@ namespace RPG.Combat
         GameObject parentObject;
         LayerMask layerToAffect;
         AOESkill script;
-        AOECastType aoeCastType;
+        AOECastEnum aoeCastType;
 
         Vector3 originPoint;
         List<AOEPackageItem> aoePackageChain;
+
         bool repeatChain;
         float repeatDelay = 3f;
         float repeatDelayMin = .1f;
-
         float radius;
 
         #region Initialization
@@ -39,16 +37,15 @@ namespace RPG.Combat
             InitializeDebug();
             StartCoroutine(ExecuteAOEChain());
         }
-
         private void InitializeCastType()
         {
             if (script.aoeTargetEnum == AOETargetEnum.SphereCastToPoint)
             {
-                aoeCastType = AOECastType.SphereCast;
+                aoeCastType = AOECastEnum.SphereCast;
             }
             else
             {
-                aoeCastType = AOECastType.OverlapSphere;
+                aoeCastType = AOECastEnum.OverlapSphere;
             }
         }
         private void InitializeDebug()
@@ -103,7 +100,7 @@ namespace RPG.Combat
 
             debugObj.Initialize(originPoint, parentObject.transform.rotation, radius, 2);
 
-            if (aoeCastType == AOECastType.SphereCast)
+            if (aoeCastType == AOECastEnum.SphereCast)
             {
                 debugObj.MoveDistance(script.distance);
             }
@@ -127,10 +124,10 @@ namespace RPG.Combat
                 switch (effect.aoePackageEnum)
                 {
                     case AOEPackageEnum.Wait:
-                        Executor(new AOE_Wait(out shouldWait, out waitDuration, effect.duration));
+                        Executor(new IAOE_Wait(out shouldWait, out waitDuration, effect.duration));
                         break;
                     case AOEPackageEnum.Executable:
-                        Executor(new AOE_Execute(GetHits(effect.effectPackage.layerToAffect), effect.effectPackage));
+                        Executor(new IAOE_Execute(GetHits(effect.effectPackage.layerToAffect), effect.effectPackage));
                         break;
                     default:
                         break;
@@ -146,11 +143,11 @@ namespace RPG.Combat
         public Collider[] GetHits(LayerMask layer)
         {
             print("In Sphere Cast");
-            if (aoeCastType == AOECastType.OverlapSphere)
+            if (aoeCastType == AOECastEnum.OverlapSphere)
             {
                 return Physics.OverlapSphere(originPoint, radius, layer);
             }
-            else if (aoeCastType == AOECastType.SphereCast)
+            else if (aoeCastType == AOECastEnum.SphereCast)
             {
                 return GetSphereCastAllHits(layer);
             }
@@ -172,7 +169,7 @@ namespace RPG.Combat
             return hitResults.ToArray();
         }
 
-        public void Executor(AOE_Effect effect)
+        public void Executor(IAOE_Effect effect)
         {
             effect.ApplyEffect();
         }

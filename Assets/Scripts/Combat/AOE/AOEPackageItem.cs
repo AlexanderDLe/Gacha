@@ -2,16 +2,10 @@
 
 namespace RPG.Combat
 {
-    public enum AOEPackageEnum
-    {
-        None,
-        Wait,
-        Executable
-    }
-
     [System.Serializable]
-    public class AOEPackageItem
+    public struct AOEPackageItem
     {
+        [GUIColor(.5f, .9f, 1f, 1f)]
         public AOEPackageEnum aoePackageEnum;
 
         [ShowIf("aoePackageEnum", AOEPackageEnum.Executable)]

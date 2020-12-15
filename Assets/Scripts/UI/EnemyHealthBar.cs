@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 namespace RPG.Attributes
 {
@@ -9,10 +6,6 @@ namespace RPG.Attributes
     {
         [SerializeField] BaseStats baseStats = null;
         [SerializeField] RectTransform foreground = null;
-
-        private void Start()
-        {
-        }
 
         private void OnEnable()
         {

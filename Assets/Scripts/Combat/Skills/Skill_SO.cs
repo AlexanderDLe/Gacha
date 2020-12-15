@@ -1,8 +1,7 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace RPG.Skill
+namespace RPG.Combat
 {
     public abstract class Skill_SO : ScriptableObject
     {

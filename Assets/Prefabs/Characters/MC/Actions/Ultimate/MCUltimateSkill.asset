@@ -32,16 +32,6 @@ MonoBehaviour:
   distance: 1
   repeatChain: 1
   repeatDelay: 0.25
-  effectChain:
-  - effectEnum: 2
-    duration: 0
-    value: 10
-  - effectEnum: 1
-    duration: 0.25
-    value: 0
-  - effectEnum: 2
-    duration: 0
-    value: 10
   aoePackageChain:
   - aoePackageEnum: 2
     effectPackage:
@@ -51,7 +41,7 @@ MonoBehaviour:
       effectItems:
       - effectEnum: 2
         duration: 0
-        value: 10
+        value: 15
     duration: 0
   - aoePackageEnum: 2
     effectPackage:

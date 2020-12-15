@@ -3,14 +3,14 @@
 namespace RPG.Combat
 {
     [System.Serializable]
-    public class EffectItem
+    public struct EffectItem
     {
-        public EffectEnum effectEnum;
+        public IE_Enum effectEnum;
 
-        [ShowIf("effectEnum", EffectEnum.Wait)]
+        [ShowIf("effectEnum", IE_Enum.Wait)]
         public float duration;
 
-        [ShowIf("effectEnum", EffectEnum.Damage)]
+        [ShowIf("effectEnum", IE_Enum.Damage)]
         public float value;
     }
 }

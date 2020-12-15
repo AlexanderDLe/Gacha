@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using RPG.Combat;
 
-namespace RPG.Skill
+namespace RPG.Combat
 {
     public enum AOETargetEnum
     {

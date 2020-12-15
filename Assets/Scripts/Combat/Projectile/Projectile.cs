@@ -84,7 +84,7 @@ namespace RPG.Combat
             if (other.gameObject.layer == Mathf.Log(layerToHarm.value, 2))
             {
                 EffectExecutor target = other.gameObject.GetComponent<EffectExecutor>();
-                target.ExecuteEffects(effectPackage);
+                target.Execute(effectPackage);
             }
         }
 

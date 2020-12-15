@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: Howl Primary
   skillSprite: {fileID: 21300000, guid: 12dc3644b4e241e4b88e40a771764a5f, type: 3}
-  debug: 1
+  debug: 0
   poolCount: 3
   baseCooldownTime: 3
   lifetime: 3
