@@ -21,7 +21,7 @@ MonoBehaviour:
   movementSpeed: 4
   experienceGiven: 0
   EnemyRarity: 0
-  fightingType: 1
+  fightingType: 2
   projectile_SO: {fileID: 11400000, guid: 83bbb09340e918943b0cf48074b6310d, type: 2}
   hitboxRadius: 1
   weapon: {fileID: 0}
@@ -37,4 +37,4 @@ MonoBehaviour:
       value: 20
   chaseDistance: 5
   aggroCooldownTime: 3
-  suspicionTime: 0
+  suspicionTime: 2

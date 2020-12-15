@@ -12,7 +12,6 @@ namespace RPG.Utility
             timer += Time.deltaTime;
             if (timer >= timeToDestroy)
             {
-                // print("Destroying: " + gameObject.name);
                 Destroy(gameObject);
             }
         }

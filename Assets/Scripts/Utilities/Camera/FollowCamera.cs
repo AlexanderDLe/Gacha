@@ -6,7 +6,7 @@ namespace RPG.Utility
     {
         [SerializeField] GameObject target = null;
 
-        void Update()
+        void LateUpdate()
         {
             transform.position = target.transform.position;
         }

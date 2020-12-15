@@ -16,3 +16,5 @@ MonoBehaviour:
   hitEffect: {fileID: 0}
   speed: 5
   maxLifeTime: 5
+  hasActiveTime: 0
+  activeTime: 5

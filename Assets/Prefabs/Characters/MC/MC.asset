@@ -24,7 +24,7 @@ MonoBehaviour:
   dashAudio:
   - {fileID: 8300000, guid: 82dbcb26c195a3640a883dbe979cbad2, type: 3}
   - {fileID: 8300000, guid: cd75db6c69d471642b49c020a3da9ce9, type: 3}
-  fightingType: 0
+  attackType: 1
   autoAttack_SO: {fileID: 11400000, guid: 008e040a84466e546a6d0b559a92a857, type: 2}
   movementSkill: {fileID: 11400000, guid: 4eb5743c61a102b4aa5f4c02fd2910ca, type: 2}
   primarySkill: {fileID: 11400000, guid: 2aef882082b24a44daa0b55adba12774, type: 2}

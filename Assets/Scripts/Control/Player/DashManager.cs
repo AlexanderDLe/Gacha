@@ -13,7 +13,7 @@ namespace RPG.Control
         }
         public void LinkReferences(AudioManager audioPlayer)
         {
-            this.audioPlayer = audioPlayer;
+            this.audioManager = audioPlayer;
         }
         public void Initialize(CharacterManager character)
         {
@@ -53,15 +53,15 @@ namespace RPG.Control
         #endregion
 
         #region Dash Audio
-        AudioManager audioPlayer = null;
+        AudioManager audioManager = null;
         private AudioClip[] dashAudio = null;
         private bool dashAudioJustPlayed = false;
 
         private void DashStart()
         {
-            if (!audioPlayer.RandomlyDecideIfPlay(.5f)) return;
-            if (audioPlayer.characterAudioSource.isPlaying || dashAudioJustPlayed) return;
-            audioPlayer.PlayAudio(AudioEnum.Character, dashAudio);
+            if (!audioManager.RandomlyDecideIfPlay(.5f)) return;
+            if (audioManager.characterAudioSource.isPlaying || dashAudioJustPlayed) return;
+            audioManager.PlayAudio(AudioEnum.Character, dashAudio);
             StartCoroutine(TriggerDashAudio());
         }
 

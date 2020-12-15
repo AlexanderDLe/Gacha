@@ -5,7 +5,6 @@ namespace RPG.Core
     public class StateMachine : MonoBehaviour
     {
         private IState CurrentState;
-        private IState PreviousState;
         private StateEnum CurrentStateEnum;
 
         public void changeState(IState newState, StateEnum newStateEnum)
@@ -14,7 +13,6 @@ namespace RPG.Core
             if (CurrentState != null) CurrentState.Exit();
 
             CurrentStateEnum = newStateEnum;
-            PreviousState = CurrentState;
             CurrentState = newState;
             CurrentState.Enter();
         }
@@ -22,13 +20,6 @@ namespace RPG.Core
         public void ExecuteStateUpdate()
         {
             if (CurrentState != null) CurrentState.Execute();
-        }
-
-        public void SwitchToPreviousState()
-        {
-            CurrentState.Exit();
-            CurrentState = PreviousState;
-            PreviousState.Enter();
         }
     }
 }
