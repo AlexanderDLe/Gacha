@@ -68,7 +68,7 @@ namespace RPG.AI
         {
             if (!AIManager.CanMove()) return;
             aggro.EndAggression();
-            AIEnterMoveState(guardPosition, AIManager.baseStats.movementSpeed);
+            AIEnterMoveState(guardPosition, AIManager.stats.movementSpeed);
         }
 
         private void AggressiveBehaviour()
@@ -79,7 +79,7 @@ namespace RPG.AI
             if (!aggro.WithinAttackRange())
             {
                 if (!AIManager.CanMove()) return;
-                AIEnterChaseState(AIManager.baseStats.movementSpeed);
+                AIEnterChaseState(AIManager.stats.movementSpeed);
             }
             else
             {

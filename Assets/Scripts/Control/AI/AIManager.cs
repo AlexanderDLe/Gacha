@@ -18,7 +18,7 @@ namespace RPG.AI
         ObjectPooler objectPooler = null;
         DamageTextSpawner damageTextSpawner = null;
         EffectExecutor effectExecuter = null;
-        public BaseStats baseStats = null;
+        public Stats stats = null;
         public EnemyCharacter_SO script = null;
         public AIAggroManager aggro = null;
         public AIAttackManager attacker = null;
@@ -31,7 +31,7 @@ namespace RPG.AI
             navMeshAgent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
             damageTextSpawner = GetComponent<DamageTextSpawner>();
-            baseStats = GetComponent<BaseStats>();
+            stats = GetComponent<Stats>();
             player = GameObject.FindWithTag("Player");
             aggro = GetComponent<AIAggroManager>();
             attacker = GetComponent<AIAttackManager>();
@@ -61,13 +61,13 @@ namespace RPG.AI
         {
             InitializeModel(prefab, animator);
 
-            baseStats.Initialize(enemy_SO);
+            stats.Initialize(enemy_SO);
 
-            effectExecuter.Initialize(baseStats);
+            effectExecuter.Initialize(stats);
 
             aggro.Initialize(player, enemy_SO);
 
-            attacker.Initialize(enemy_SO, objectPooler, player, baseStats, prefab);
+            attacker.Initialize(enemy_SO, objectPooler, player, stats, prefab);
         }
 
         public void InitializeModel(GameObject prefab, Animator animator)
@@ -113,7 +113,7 @@ namespace RPG.AI
         public event Action OnDamageTaken;
         public override void TakeDamage(int damage)
         {
-            baseStats.TakeDamage(damage);
+            stats.TakeDamage(damage);
             damageTextSpawner.SpawnText(damage);
             OnDamageTaken();
         }

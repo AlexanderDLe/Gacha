@@ -19,9 +19,9 @@ namespace RPG.Control
             currentCharPrefab.SetActive(true);
         }
 
-        public void CharacterStats(out BaseStats currentBaseStats, out string currCharName, out Sprite currCharImage)
+        public void CharacterStats(out Stats currentBaseStats, out string currCharName, out Sprite currCharImage)
         {
-            currentBaseStats = character.baseStats;
+            currentBaseStats = character.stats;
             currCharName = character.name;
             currCharImage = character.image;
         }

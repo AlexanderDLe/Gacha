@@ -20,7 +20,7 @@ namespace RPG.Control
         [FoldoutGroup("Management Systems")]
         CharacterBuilder builder = null;
         [FoldoutGroup("Management Systems")]
-        public BaseStats baseStats = null;
+        public Stats stats = null;
         [FoldoutGroup("Management Systems")]
         public DashManager dasher = null;
         [FoldoutGroup("Management Systems")]
@@ -98,11 +98,11 @@ namespace RPG.Control
         {
             initialize.CurrentCharacter(character);
             initialize.CharacterPrefab(out currentCharPrefab, char_PFs, currentCharIndex);
-            initialize.CharacterStats(out baseStats, out currCharName, out currCharImage);
+            initialize.CharacterStats(out stats, out currCharName, out currCharImage);
             initialize.CharacterSkills(out movementSkill, out primarySkill, out ultimateSkill);
             initialize.CharacterAnimation(animator);
-            effectExecuter.Initialize(baseStats);
-            attacker.Initialize(character, baseStats);
+            effectExecuter.Initialize(stats);
+            attacker.Initialize(character, stats);
             aimer.Initialize(character);
             dasher.Initialize(character);
             CharacterInitializationComplete();
@@ -112,7 +112,7 @@ namespace RPG.Control
         #region Functions
         public override void TakeDamage(int damage)
         {
-            baseStats.TakeDamage(damage);
+            stats.TakeDamage(damage);
         }
         public override void ExecuteEffectPackage(EffectPackage effectPackage)
         {

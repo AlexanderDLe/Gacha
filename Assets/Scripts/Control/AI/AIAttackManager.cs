@@ -9,11 +9,11 @@ namespace RPG.AI
 {
     public class AIAttackManager : MonoBehaviour
     {
-        AIManager AIManager = null;
-        ObjectPooler objectPooler = null;
-        GameObject player = null;
-        BaseStats baseStats = null;
-        GameObject prefab = null;
+        AIManager AIManager;
+        ObjectPooler objectPooler;
+        GameObject player;
+        Stats stats;
+        GameObject prefab;
         public LayerMask playerLayer;
         public AttackTypeEnum fightingType;
         public Weapon weapon;
@@ -24,23 +24,23 @@ namespace RPG.AI
         public bool isInAttackAnimation = false;
         public float attackCooldownCounter = 0f;
         public float radius = 1f;
-        public Transform hitboxPoint = null;
+        public Transform hitboxPoint;
         public EffectPackage effectPackage;
-        EnemyCharacter_SO script = null;
+        EnemyCharacter_SO script;
 
         [Header("Projectile")]
         public Transform projectileSpawnTransform;
-        Projectile projectile = null;
+        Projectile projectile;
         public float projectileSpeed = 1f;
         public float projectileLifetime = 5;
 
-        public void Initialize(EnemyCharacter_SO script, ObjectPooler objectPooler, GameObject player, BaseStats baseStats, GameObject prefab)
+        public void Initialize(EnemyCharacter_SO script, ObjectPooler objectPooler, GameObject player, Stats stats, GameObject prefab)
         {
             this.script = script;
             this.AIManager = GetComponent<AIManager>();
             this.objectPooler = objectPooler;
             this.player = player;
-            this.baseStats = baseStats;
+            this.stats = stats;
             this.prefab = prefab;
 
             this.playerLayer = LayerMask.GetMask("Player");
@@ -87,7 +87,7 @@ namespace RPG.AI
 
         private void InflictMelee()
         {
-            float damage = Mathf.Round(baseStats.GetDamage());
+            float damage = Mathf.Round(stats.GetDamage());
 
             IAOE_Effect deliverEffects = new IAOE_Execute(hitboxPoint.position, radius, playerLayer, effectPackage);
             deliverEffects.ApplyEffect();

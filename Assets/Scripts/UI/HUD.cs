@@ -10,7 +10,7 @@ namespace RPG.UI
     public class HUD : MonoBehaviour
     {
         public StateManager stateManager = null;
-        public BaseStats baseStats = null;
+        public Stats stats = null;
         private bool pollingSkills = false;
 
         [Header("Character Attributes")]
@@ -49,8 +49,8 @@ namespace RPG.UI
 
         public void InitializeCharacterUI()
         {
-            baseStats = stateManager.baseStats;
-            baseStats.OnHealthChange += UpdateCurrentHealth;
+            stats = stateManager.stats;
+            stats.OnHealthChange += UpdateCurrentHealth;
 
             movementMask.enabled = false;
             primaryMask.enabled = false;
@@ -76,9 +76,9 @@ namespace RPG.UI
 
         private void UpdateCurrentHealth()
         {
-            float currentHealth = baseStats.currentHealth;
-            float maxHealth = baseStats.maxHealth;
-            float healthPercentage = baseStats.GetHealthFraction();
+            float currentHealth = stats.currentHealth;
+            float maxHealth = stats.maxHealth;
+            float healthPercentage = stats.GetHealthFraction();
 
             characterHealth.text = currentHealth + "/" + maxHealth;
             healthBar.localScale = new Vector3(healthPercentage, 1, 1);

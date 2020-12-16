@@ -10,7 +10,7 @@ namespace RPG.Characters
         public float probability = .5f;
         public abstract void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler, RaycastMousePosition raycaster, Animator animator);
 
-        public abstract void Initialize(BaseStats baseStats, PlayableCharacter_SO charScript);
+        public abstract void Initialize(Stats stats, PlayableCharacter_SO charScript);
         public abstract void InitializeSkillManager(SkillManager movementSkill, SkillManager primarySkill, SkillManager ultimateSkill);
 
         public abstract void InitializeMovementSkill();

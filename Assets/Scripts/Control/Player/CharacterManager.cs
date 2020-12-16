@@ -11,7 +11,7 @@ namespace RPG.Characters
         #region Attributes
         public new string name;
         public float health;
-        public BaseStats baseStats;
+        public Stats stats;
         #endregion
 
         #region Metadata
@@ -84,8 +84,8 @@ namespace RPG.Characters
 
         private void InitializeBaseStats(GameObject char_GO)
         {
-            this.baseStats = char_GO.AddComponent<BaseStats>();
-            this.baseStats.Initialize(script);
+            this.stats = char_GO.AddComponent<Stats>();
+            this.stats.Initialize(script);
         }
 
         private void InitializeAttack(Weapon weapon)
@@ -137,7 +137,7 @@ namespace RPG.Characters
         private void InitializeSkillEventHandler(SkillEventHandler animEventHandler)
         {
             this.skillEventHandler = animEventHandler;
-            this.skillEventHandler.Initialize(baseStats, script);
+            this.skillEventHandler.Initialize(stats, script);
         }
 
         public void CancelSkillAiming()

@@ -9,13 +9,13 @@ namespace RPG.Control
 {
     public class AttackManager : MonoBehaviour
     {
-        Animator animator = null;
-        BaseStats baseStats = null;
-        AudioManager audioPlayer = null;
-        ObjectPooler objectPooler = null;
-        RaycastMousePosition raycaster = null;
-        AutoAttack_SO attackScript = null;
-        EffectPackage[] effectPackages = null;
+        Animator animator;
+        Stats stats;
+        AudioManager audioPlayer;
+        ObjectPooler objectPooler;
+        RaycastMousePosition raycaster;
+        AutoAttack_SO attackScript;
+        EffectPackage[] effectPackages;
 
         private void Start()
         {
@@ -30,11 +30,11 @@ namespace RPG.Control
             this.objectPooler = objectPooler;
         }
 
-        public void Initialize(CharacterManager character, BaseStats baseStats)
+        public void Initialize(CharacterManager character, Stats stats)
         {
             PlayableCharacter_SO script = character.script;
 
-            this.baseStats = baseStats;
+            this.stats = stats;
             this.weapon = character.weapon;
             this.fightingType = character.attackType;
             this.hitboxPoint = weapon.hitboxPoint;
@@ -63,24 +63,24 @@ namespace RPG.Control
             this.mediumAttackAudio = attackScript.mediumAttackAudio;
         }
 
-        GameObject[] autoAttackVFX = null;
-        AudioClip[] weakAttackAudio = null;
-        AudioClip[] mediumAttackAudio = null;
+        GameObject[] autoAttackVFX;
+        AudioClip[] weakAttackAudio;
+        AudioClip[] mediumAttackAudio;
         AttackTypeEnum fightingType;
-        Weapon weapon = null;
-        Projectile_SO projectile_SO = null;
+        Weapon weapon;
+        Projectile_SO projectile_SO;
         LayerMask enemyLayer;
-        Transform hitboxPoint = null;
+        Transform hitboxPoint;
 
         // Auto Attack Mechanics
         public bool isInAutoAttackState = false;
         public bool canTriggerNextAutoAttack = true;
         public int comboNum = 0;
         public int numberOfAutoAttackHits;
-        public string[] autoAttackArray = null;
+        public string[] autoAttackArray;
 
-        public float[] autoAttackHitRadiuses = null;
-        public float[] autoAttackDamageFractions = null;
+        public float[] autoAttackHitRadiuses;
+        public float[] autoAttackDamageFractions;
 
         public void SetIsInAutoAttackState(bool value) => isInAutoAttackState = value;
         public bool GetCanTriggerNextAutoAttack() => canTriggerNextAutoAttack;

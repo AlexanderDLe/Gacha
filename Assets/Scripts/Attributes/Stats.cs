@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RPG.Attributes
 {
-    public class BaseStats : MonoBehaviour
+    public class Stats : MonoBehaviour
     {
         [Range(1, 50)]
         public int level = 1;

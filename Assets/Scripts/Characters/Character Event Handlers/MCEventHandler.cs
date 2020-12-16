@@ -10,7 +10,7 @@ namespace RPG.Characters
     public class MCEventHandler : SkillEventHandler
     {
         public AudioManager audioManager;
-        public BaseStats baseStats;
+        public Stats stats;
         public PlayableCharacter_SO script;
         public ObjectPooler objectPooler;
         public RaycastMousePosition raycaster;
@@ -24,9 +24,9 @@ namespace RPG.Characters
             this.animator = animator;
         }
 
-        public override void Initialize(BaseStats baseStats, PlayableCharacter_SO script)
+        public override void Initialize(Stats stats, PlayableCharacter_SO script)
         {
-            this.baseStats = baseStats;
+            this.stats = stats;
             this.script = script;
             InitializeMovementSkill();
             InitializePrimarySkill();

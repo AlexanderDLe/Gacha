@@ -7,12 +7,12 @@ namespace RPG.Combat
 {
     public class EffectExecutor : MonoBehaviour
     {
-        BaseStats baseStats = null;
-        BaseManager baseManager = null;
+        Stats stats;
+        BaseManager baseManager;
 
-        public void Initialize(BaseStats baseStats)
+        public void Initialize(Stats stats)
         {
-            this.baseStats = baseStats;
+            this.stats = stats;
             this.baseManager = GetComponent<BaseManager>();
         }
 

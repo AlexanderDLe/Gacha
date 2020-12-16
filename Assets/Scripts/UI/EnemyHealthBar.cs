@@ -4,21 +4,21 @@ namespace RPG.Attributes
 {
     public class EnemyHealthBar : MonoBehaviour
     {
-        [SerializeField] BaseStats baseStats = null;
+        [SerializeField] Stats stats = null;
         [SerializeField] RectTransform foreground = null;
 
         private void OnEnable()
         {
-            baseStats.OnHealthChange += UpdateHealthBar;
+            stats.OnHealthChange += UpdateHealthBar;
         }
         private void OnDisable()
         {
-            baseStats.OnHealthChange -= UpdateHealthBar;
+            stats.OnHealthChange -= UpdateHealthBar;
         }
 
         public void UpdateHealthBar()
         {
-            float fraction = baseStats.GetHealthFraction();
+            float fraction = stats.GetHealthFraction();
             foreground.localScale = new Vector3(fraction, 1, 1);
         }
     }
