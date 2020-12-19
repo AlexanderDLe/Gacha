@@ -1,26 +1,24 @@
-﻿using RPG.Attributes;
+﻿using System;
+using System.Collections.Generic;
+using RPG.Attributes;
 using RPG.Combat;
 using RPG.Control;
 using RPG.Core;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace RPG.Characters
 {
     public class HowlEventHandler : SkillEventHandler
     {
-        public AudioManager audioManager;
-        public Stats stats;
-        public PlayableCharacter_SO script;
-        public ObjectPooler objectPooler;
-        public RaycastMousePosition raycaster;
-        public Animator animator;
-
-        public override void LinkReferences(AudioManager audioManager, ObjectPooler objectPooler, RaycastMousePosition raycaster, Animator animator)
+        public override void LinkReferences(AudioManager audioManager, ObjectPooler charObjectPooler, RaycastMousePosition raycaster, Animator animator, NavMeshAgent navMeshAgent, ProjectileLauncher projectileLauncher)
         {
             this.audioManager = audioManager;
-            this.objectPooler = objectPooler;
+            this.charObjectPooler = charObjectPooler;
             this.raycaster = raycaster;
             this.animator = animator;
+            this.navMeshAgent = navMeshAgent;
+            this.projectileLauncher = projectileLauncher;
         }
         public override void Initialize(Stats stats, PlayableCharacter_SO script)
         {
@@ -31,54 +29,84 @@ namespace RPG.Characters
             InitializeUltimateSkill();
         }
 
-        public override void InitializeSkillManager(SkillManager movementSkill, SkillManager primarySkill, SkillManager ultimateSkill)
+        public override void InitializeSkillManagers(SkillManager movementSkill, SkillManager primarySkill, SkillManager ultimateSkill)
         {
             this.movSkill = movementSkill;
             this.priSkill = primarySkill;
             this.ultSkill = ultimateSkill;
+            InitializeDictionaries();
         }
 
+        #region Interfacing
+        private void InitializeDictionaries()
+        {
+            this.enterSkillDict = new Dictionary<string, Action>() {
+                { "movementSkill", EnterMovementSkill},
+                { "primarySkill", EnterPrimarySkill},
+                { "ultimateSkill", EnterUltimateSkill},
+            };
+            this.executeSkillDict = new Dictionary<string, Action>() {
+                { "movementSkill", ExecuteMovementSkill},
+                { "primarySkill", ExecutePrimarySkill},
+                { "ultimateSkill", ExecuteUltimateSkill},
+            };
+            this.exitSkillDict = new Dictionary<string, Action>() {
+                { "movementSkill", ExitMovementSkill},
+                { "primarySkill", ExitPrimarySkill},
+                { "ultimateSkill", ExitUltimateSkill},
+            };
+        }
+        #endregion
+
         #region Movement Skill
-        SkillManager movSkill;
         MovementSkill movScript;
 
         public override void InitializeMovementSkill()
         {
             movScript = script.movementSkill as MovementSkill;
-            objectPooler.AddToPool(movScript.skillPrefab, movScript.poolCount);
+            charObjectPooler.AddToPool(movScript.skillPrefab, movScript.poolCount);
         }
-        public override void TriggerMovementSkill()
+        public override void EnterMovementSkill()
         {
-            raycaster.RotateObjectTowardsMousePosition(gameObject);
-            animator.SetTrigger("movementSkill");
-        }
-        public void HowlMovementStart()
-        {
-            EffectObject fxObj = objectPooler.SpawnFromPool(movScript.skillPrefab.name).GetComponent<EffectObject>();
+            movSkill.BeginSkillCooldown();
+            navMeshAgent.updateRotation = false;
+
+            EffectObject fxObj = charObjectPooler.SpawnFromPool(movScript.skillPrefab.name).GetComponent<EffectObject>();
 
             fxObj.Initialize(transform.position, transform.rotation, movScript.lifetime);
 
             audioManager.PlayAudio(AudioEnum.Action, movScript.skillActionAudio);
             audioManager.PlayAudio(AudioEnum.Character, movScript.skillVocalAudio, probability);
         }
+        public override void ExecuteMovementSkill()
+        {
+            Vector3 movement;
+            movement = gameObject.transform.forward;
+            navMeshAgent.isStopped = false;
+            navMeshAgent.speed = 10000f;
+            navMeshAgent.destination = gameObject.transform.position + movement;
+        }
+        public override void ExitMovementSkill()
+        {
+            navMeshAgent.updateRotation = true;
+        }
         #endregion
 
         #region Primary Skill
-        SkillManager priSkill;
         AOESkill priScript;
 
         public override void InitializePrimarySkill()
         {
             this.priScript = script.primarySkill as AOESkill;
-            objectPooler.AddToPool(priScript.skillPrefab, priScript.poolCount);
+            charObjectPooler.AddToPool(priScript.skillPrefab, priScript.poolCount);
         }
-        public override void TriggerPrimarySkill()
+        public override void EnterPrimarySkill()
         {
-            raycaster.RotateObjectTowardsMousePosition(gameObject);
-            animator.SetTrigger("primarySkill");
+            priSkill.BeginSkillCooldown();
+
             audioManager.PlayAudio(AudioEnum.Character, priScript.skillVocalAudio);
 
-            EffectObject fxObj = objectPooler.SpawnFromPool(priScript.skillPrefab.name).GetComponent<EffectObject>();
+            EffectObject fxObj = charObjectPooler.SpawnFromPool(priScript.skillPrefab.name).GetComponent<EffectObject>();
             AOEEffect aoeFX = fxObj.GetComponent<AOEEffect>();
 
             fxObj.Initialize(transform.position + transform.forward * 3, transform.rotation, priScript.lifetime);
@@ -91,18 +119,16 @@ namespace RPG.Characters
         #endregion
 
         #region Ultimate Skill
-        SkillManager ultSkill;
         AOESkill ultScript;
 
         public override void InitializeUltimateSkill()
         {
             this.ultScript = script.ultimateSkill as AOESkill;
-            objectPooler.AddToPool(ultScript.skillPrefab, ultScript.poolCount);
+            charObjectPooler.AddToPool(ultScript.skillPrefab, ultScript.poolCount);
         }
-        public override void TriggerUltimateSkill()
+        public override void EnterUltimateSkill()
         {
-            raycaster.RotateObjectTowardsMousePosition(gameObject);
-            animator.SetTrigger("ultimateSkill");
+            ultSkill.BeginSkillCooldown();
         }
         public void HowlUltimateStart()
         {
@@ -110,7 +136,7 @@ namespace RPG.Characters
         }
         public void HowlUltimateTriggered()
         {
-            EffectObject fxObj = objectPooler.SpawnFromPool(ultScript.skillPrefab.name).GetComponent<EffectObject>();
+            EffectObject fxObj = charObjectPooler.SpawnFromPool(ultScript.skillPrefab.name).GetComponent<EffectObject>();
 
             fxObj.Initialize(transform.position, transform.rotation, ultScript.lifetime);
 

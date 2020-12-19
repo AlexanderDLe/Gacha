@@ -34,7 +34,9 @@ MonoBehaviour:
     effectItems:
     - effectEnum: 2
       duration: 0
-      value: 20
+      damagePacket:
+        physDmgFraction: 0.7
+        fireDmgFraction: 0
   chaseDistance: 5
   aggroCooldownTime: 3
   suspicionTime: 2

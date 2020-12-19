@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Enemy
   - ObjectPooler
+  - Environment
+  - Poolers
+  - DebugPooler
   layers:
   - Default
   - TransparentFX

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -17,18 +18,27 @@ public class ObjectPooler : MonoBehaviour
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
 
-    #region Singleton
-    public static ObjectPooler Instance;
-    private void Awake()
-    {
-        Instance = this;
-    }
-    #endregion
-
     void Start()
     {
-        poolDictionary = new Dictionary<string, Queue<GameObject>>();
+        BuildAssets();
         BuildPools();
+    }
+
+    public void Initialize()
+    {
+        BuildAssets();
+    }
+
+    private void BuildAssets()
+    {
+        if (pools == null)
+        {
+            pools = new List<Pool>();
+        }
+        if (poolDictionary == null)
+        {
+            poolDictionary = new Dictionary<string, Queue<GameObject>>();
+        }
     }
 
     private void BuildPools()
@@ -36,6 +46,7 @@ public class ObjectPooler : MonoBehaviour
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
+            CheckEmptyPool(pool);
 
             for (int i = 0; i < pool.size; i++)
             {
@@ -46,6 +57,15 @@ public class ObjectPooler : MonoBehaviour
             }
 
             poolDictionary.Add(pool.prefab.name, objectPool);
+        }
+    }
+
+    private void CheckEmptyPool(Pool pool)
+    {
+        if (pool.size == 0)
+        {
+            print("Pool size cannot be set to 0. Size for " + pool.prefab.name + " set to 3.");
+            pool.size = 3;
         }
     }
 

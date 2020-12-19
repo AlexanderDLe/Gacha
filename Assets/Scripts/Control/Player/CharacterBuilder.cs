@@ -2,22 +2,27 @@
 using RPG.Combat;
 using RPG.Core;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace RPG.Control
 {
     public class CharacterBuilder : MonoBehaviour
     {
         Animator animator = null;
-        ObjectPooler objectPooler = null;
         AudioManager audioManager = null;
         RaycastMousePosition raycaster = null;
+        NavMeshAgent navMeshAgent = null;
+        GameObject poolers;
+        ProjectileLauncher projectileLauncher = null;
 
-        public void LinkReferences(Animator animator, ObjectPooler objectPooler, AudioManager audioManager, RaycastMousePosition raycaster)
+        public void LinkReferences(Animator animator, NavMeshAgent navMeshAgent, AudioManager audioManager, RaycastMousePosition raycaster, ProjectileLauncher projectileLauncher)
         {
             this.animator = animator;
-            this.objectPooler = objectPooler;
+            this.navMeshAgent = navMeshAgent;
             this.audioManager = audioManager;
             this.raycaster = raycaster;
+            this.projectileLauncher = projectileLauncher;
+            poolers = GameObject.FindGameObjectWithTag("Poolers");
         }
 
         public CharacterManager BuildCharacter(GameObject charController,
@@ -28,12 +33,14 @@ namespace RPG.Control
                 charPrefab = null;
                 return null;
             }
+            ObjectPooler charObjectPooler;
             CharacterManager charManager;
             Weapon weapon;
 
             charController = BuildCharacterController(charScript);
+            charObjectPooler = BuildCharObjectPooler(charScript.name);
             charPrefab = BuildAndEquipCharacter(charScript, out weapon);
-            charManager = BuildCharacterManager(charController, charScript, weapon);
+            charManager = BuildCharacterManager(charController, charScript, weapon, charObjectPooler);
 
             return charManager;
         }
@@ -48,7 +55,22 @@ namespace RPG.Control
             // 2. Child the Controller_GO to the Player_GO
             charController.transform.SetParent(gameObject.transform);
             charController.name = charScript.name + " Controller";
+
             return charController;
+        }
+
+        private ObjectPooler BuildCharObjectPooler(string charName)
+        {
+            GameObject charObjectPooler_GO = new GameObject();
+            charObjectPooler_GO.transform.SetParent(poolers.transform);
+
+            charObjectPooler_GO.AddComponent<ObjectPooler>();
+            charObjectPooler_GO.name = charName + " Object Pooler";
+
+            ObjectPooler objectPooler = charObjectPooler_GO.GetComponent<ObjectPooler>();
+            objectPooler.Initialize();
+
+            return objectPooler;
         }
 
         public GameObject BuildAndEquipCharacter(PlayableCharacter_SO charScript, out Weapon weapon)
@@ -67,46 +89,24 @@ namespace RPG.Control
             // 4. Spawn weapon at the Hold Weapon Transform
             weapon = Instantiate(charScript.weapon, holdWeaponTransform);
 
-            // 5. If Projectile fighter, then add to Object Pool
-            AddObjectsToPool(charScript);
-
             char_PF.SetActive(false);
             return char_PF;
         }
 
-        public CharacterManager BuildCharacterManager(GameObject charController, PlayableCharacter_SO charScript, Weapon weapon)
+        public CharacterManager BuildCharacterManager(GameObject charController, PlayableCharacter_SO charScript, Weapon weapon, ObjectPooler charObjectPooler)
         {
             /* The Character Manager is a script component that will manage and contain data for each of the individual characters. */
 
             // 1. Add a CharacterManager script to the Controller Game Object
             CharacterManager charManager = charController.AddComponent<CharacterManager>();
 
-            // 2. Set up the Character Skill Script
+            // 2. Set up the Character Skill Event Handler Script
             SkillEventHandler animEventHandler = AddCharEventHandler(charScript);
-            animEventHandler.LinkReferences(audioManager, objectPooler, raycaster, animator);
+            animEventHandler.LinkReferences(audioManager, charObjectPooler, raycaster, animator, navMeshAgent, projectileLauncher);
 
             // 3. Initialize the CharacterManager with the necessary data
-            charManager.Initialize(gameObject, charController, animator, charScript, weapon, animEventHandler);
+            charManager.Initialize(gameObject, charController, animator, charScript, weapon, animEventHandler, charObjectPooler);
             return charManager;
-        }
-
-        private void AddObjectsToPool(PlayableCharacter_SO charScript)
-        {
-            // Add attack VFX to pool
-            GameObject[] attackVFXArr = charScript.autoAttack_SO.autoAttackVFX;
-            foreach (GameObject attackVFX in attackVFXArr)
-            {
-                objectPooler.AddToPool(attackVFX, 3);
-            }
-
-            // If projectile user, then add projectiles to pool
-            if (charScript.attackType == AttackTypeEnum.Projectile)
-            {
-                ProjectileAttack_SO proj_SO = charScript.autoAttack_SO as ProjectileAttack_SO;
-
-                GameObject projectile = proj_SO.projectile.prefab;
-                objectPooler.AddToPool(projectile, 10);
-            }
         }
 
         private Characters.SkillEventHandler AddCharEventHandler(PlayableCharacter_SO charScript)

@@ -7,9 +7,20 @@ namespace RPG.Control
     public class SkillManager : MonoBehaviour
     {
         Animator animator = null;
-        string skillType;
-        string SKILLSHOT = "SKILLSHOT";
-        string RANGESHOT = "RANGESHOT";
+
+        private void Update()
+        {
+            if (skillInCooldown) UpdateCooldownTimer();
+        }
+
+        private void UpdateCooldownTimer()
+        {
+            skillCountdownTimer -= Time.deltaTime;
+            if (skillCountdownTimer < 0)
+            {
+                skillInCooldown = false;
+            }
+        }
 
         public void Initialize(GameObject player_GO, Animator animator,
             string skillType, Skill_SO skillScriptableObject, Sprite skillImage)
@@ -37,6 +48,7 @@ namespace RPG.Control
         }
 
         public Skill_SO skill = null;
+        public string skillType;
         public bool isUsingSkill = false;
         public string skillName;
 
@@ -46,6 +58,8 @@ namespace RPG.Control
         public float skillCountdownTimer = 0f;
 
         [Header("Skill Aiming")]
+        string SKILLSHOT = "SKILLSHOT";
+        string RANGESHOT = "RANGESHOT";
         public bool requiresSkillShot = false;
         public bool requiresRangeShot = false;
         public bool isAimingSkill = false;
@@ -82,22 +96,10 @@ namespace RPG.Control
             string skillType = requiresSkillShot ? SKILLSHOT : RANGESHOT;
         }
 
-        public void TriggerSkill()
-        {
-            SetIsUsingSkill(true);
-            StartCoroutine(TriggerSkillCooldown());
-        }
-
-        IEnumerator TriggerSkillCooldown()
+        public void BeginSkillCooldown()
         {
             skillInCooldown = true;
             skillCountdownTimer = cooldownResetTime;
-            while (skillCountdownTimer > 0)
-            {
-                skillCountdownTimer -= Time.deltaTime;
-                yield return null;
-            }
-            skillInCooldown = false;
         }
 
         public void SkillActivate()

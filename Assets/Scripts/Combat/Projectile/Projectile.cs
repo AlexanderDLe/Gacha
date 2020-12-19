@@ -1,14 +1,11 @@
 ﻿using RPG.Attributes;
-using RPG.Control;
 using UnityEngine;
-using RPG.AI;
-using RPG.Core;
 
 namespace RPG.Combat
 {
     public class Projectile : MonoBehaviour
     {
-        Vector3 projectileHeightAdjustment = new Vector3(0, .6f, 0);
+        Stats originStats;
         Vector3 destination = Vector3.zero;
         LayerMask layerToHarm;
         EffectPackage effectPackage;
@@ -35,21 +32,23 @@ namespace RPG.Combat
         }
 
         // Initialize without active lifetime (entire proj will be disabled altogether)
-        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, EffectPackage effectPackage, float projectileLifetime, LayerMask layerToHarm)
+        public void Initialize(Stats originStats, Vector3 spawnPos, Vector3 destination, float speed, EffectPackage effectPackage, float projectileLifetime, LayerMask layerToHarm)
         {
-            InitProj(spawnPos, destination, speed, effectPackage, projectileLifetime, layerToHarm);
+            this.originStats = originStats;
+            InitializeProjectile(spawnPos, destination, speed, effectPackage, projectileLifetime, layerToHarm);
         }
 
         // Initialize with active lifetime (hitbox will become inactive before proj is disabled)
-        public void Initialize(Vector3 spawnPos, Vector3 destination, float speed, EffectPackage effectPackage, float projectileLifetime, LayerMask layerToHarm, bool hasActiveLifetime, float activeLifetime)
+        public void Initialize(Stats originStats, Vector3 spawnPos, Vector3 destination, float speed, EffectPackage effectPackage, float projectileLifetime, LayerMask layerToHarm, bool hasActiveLifetime, float activeLifetime)
         {
-            InitProj(spawnPos, destination, speed, effectPackage, projectileLifetime, layerToHarm);
+            this.originStats = originStats;
+            InitializeProjectile(spawnPos, destination, speed, effectPackage, projectileLifetime, layerToHarm);
 
             this.hasActiveLifetime = hasActiveLifetime;
             this.activeLifetime = activeLifetime;
         }
 
-        private void InitProj(Vector3 spawnPos, Vector3 destination, float speed, EffectPackage effectPackage, float projectileLifetime, LayerMask layerToHarm)
+        private void InitializeProjectile(Vector3 spawnPos, Vector3 destination, float speed, EffectPackage effectPackage, float projectileLifetime, LayerMask layerToHarm)
         {
             this.destination = destination;
             transform.position = spawnPos;
@@ -84,7 +83,7 @@ namespace RPG.Combat
             if (other.gameObject.layer == Mathf.Log(layerToHarm.value, 2))
             {
                 EffectExecutor target = other.gameObject.GetComponent<EffectExecutor>();
-                target.Execute(effectPackage);
+                target.Execute(originStats, effectPackage);
             }
         }
 

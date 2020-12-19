@@ -1,4 +1,5 @@
-﻿using RPG.Attributes;
+﻿using System;
+using RPG.Attributes;
 using RPG.Combat;
 using RPG.Control;
 using Sirenix.OdinInspector;
@@ -24,10 +25,12 @@ namespace RPG.Characters
         [FoldoutGroup("Metadata")]
         public AnimatorOverrideController animatorOverride;
         [FoldoutGroup("Metadata")]
-        public Weapon weapon;
+        public ObjectPooler charObjectPooler;
         #endregion
 
         #region Auto Attack
+        [FoldoutGroup("Auto Attack")]
+        public Weapon weapon;
         [FoldoutGroup("Auto Attack")]
         public AttackTypeEnum attackType;
         [FoldoutGroup("Auto Attack")]
@@ -45,7 +48,7 @@ namespace RPG.Characters
         #endregion
 
         #region Skills
-        [FoldoutGroup("MetaData")]
+        [FoldoutGroup("Skills")]
         public SkillEventHandler skillEventHandler;
         [FoldoutGroup("Skills")]
         public SkillManager movementSkill;
@@ -64,14 +67,16 @@ namespace RPG.Characters
 
         public PlayableCharacter_SO script = null;
 
-        public void Initialize(GameObject player_GO, GameObject char_GO, Animator animator, PlayableCharacter_SO char_SO, Weapon weapon, SkillEventHandler animEventHandler)
+        public void Initialize(GameObject player_GO, GameObject char_GO, Animator animator, PlayableCharacter_SO char_SO, Weapon weapon, SkillEventHandler skillEventHandler, ObjectPooler charObjectPooler)
         {
             InitializeMetadata(char_SO);
+            InitializeObjectPooler(charObjectPooler);
             InitializeBaseStats(char_GO);
             InitializeAttack(weapon);
             InitializeAllSkills(player_GO, char_GO, animator);
-            InitializeSkillEventHandler(animEventHandler);
+            InitializeSkillEventHandler(skillEventHandler);
         }
+
 
         private void InitializeMetadata(PlayableCharacter_SO char_SO)
         {
@@ -80,6 +85,28 @@ namespace RPG.Characters
             this.name = char_SO.name;
             this.image = char_SO.image;
             this.animatorController = char_SO.animatorController;
+        }
+
+        private void InitializeObjectPooler(ObjectPooler charObjectPooler)
+        {
+            this.charObjectPooler = charObjectPooler;
+
+            // Add attack VFX to pool
+            GameObject[] attackVFXArr = script.autoAttack_SO.autoAttackVFX;
+
+            foreach (GameObject attackVFX in attackVFXArr)
+            {
+                charObjectPooler.AddToPool(attackVFX, 3);
+            }
+
+            // If projectile user, then add projectiles to pool
+            if (script.attackType == AttackTypeEnum.Projectile)
+            {
+                ProjectileAttack_SO proj_SO = script.autoAttack_SO as ProjectileAttack_SO;
+
+                GameObject projectile = proj_SO.projectile.prefab;
+                charObjectPooler.AddToPool(projectile, 10);
+            }
         }
 
         private void InitializeBaseStats(GameObject char_GO)
@@ -134,10 +161,12 @@ namespace RPG.Characters
             return skill;
         }
 
-        private void InitializeSkillEventHandler(SkillEventHandler animEventHandler)
+        private void InitializeSkillEventHandler(SkillEventHandler skillEventHandler)
         {
-            this.skillEventHandler = animEventHandler;
+            this.skillEventHandler = skillEventHandler;
             this.skillEventHandler.Initialize(stats, script);
+
+            skillEventHandler.InitializeSkillManagers(movementSkill, primarySkill, ultimateSkill);
         }
 
         public void CancelSkillAiming()
@@ -160,18 +189,18 @@ namespace RPG.Characters
         // Skill Triggers
         public void TriggerMovementSkill()
         {
-            movementSkill.TriggerSkill();
-            skillEventHandler.TriggerMovementSkill();
+            // movementSkill.TriggerSkill();
+            skillEventHandler.EnterMovementSkill();
         }
         public void TriggerPrimarySkill()
         {
-            primarySkill.TriggerSkill();
-            skillEventHandler.TriggerPrimarySkill();
+            // primarySkill.TriggerSkill();
+            skillEventHandler.EnterPrimarySkill();
         }
         public void TriggerUltimateSkill()
         {
-            ultimateSkill.TriggerSkill();
-            skillEventHandler.TriggerUltimateSkill();
+            // ultimateSkill.TriggerSkill();
+            skillEventHandler.EnterUltimateSkill();
         }
     }
 }

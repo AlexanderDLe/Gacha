@@ -2,7 +2,6 @@
 using RPG.Characters;
 using RPG.Combat;
 using RPG.Core;
-using RPG.Utility;
 using UnityEngine;
 
 namespace RPG.Control
@@ -12,22 +11,23 @@ namespace RPG.Control
         Animator animator;
         Stats stats;
         AudioManager audioPlayer;
-        ObjectPooler objectPooler;
+        ObjectPooler charObjectPooler;
         RaycastMousePosition raycaster;
         AutoAttack_SO attackScript;
         EffectPackage[] effectPackages;
+        ProjectileLauncher projectileLauncher;
 
         private void Start()
         {
             enemyLayer = LayerMask.GetMask("Enemy");
         }
 
-        public void LinkReferences(AudioManager audioPlayer, RaycastMousePosition raycaster, Animator animator, ObjectPooler objectPooler)
+        public void LinkReferences(AudioManager audioPlayer, RaycastMousePosition raycaster, Animator animator, ProjectileLauncher projectileLauncher)
         {
             this.audioPlayer = audioPlayer;
             this.raycaster = raycaster;
             this.animator = animator;
-            this.objectPooler = objectPooler;
+            this.projectileLauncher = projectileLauncher;
         }
 
         public void Initialize(CharacterManager character, Stats stats)
@@ -39,6 +39,7 @@ namespace RPG.Control
             this.fightingType = character.attackType;
             this.hitboxPoint = weapon.hitboxPoint;
             this.attackScript = character.attackScript;
+            this.charObjectPooler = character.charObjectPooler;
 
             this.numberOfAutoAttackHits = character.numberOfAutoAttackHits;
             this.autoAttackArray = character.autoAttackArray;
@@ -121,7 +122,7 @@ namespace RPG.Control
 
         private void SpawnAttackVFXObj(int index)
         {
-            EffectObject fxObj = objectPooler.SpawnFromPool(autoAttackVFX[index].name).GetComponent<EffectObject>();
+            EffectObject fxObj = charObjectPooler.SpawnFromPool(autoAttackVFX[index].name).GetComponent<EffectObject>();
             fxObj.Initialize(transform.position, transform.rotation, 1);
         }
 
@@ -136,25 +137,21 @@ namespace RPG.Control
             LayerMask terrainLayer = LayerMask.GetMask("Terrain");
             RaycastHit ray = raycaster.GetRaycastMousePoint(terrainLayer);
 
-            string prefabName = projectile_SO.prefab.name;
-            Vector3 projOrigin = transform.position;
-            Vector3 projDestination = ray.point;
+            Vector3 origin = transform.position;
+            Vector3 destination = ray.point;
 
-            float speed = projectile_SO.speed;
-            float lifetime = projectile_SO.maxLifeTime;
             LayerMask layerToHarm = LayerMask.GetMask("Enemy");
-            EffectPackage package = effectPackages[comboIndex];
+            EffectPackage effectPackage = effectPackages[comboIndex];
 
-            Projectile proj = objectPooler.SpawnFromPool(prefabName).GetComponent<Projectile>();
-            proj.Initialize(projOrigin, projDestination, speed, package, lifetime, layerToHarm);
+            projectileLauncher.Launch(stats, charObjectPooler, projectile_SO, origin, destination, layerToHarm, effectPackage);
         }
 
         public void InflictMeleeDamage(int comboIndex)
         {
             float radius = autoAttackHitRadiuses[comboIndex];
-            EffectPackage package = effectPackages[comboIndex];
+            EffectPackage effectPackage = effectPackages[comboIndex];
 
-            IAOE_Effect deliverEffects = new IAOE_Execute(hitboxPoint.position, radius, enemyLayer, package);
+            AOE_Effect deliverEffects = new AOE_Execute(stats, hitboxPoint.position, radius, enemyLayer, effectPackage);
             deliverEffects.ApplyEffect();
         }
 

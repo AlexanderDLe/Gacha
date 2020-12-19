@@ -3,24 +3,22 @@ using System.Collections;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using RPG.Characters;
-using RPG.Attributes;
 using RPG.Core;
 using RPG.Combat;
+using UnityEngine.AI;
 
 namespace RPG.Control
 {
-    public class StateManager : BaseManager
+    public class PlayerManager : BaseManager
     {
         #region Management Systems
         RaycastMousePosition raycaster = null;
-        Animator animator = null;
+        NavMeshAgent navMeshAgent = null;
         Vector3 mousePosition = Vector3.zero;
-        public GameObject environment = null;
+        GameObject environment = null;
 
         [FoldoutGroup("Management Systems")]
         CharacterBuilder builder = null;
-        [FoldoutGroup("Management Systems")]
-        public Stats stats = null;
         [FoldoutGroup("Management Systems")]
         public DashManager dasher = null;
         [FoldoutGroup("Management Systems")]
@@ -29,10 +27,6 @@ namespace RPG.Control
         public AimManager aimer = null;
         [FoldoutGroup("Management Systems")]
         public InitializeManager initialize = null;
-        [FoldoutGroup("Management Systems")]
-        public ObjectPooler objectPooler = null;
-        [FoldoutGroup("Management Systems")]
-        EffectExecutor effectExecuter = null;
         #endregion
 
         #region Audio
@@ -57,6 +51,7 @@ namespace RPG.Control
         private void Awake()
         {
             animator = GetComponent<Animator>();
+            navMeshAgent = GetComponent<NavMeshAgent>();
             raycaster = GetComponent<RaycastMousePosition>();
             builder = GetComponent<CharacterBuilder>();
             initialize = GetComponent<InitializeManager>();
@@ -65,7 +60,9 @@ namespace RPG.Control
             attacker = GetComponent<AttackManager>();
             aimer = GetComponent<AimManager>();
             effectExecuter = GetComponent<EffectExecutor>();
-            objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
+            projectileLauncher = GetComponent<ProjectileLauncher>();
+            environment = GameObject.FindWithTag("Environment");
+            debugPooler = GameObject.FindWithTag("DebugPooler").GetComponent<ObjectPooler>();
         }
         private void Start()
         {
@@ -77,11 +74,10 @@ namespace RPG.Control
         public void SetUpReferences()
         {
             audioManager.SetAudioSources(characterAudioSource, actionAudioSource);
-            attacker.LinkReferences(audioManager, raycaster, animator, objectPooler);
-            builder.LinkReferences(animator, objectPooler, audioManager, raycaster);
+            attacker.LinkReferences(audioManager, raycaster, animator, projectileLauncher);
+            builder.LinkReferences(animator, navMeshAgent, audioManager, raycaster, projectileLauncher);
             dasher.LinkReferences(audioManager);
             aimer.LinkReferences(raycaster);
-            raycaster.LinkReferences(objectPooler);
         }
         #endregion
 
@@ -100,8 +96,8 @@ namespace RPG.Control
             initialize.CharacterPrefab(out currentCharPrefab, char_PFs, currentCharIndex);
             initialize.CharacterStats(out stats, out currCharName, out currCharImage);
             initialize.CharacterSkills(out movementSkill, out primarySkill, out ultimateSkill);
+            initialize.CharacterSkillEventHandler(out skillEventHandler);
             initialize.CharacterAnimation(animator);
-            effectExecuter.Initialize(stats);
             attacker.Initialize(character, stats);
             aimer.Initialize(character);
             dasher.Initialize(character);
@@ -114,13 +110,9 @@ namespace RPG.Control
         {
             stats.TakeDamage(damage);
         }
-        public override void ExecuteEffectPackage(EffectPackage effectPackage)
-        {
-            print("Execute Effect Package");
-        }
         #endregion
 
-        #region Character Swapping Mechanics
+        #region Character Roster Mechanics
         [FoldoutGroup("Current Character Info")]
         public CharacterManager currentCharacter = null;
         [FoldoutGroup("Current Character Info")]
@@ -255,6 +247,8 @@ namespace RPG.Control
 
         #region Skill Mechanics
         [FoldoutGroup("Skills")]
+        public SkillEventHandler skillEventHandler = null;
+        [FoldoutGroup("Skills")]
         public SkillManager ultimateSkill = null;
         [FoldoutGroup("Skills")]
         public SkillManager primarySkill = null;
@@ -265,16 +259,16 @@ namespace RPG.Control
         {
             skill.SetAimingEnabled(true);
             aimer.InitializeAimImage(skill);
-            string aimType = GetSkillType(skill);
+            string aimType = GetAimType(skill);
             aimer.SetAimingEnabled(aimType, true);
         }
         public void DeactivateSkillAim(SkillManager skill)
         {
             skill.SetAimingEnabled(false);
-            string skillType = GetSkillType(skill);
-            aimer.SetAimingEnabled(skillType, false);
+            string aimType = GetAimType(skill);
+            aimer.SetAimingEnabled(aimType, false);
         }
-        private string GetSkillType(SkillManager skill)
+        private string GetAimType(SkillManager skill)
         {
             return skill.requiresSkillShot ? aimer.SKILLSHOT : aimer.RANGESHOT;
         }
@@ -283,8 +277,7 @@ namespace RPG.Control
         public void MovementSkillTriggered() => movementSkill.SetIsUsingSkill(false);
         public void PrimarySkillTriggered() => primarySkill.SetIsUsingSkill(false);
         public void UltimateSkillTriggered() => ultimateSkill.SetIsUsingSkill(false);
-
-        #endregion        
+        #endregion
 
         #region Footsteps
         [FoldoutGroup("FX")]

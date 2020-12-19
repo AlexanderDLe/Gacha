@@ -2,7 +2,6 @@
 using RPG.Attributes;
 using RPG.Characters;
 using RPG.Combat;
-using RPG.Control;
 using UnityEngine;
 
 namespace RPG.AI
@@ -14,6 +13,7 @@ namespace RPG.AI
         GameObject player;
         Stats stats;
         GameObject prefab;
+        ProjectileLauncher projectileLauncher;
         public LayerMask playerLayer;
         public AttackTypeEnum fightingType;
         public Weapon weapon;
@@ -28,23 +28,16 @@ namespace RPG.AI
         public EffectPackage effectPackage;
         EnemyCharacter_SO script;
 
-        [Header("Projectile")]
-        public Transform projectileSpawnTransform;
-        Projectile projectile;
-        public float projectileSpeed = 1f;
-        public float projectileLifetime = 5;
-
-        public void Initialize(EnemyCharacter_SO script, ObjectPooler objectPooler, GameObject player, Stats stats, GameObject prefab)
+        public void Initialize(EnemyCharacter_SO script, ObjectPooler objectPooler, GameObject player, Stats stats, GameObject prefab, ProjectileLauncher projectileLauncher)
         {
             this.script = script;
-            this.AIManager = GetComponent<AIManager>();
             this.objectPooler = objectPooler;
             this.player = player;
             this.stats = stats;
             this.prefab = prefab;
+            this.projectileLauncher = projectileLauncher;
 
             this.playerLayer = LayerMask.GetMask("Player");
-            this.attackCooldownTime = script.attackCooldownTime;
             this.weapon = script.weapon;
             this.weaponRange = script.weaponRange;
 
@@ -63,12 +56,6 @@ namespace RPG.AI
             {
                 GameObject projectilePrefab = script.projectile_SO.prefab;
                 objectPooler.AddToPool(projectilePrefab, 10);
-
-                this.projectile = projectilePrefab.GetComponent<Projectile>();
-
-                this.projectileSpeed = script.projectile_SO.speed;
-                this.projectileLifetime = script.projectile_SO.maxLifeTime;
-                this.projectileSpawnTransform = hitboxPoint;
             }
         }
 
@@ -89,16 +76,13 @@ namespace RPG.AI
         {
             float damage = Mathf.Round(stats.GetDamage());
 
-            IAOE_Effect deliverEffects = new IAOE_Execute(hitboxPoint.position, radius, playerLayer, effectPackage);
+            AOE_Effect deliverEffects = new AOE_Execute(stats, hitboxPoint.position, radius, playerLayer, effectPackage);
             deliverEffects.ApplyEffect();
         }
 
         private void ShootProjectile()
         {
-            Projectile proj = objectPooler.SpawnFromPool(projectile.name).GetComponent<Projectile>();
-            LayerMask layerToHarm = LayerMask.GetMask("Player");
-
-            proj.Initialize(projectileSpawnTransform.position, player.transform.position, projectileSpeed, effectPackage, projectileLifetime, layerToHarm);
+            projectileLauncher.Launch(stats, objectPooler, script.projectile_SO, hitboxPoint.position, player.transform.position, playerLayer, effectPackage);
         }
 
         public void AttackStart() { }

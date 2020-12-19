@@ -7,21 +7,19 @@ namespace RPG.Combat
 {
     public class EffectExecutor : MonoBehaviour
     {
-        Stats stats;
         BaseManager baseManager;
 
-        public void Initialize(Stats stats)
+        private void Awake()
         {
-            this.stats = stats;
             this.baseManager = GetComponent<BaseManager>();
         }
 
-        public void Execute(EffectPackage effectPackage)
+        public void Execute(Stats originStats, EffectPackage effectPackage)
         {
-            StartCoroutine(ExecuteChain(effectPackage));
+            StartCoroutine(ExecuteChain(originStats, effectPackage));
         }
 
-        IEnumerator ExecuteChain(EffectPackage effectPackage)
+        IEnumerator ExecuteChain(Stats originStats, EffectPackage effectPackage)
         {
             bool shouldWait = false;
             float waitDuration = 0f;
@@ -35,11 +33,11 @@ namespace RPG.Combat
                 }
                 switch (effect.effectEnum)
                 {
-                    case IE_Enum.Wait:
-                        Executor(new IE_Wait(out shouldWait, out waitDuration, effect.duration));
+                    case E_Enum.Wait:
+                        Executor(new E_Wait(out shouldWait, out waitDuration, effect.duration));
                         break;
-                    case IE_Enum.Damage:
-                        Executor(new IE_Damage(baseManager, effect.value));
+                    case E_Enum.Damage:
+                        Executor(new E_Damage(originStats, baseManager, effect.damagePacket));
                         break;
                     default:
                         break;
@@ -47,7 +45,7 @@ namespace RPG.Combat
             }
         }
 
-        public void Executor(IE_Effect effect)
+        public void Executor(E_Effect effect)
         {
             effect.ApplyEffect();
         }

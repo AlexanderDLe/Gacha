@@ -33,6 +33,11 @@ namespace RPG.Control
             ultimateSkill = character.ultimateSkill;
         }
 
+        public void CharacterSkillEventHandler(out SkillEventHandler skillEventHandler)
+        {
+            skillEventHandler = character.skillEventHandler;
+        }
+
         public void CharacterAnimation(Animator animator)
         {
             animator.avatar = character.avatar;

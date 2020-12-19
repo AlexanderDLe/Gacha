@@ -20,10 +20,10 @@ namespace RPG.Core
         {
             if (!cam) cam = Camera.main;
             terrainLayer = LayerMask.GetMask("Terrain");
+            objectPooler = GameObject.FindWithTag("DebugPooler").GetComponent<ObjectPooler>();
         }
-        public void LinkReferences(ObjectPooler objectPooler)
+        public void Start()
         {
-            this.objectPooler = objectPooler;
             objectPooler.AddToPool(debugObject, 10);
         }
 
@@ -68,7 +68,7 @@ namespace RPG.Core
         }
         public RaycastHit GetRaycastMousePoint(LayerMask layerMask)
         {
-            // Raycast using mouse position
+            // Raycast using mouse position with specified Layer Mask
             RaycastHit hit;
             bool hasHit = Physics.Raycast(GetMouseRay(), out hit, maxDistance, layerMask);
             return hit;

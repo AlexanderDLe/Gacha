@@ -1,6 +1,6 @@
 ﻿namespace RPG.Combat
 {
-    public interface IAOE_Effect
+    public interface E_Effect
     {
         void ApplyEffect();
     }

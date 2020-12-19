@@ -5,23 +5,23 @@ using RPG.Control;
 
 namespace RPG.PlayerStates
 {
-    public class P_Dasher : IState
+    public class P_Dash : IState
     {
         Animator animator = null;
         private GameObject gameObject = null;
         private NavMeshAgent navMeshAgent;
-        private StateManager stateManager = null;
+        private PlayerManager playerManager = null;
 
-        public P_Dasher(
+        public P_Dash(
             GameObject gameObject,
             NavMeshAgent navMeshAgent,
             Animator animator,
-            StateManager stateManager)
+            PlayerManager playerManager)
         {
             this.gameObject = gameObject;
             this.navMeshAgent = navMeshAgent;
             this.animator = animator;
-            this.stateManager = stateManager;
+            this.playerManager = playerManager;
         }
 
         public void Enter()
@@ -51,13 +51,13 @@ namespace RPG.PlayerStates
         {
             navMeshAgent.isStopped = false;
             navMeshAgent.destination = destination;
-            navMeshAgent.speed = stateManager.dasher.GetDashSpeed() * Mathf.Clamp01(speedFraction);
+            navMeshAgent.speed = playerManager.dasher.GetDashSpeed() * Mathf.Clamp01(speedFraction);
         }
 
         public void Exit()
         {
             navMeshAgent.isStopped = true;
-            stateManager.dasher.SetIsDashing(false);
+            playerManager.dasher.SetIsDashing(false);
         }
     }
 }

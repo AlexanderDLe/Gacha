@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using RPG.Attributes;
 using RPG.Control;
 using RPG.Core;
 using RPG.Utility;
@@ -9,13 +10,13 @@ namespace RPG.Combat
 {
     public class AOEEffect : MonoBehaviour
     {
-        public Transform aoeCenterPoint;
-
         GameObject parentObject;
+        Stats originStats;
         LayerMask layerToAffect;
         AOESkill script;
         AOECastEnum aoeCastType;
 
+        public Transform aoeCenterPoint;
         Vector3 originPoint;
         List<AOEPackageItem> aoePackageChain;
 
@@ -29,30 +30,16 @@ namespace RPG.Combat
         {
             this.script = script;
             this.parentObject = parentObject;
+            this.originStats = parentObject.GetComponent<BaseManager>().stats;
 
-            InitializeHitbox();
+            InitializeOriginPoint();
             InitializeCastType();
             InitializeEffectChain();
             InitializeEffectTime();
             InitializeDebug();
             StartCoroutine(ExecuteAOEChain());
         }
-        private void InitializeCastType()
-        {
-            if (script.aoeTargetEnum == AOETargetEnum.SphereCastToPoint)
-            {
-                aoeCastType = AOECastEnum.SphereCast;
-            }
-            else
-            {
-                aoeCastType = AOECastEnum.OverlapSphere;
-            }
-        }
-        private void InitializeDebug()
-        {
-            if (script.debug) Debug();
-        }
-        private void InitializeHitbox()
+        private void InitializeOriginPoint()
         {
             switch (script.aoeTargetEnum)
             {
@@ -72,16 +59,16 @@ namespace RPG.Combat
                     break;
             }
         }
-        private Vector3 GetProvidedAOEPoint()
+        private void InitializeCastType()
         {
-            if (!aoeCenterPoint) print("You must provide a Transform to the Prefab.");
-            return aoeCenterPoint.position;
-        }
-        private Vector3 GetRaycastMousePoint()
-        {
-            RaycastMousePosition raycaster = parentObject.GetComponent<RaycastMousePosition>();
-            RaycastHit hit = raycaster.GetRaycastMousePoint(LayerMask.GetMask("Terrain"));
-            return hit.point;
+            if (script.aoeTargetEnum == AOETargetEnum.SphereCastToPoint)
+            {
+                aoeCastType = AOECastEnum.SphereCast;
+            }
+            else
+            {
+                aoeCastType = AOECastEnum.OverlapSphere;
+            }
         }
         private void InitializeEffectChain()
         {
@@ -93,10 +80,26 @@ namespace RPG.Combat
             repeatDelay = Mathf.Max(script.repeatDelay, repeatDelayMin);
             repeatChain = script.repeatChain;
         }
+        private void InitializeDebug()
+        {
+            if (script.debug) Debug();
+        }
+        private Vector3 GetProvidedAOEPoint()
+        {
+            if (!aoeCenterPoint) print("You must provide a Transform to the Prefab.");
+            return aoeCenterPoint.position;
+        }
+        private Vector3 GetRaycastMousePoint()
+        {
+            RaycastMousePosition raycaster = parentObject.GetComponent<RaycastMousePosition>();
+            RaycastHit hit = raycaster.GetRaycastMousePoint(LayerMask.GetMask("Terrain"));
+            return hit.point;
+        }
         public void Debug()
         {
-            ObjectPooler objectPooler = parentObject.GetComponent<StateManager>().objectPooler;
-            DebugObject debugObj = objectPooler.SpawnFromPool(objectPooler.debugObject.name).GetComponent<DebugObject>();
+            ObjectPooler debugPooler = parentObject.GetComponent<BaseManager>().debugPooler;
+
+            DebugObject debugObj = debugPooler.SpawnFromPool(debugPooler.debugObject.name).GetComponent<DebugObject>();
 
             debugObj.Initialize(originPoint, parentObject.transform.rotation, radius, 2);
 
@@ -108,7 +111,6 @@ namespace RPG.Combat
         #endregion
 
         #region Execution
-
         IEnumerator ExecuteAOEChain()
         {
             bool shouldWait = false;
@@ -124,10 +126,10 @@ namespace RPG.Combat
                 switch (effect.aoePackageEnum)
                 {
                     case AOEPackageEnum.Wait:
-                        Executor(new IAOE_Wait(out shouldWait, out waitDuration, effect.duration));
+                        Executor(new AOE_Wait(out shouldWait, out waitDuration, effect.duration));
                         break;
                     case AOEPackageEnum.Executable:
-                        Executor(new IAOE_Execute(GetHits(effect.effectPackage.layerToAffect), effect.effectPackage));
+                        Executor(new AOE_Execute(originStats, GetHits(effect.effectPackage.layerToAffect), effect.effectPackage));
                         break;
                     default:
                         break;
@@ -169,7 +171,7 @@ namespace RPG.Combat
             return hitResults.ToArray();
         }
 
-        public void Executor(IAOE_Effect effect)
+        public void Executor(AOE_Effect effect)
         {
             effect.ApplyEffect();
         }

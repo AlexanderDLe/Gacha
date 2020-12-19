@@ -4,13 +4,13 @@ using RPG.Core;
 
 namespace RPG.PlayerStates
 {
-    public class P_Mover : IState
+    public class P_Move : IState
     {
         private GameObject gameObject = null;
         private NavMeshAgent navMeshAgent;
         private float speed = 6f;
 
-        public P_Mover(GameObject gameObjectOwner, NavMeshAgent navMeshAgent)
+        public P_Move(GameObject gameObjectOwner, NavMeshAgent navMeshAgent)
         {
             this.gameObject = gameObjectOwner;
             this.navMeshAgent = navMeshAgent;

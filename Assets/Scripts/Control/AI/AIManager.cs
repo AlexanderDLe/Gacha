@@ -5,20 +5,13 @@ using RPG.Characters;
 using RPG.Combat;
 using RPG.Core;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace RPG.AI
 {
     public class AIManager : BaseManager
     {
         GameObject player = null;
-        StateMachine stateMachine = null;
-        NavMeshAgent navMeshAgent = null;
-        Animator animator = null;
-        ObjectPooler objectPooler = null;
         DamageTextSpawner damageTextSpawner = null;
-        EffectExecutor effectExecuter = null;
-        public Stats stats = null;
         public EnemyCharacter_SO script = null;
         public AIAggroManager aggro = null;
         public AIAttackManager attacker = null;
@@ -27,17 +20,16 @@ namespace RPG.AI
 
         private void Awake()
         {
-            stateMachine = GetComponent<StateMachine>();
-            navMeshAgent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
             damageTextSpawner = GetComponent<DamageTextSpawner>();
             stats = GetComponent<Stats>();
-            player = GameObject.FindWithTag("Player");
             aggro = GetComponent<AIAggroManager>();
             attacker = GetComponent<AIAttackManager>();
             flincher = GetComponent<AIFlinchManager>();
             effectExecuter = GetComponent<EffectExecutor>();
-            objectPooler = GameObject.FindWithTag("ObjectPooler").GetComponent<ObjectPooler>();
+            player = GameObject.FindWithTag("Player");
+            projectileLauncher = GetComponent<ProjectileLauncher>();
+            debugPooler = GameObject.FindWithTag("DebugPooler").GetComponent<ObjectPooler>();
         }
         private void Start()
         {
@@ -63,11 +55,9 @@ namespace RPG.AI
 
             stats.Initialize(enemy_SO);
 
-            effectExecuter.Initialize(stats);
-
             aggro.Initialize(player, enemy_SO);
 
-            attacker.Initialize(enemy_SO, objectPooler, player, stats, prefab);
+            attacker.Initialize(enemy_SO, debugPooler, player, stats, prefab, projectileLauncher);
         }
 
         public void InitializeModel(GameObject prefab, Animator animator)
@@ -116,10 +106,6 @@ namespace RPG.AI
             stats.TakeDamage(damage);
             damageTextSpawner.SpawnText(damage);
             OnDamageTaken();
-        }
-        public override void ExecuteEffectPackage(EffectPackage effectPackage)
-        {
-            print("Execute Effect Package");
         }
         #endregion
 

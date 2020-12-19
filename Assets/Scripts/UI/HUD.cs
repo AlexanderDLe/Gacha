@@ -9,7 +9,7 @@ namespace RPG.UI
 {
     public class HUD : MonoBehaviour
     {
-        public StateManager stateManager = null;
+        public PlayerManager playerManager = null;
         public Stats stats = null;
         private bool pollingSkills = false;
 
@@ -40,16 +40,16 @@ namespace RPG.UI
 
         private void Start()
         {
-            stateManager.CharacterInitializationComplete += InitializeCharacterUI;
-            stateManager.CharacterInitializationComplete += UpdateCurrentHealth;
-            stateManager.CharacterInitializationComplete += UpdateDashCount;
-            stateManager.dasher.OnDashUpdate += UpdateDashCount;
+            playerManager.CharacterInitializationComplete += InitializeCharacterUI;
+            playerManager.CharacterInitializationComplete += UpdateCurrentHealth;
+            playerManager.CharacterInitializationComplete += UpdateDashCount;
+            playerManager.dasher.OnDashUpdate += UpdateDashCount;
             characterLevel.text = "Level 1";
         }
 
         public void InitializeCharacterUI()
         {
-            stats = stateManager.stats;
+            stats = playerManager.stats;
             stats.OnHealthChange += UpdateCurrentHealth;
 
             movementMask.enabled = false;
@@ -60,12 +60,12 @@ namespace RPG.UI
             primaryText.enabled = false;
             ultimateText.enabled = false;
 
-            characterName.text = stateManager.currCharName;
-            characterImage.sprite = stateManager.currCharImage;
+            characterName.text = playerManager.currCharName;
+            characterImage.sprite = playerManager.currCharImage;
 
-            movementSkillImage.sprite = stateManager.movementSkill.skillImage;
-            primarySkillImage.sprite = stateManager.primarySkill.skillImage;
-            ultimateSkillImage.sprite = stateManager.ultimateSkill.skillImage;
+            movementSkillImage.sprite = playerManager.movementSkill.skillImage;
+            primarySkillImage.sprite = playerManager.primarySkill.skillImage;
+            ultimateSkillImage.sprite = playerManager.ultimateSkill.skillImage;
 
             if (!pollingSkills)
             {
@@ -91,14 +91,14 @@ namespace RPG.UI
 
         private void UpdateDashCount()
         {
-            dashCharges.text = "Dash Charges: " + stateManager.dasher.currentDashCharges;
+            dashCharges.text = "Dash Charges: " + playerManager.dasher.currentDashCharges;
         }
 
         private void PollSkillCooldowns()
         {
-            PollSkillCountdown(stateManager.movementSkill, movementMask, movementText);
-            PollSkillCountdown(stateManager.primarySkill, primaryMask, primaryText);
-            PollSkillCountdown(stateManager.ultimateSkill, ultimateMask, ultimateText);
+            PollSkillCountdown(playerManager.movementSkill, movementMask, movementText);
+            PollSkillCountdown(playerManager.primarySkill, primaryMask, primaryText);
+            PollSkillCountdown(playerManager.ultimateSkill, ultimateMask, ultimateText);
         }
         private void PollSkillCountdown(SkillManager skill, Image mask, Text text)
         {

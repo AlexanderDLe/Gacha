@@ -70,14 +70,14 @@ namespace RPG.Control
                 reticleImage.sprite = skill.reticleImage;
             }
         }
-        public void SetAimingEnabled(string skillType, bool value)
+        public void SetAimingEnabled(string aimType, bool value)
         {
-            if (skillType == "SKILLSHOT")
+            if (aimType == "SKILLSHOT")
             {
                 skillshotImage.enabled = value;
                 skillshotAimingActive = value;
             }
-            if (skillType == "RANGESHOT")
+            if (aimType == "RANGESHOT")
             {
                 rangeImage.enabled = value;
                 reticleImage.enabled = value;

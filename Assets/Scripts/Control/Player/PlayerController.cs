@@ -2,13 +2,13 @@
 using UnityEngine.AI;
 using RPG.PlayerStates;
 using RPG.Core;
-using RPG.Combat;
+using RPG.Characters;
 
 namespace RPG.Control
 {
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(RaycastMousePosition))]
-    [RequireComponent(typeof(StateManager), typeof(StateMachine))]
+    [RequireComponent(typeof(PlayerManager), typeof(StateMachine))]
     public class PlayerController : MonoBehaviour
     {
         public static Camera cam = null;
@@ -16,16 +16,17 @@ namespace RPG.Control
         NavMeshAgent navMeshAgent = null;
         RaycastMousePosition raycaster = null;
         StateMachine stateMachine = null;
-        StateManager stateManager = null;
+        PlayerManager playerManager = null;
         AimManager aimer = null;
 
+        SkillEventHandler skillEventHandler = null;
         SkillManager primarySkill = null;
         SkillManager ultimateSkill = null;
         SkillManager movementSkill = null;
 
         private void Awake()
         {
-            stateManager = GetComponent<StateManager>();
+            playerManager = GetComponent<PlayerManager>();
             stateMachine = GetComponent<StateMachine>();
             navMeshAgent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
@@ -34,16 +35,16 @@ namespace RPG.Control
         }
         private void Start()
         {
-            aimer = stateManager.aimer;
+            aimer = playerManager.aimer;
             EnterMovementState();
         }
         private void OnEnable()
         {
-            stateManager.CharacterInitializationComplete += UpdateCharacterSkills;
+            playerManager.CharacterInitializationComplete += UpdateCharacterSkills;
         }
         private void OnDisable()
         {
-            stateManager.CharacterInitializationComplete += UpdateCharacterSkills;
+            playerManager.CharacterInitializationComplete += UpdateCharacterSkills;
         }
 
         void Update()
@@ -66,9 +67,10 @@ namespace RPG.Control
 
         public void UpdateCharacterSkills()
         {
-            primarySkill = stateManager.primarySkill;
-            ultimateSkill = stateManager.ultimateSkill;
-            movementSkill = stateManager.movementSkill;
+            skillEventHandler = playerManager.skillEventHandler;
+            primarySkill = playerManager.primarySkill;
+            ultimateSkill = playerManager.ultimateSkill;
+            movementSkill = playerManager.movementSkill;
         }
 
         public bool repeatAttack = false;
@@ -89,76 +91,76 @@ namespace RPG.Control
         private void HandleLeftMouseClick()
         {
             if (primarySkill.IsAimingEnabled() &&
-                stateManager.CanUsePrimarySkill())
+                playerManager.CanUsePrimarySkill())
             {
                 EnterPrimarySkillState();
                 return;
             }
             if (movementSkill.IsAimingEnabled() &&
-                stateManager.CanUseMovementSkill())
+                playerManager.CanUseMovementSkill())
             {
                 EnterMovementSkillState();
                 return;
             }
             if (ultimateSkill.IsAimingEnabled() &&
-                stateManager.CanUseUltimateSkill())
+                playerManager.CanUseUltimateSkill())
             {
                 EnterUltimateSkillState();
                 return;
             }
-            if (!stateManager.CanAutoAttack()) return;
-            stateManager.attacker.SetIsInAutoAttackState(true);
+            if (!playerManager.CanAutoAttack()) return;
+            playerManager.attacker.SetIsInAutoAttackState(true);
             stateMachine.changeState(new P_AutoAttack(gameObject, animator, raycaster,
-            stateManager, repeatAttack), StateEnum.AutoAttack);
+            playerManager, repeatAttack), StateEnum.AutoAttack);
         }
         private void HandleRightMouseClick()
         {
-            if (!stateManager.CanUseMovementSkill()) return;
+            if (!playerManager.CanUseMovementSkill()) return;
             if (movementSkill.SkillRequiresAim() &&
                !movementSkill.IsAimingEnabled())
             {
-                stateManager.ActivateSkillAim(movementSkill, "movementSkill");
+                playerManager.ActivateSkillAim(movementSkill, "movementSkill");
                 return;
             }
             EnterMovementSkillState();
         }
         private void HandlePressE()
         {
-            if (!stateManager.CanUsePrimarySkill()) return;
+            if (!playerManager.CanUsePrimarySkill()) return;
             if (primarySkill.SkillRequiresAim() &&
                !primarySkill.IsAimingEnabled())
             {
-                stateManager.ActivateSkillAim(primarySkill, "primarySkill");
+                playerManager.ActivateSkillAim(primarySkill, "primarySkill");
                 return;
             }
             EnterPrimarySkillState();
         }
         private void HandlePressQ()
         {
-            if (!stateManager.CanUseUltimateSkill()) return;
+            if (!playerManager.CanUseUltimateSkill()) return;
             if (ultimateSkill.SkillRequiresAim() &&
                !ultimateSkill.IsAimingEnabled())
             {
-                stateManager.ActivateSkillAim(ultimateSkill, "ultimateSkill");
+                playerManager.ActivateSkillAim(ultimateSkill, "ultimateSkill");
                 return;
             }
             EnterUltimateSkillState();
         }
         private void HandleMovementInput()
         {
-            if (!stateManager.CanMove()) return;
+            if (!playerManager.CanMove()) return;
             EnterMovementState();
         }
         private void HandleLeftShift()
         {
-            if (!stateManager.CanDash()) return;
-            stateManager.dasher.TriggerDash();
+            if (!playerManager.CanDash()) return;
+            playerManager.dasher.TriggerDash();
             EnterDashState();
         }
         private void HandleCharacterSwap(int index)
         {
-            if (!stateManager.CanSwapCharacter()) return;
-            stateManager.SwapCharacter(index);
+            if (!playerManager.CanSwapCharacter()) return;
+            playerManager.SwapCharacter(index);
         }
         private void HandlePressEscape()
         {
@@ -167,31 +169,28 @@ namespace RPG.Control
 
         private void EnterSwapCharacterState(int index)
         {
-            stateMachine.changeState(new P_SwapCharacter(stateManager, index), StateEnum.SwapCharacter);
+            stateMachine.changeState(new P_SwapCharacter(playerManager, index), StateEnum.SwapCharacter);
         }
         private void EnterDashState()
         {
-            stateMachine.changeState(new P_Dasher(gameObject, navMeshAgent, animator,
-            stateManager), StateEnum.Dash);
+            stateMachine.changeState(new P_Dash(gameObject, navMeshAgent, animator,
+            playerManager), StateEnum.Dash);
         }
         private void EnterMovementSkillState()
         {
-            stateMachine.changeState(new P_MovementSkill(gameObject, animator, raycaster,
-            navMeshAgent, stateManager, movementSkill), StateEnum.MovementSkill);
+            stateMachine.changeState(new P_Skill(gameObject, animator, playerManager, movementSkill, skillEventHandler, raycaster), StateEnum.MovementSkill);
         }
         private void EnterPrimarySkillState()
         {
-            stateMachine.changeState(new P_PrimarySkill(gameObject, animator, raycaster,
-            stateManager, primarySkill), StateEnum.PrimarySkill);
+            stateMachine.changeState(new P_Skill(gameObject, animator, playerManager, primarySkill, skillEventHandler, raycaster), StateEnum.PrimarySkill);
         }
         private void EnterUltimateSkillState()
         {
-            stateMachine.changeState(new P_UltimateSkill(gameObject, animator, raycaster,
-            stateManager, ultimateSkill), StateEnum.UltimateSkill);
+            stateMachine.changeState(new P_Skill(gameObject, animator, playerManager, ultimateSkill, skillEventHandler, raycaster), StateEnum.UltimateSkill);
         }
         private void EnterMovementState()
         {
-            stateMachine.changeState(new P_Mover(gameObject, navMeshAgent), StateEnum.Move);
+            stateMachine.changeState(new P_Move(gameObject, navMeshAgent), StateEnum.Move);
         }
         private bool DetectMovementInput()
         {

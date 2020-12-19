@@ -5,18 +5,18 @@ namespace RPG.PlayerStates
 {
     public class P_SwapCharacter : IState
     {
-        StateManager stateManager;
+        PlayerManager playerManager;
         int index;
 
-        public P_SwapCharacter(StateManager stateManager, int index)
+        public P_SwapCharacter(PlayerManager playerManager, int index)
         {
-            this.stateManager = stateManager;
+            this.playerManager = playerManager;
             this.index = index;
         }
 
         public void Enter()
         {
-            stateManager.SwapCharacter(index);
+            playerManager.SwapCharacter(index);
         }
 
         public void Execute()

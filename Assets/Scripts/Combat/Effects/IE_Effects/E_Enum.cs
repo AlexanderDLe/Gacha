@@ -1,6 +1,6 @@
 ﻿namespace RPG.Combat
 {
-    public enum IE_Enum
+    public enum E_Enum
     {
         None,
         Wait,

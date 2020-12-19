@@ -12,6 +12,7 @@ namespace RPG.Attributes
         public float maxHealth = 100f;
         public float currentHealth = 100f;
         public float damage = 5f;
+        public float defense = 5f;
         public float movementSpeed = 5f;
 
         public void Initialize(BaseCharacter_SO charScript)

@@ -23,22 +23,19 @@ namespace RPG.PlayerStates
             GameObject gameObject,
             Animator animator,
             RaycastMousePosition raycaster,
-            StateManager stateManager,
+            PlayerManager playerManager,
             bool repeatAction
         )
         {
             this.gameObject = gameObject;
             this.animator = animator;
             this.raycaster = raycaster;
-            this.attacker = stateManager.attacker;
+            this.attacker = playerManager.attacker;
             this.repeatAction = repeatAction;
             this.autoAttackArray = attacker.GetAutoAttackArray();
         }
 
-        public void Enter()
-        {
-            Debug.Log("Entering Attack");
-        }
+        public void Enter() { }
 
         public void Execute()
         {
