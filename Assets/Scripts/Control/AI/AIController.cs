@@ -1,6 +1,4 @@
-﻿using System;
-using RPG.Characters;
-using RPG.Core;
+﻿using RPG.Core;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,7 +6,6 @@ namespace RPG.AI
 {
     public class AIController : MonoBehaviour
     {
-        GameObject player = null;
         StateMachine stateMachine = null;
         NavMeshAgent navMeshAgent = null;
         Animator animator = null;
@@ -21,13 +18,13 @@ namespace RPG.AI
             this.stateMachine = GetComponent<StateMachine>();
             this.navMeshAgent = GetComponent<NavMeshAgent>();
             this.AIManager = GetComponent<AIManager>();
-            this.animator = GetComponent<Animator>();
-            this.player = GameObject.FindWithTag("Player");
         }
 
         private void Start()
         {
             this.aggro = AIManager.aggro;
+            this.animator = AIManager.animator;
+
             guardPosition = transform.position;
             AIEnterIdleState();
         }
@@ -111,7 +108,7 @@ namespace RPG.AI
 
         public void AIEnterChaseState(float movementSpeed)
         {
-            stateMachine.changeState(new AI_Mover(player, navMeshAgent, movementSpeed), StateEnum.Chase);
+            stateMachine.changeState(new AI_Mover(aggro.target, navMeshAgent, movementSpeed), StateEnum.Chase);
         }
         public void AIEnterMoveState(Vector3 destination, float movementSpeed)
         {
@@ -119,7 +116,7 @@ namespace RPG.AI
         }
         public void AIEnterAttackState()
         {
-            stateMachine.changeState(new AI_Attacker(player, AIManager, animator), StateEnum.Attack);
+            stateMachine.changeState(new AI_Attacker(aggro.target, AIManager, animator), StateEnum.Attack);
         }
 
         private void UpdateAnimator()

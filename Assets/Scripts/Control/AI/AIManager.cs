@@ -57,7 +57,7 @@ namespace RPG.AI
 
             aggro.Initialize(player, enemy_SO);
 
-            attacker.Initialize(enemy_SO, debugPooler, player, stats, prefab, projectileLauncher);
+            attacker.Initialize(aggro, enemy_SO, debugPooler, stats, prefab, projectileLauncher);
         }
 
         public void InitializeModel(GameObject prefab, Animator animator)

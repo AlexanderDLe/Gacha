@@ -2475,7 +2475,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1867844744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3260,6 +3260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7955c2dcc5e8e34ea8cdf47a004ab8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerTarget: {fileID: 0}
 --- !u!4 &3812858263109876101
 Transform:
   m_ObjectHideFlags: 0
@@ -3268,7 +3269,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4585278837564367679}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0.0000029504295}
-  m_LocalPosition: {x: 0, y: 0, z: 5.08}
+  m_LocalPosition: {x: 0, y: 0, z: 7.8}
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 1807721256}
@@ -3451,6 +3452,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcb6f1d3102d7814f9ae59cb2513f711, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerTarget: {fileID: 0}
   chaseDistance: 5
   distanceToPlayer: 0
   timeSinceLastSawPlayer: Infinity

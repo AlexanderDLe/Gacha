@@ -5,8 +5,14 @@ using UnityEngine;
 public class AIAggroManager : MonoBehaviour
 {
     GameObject player = null;
+    LayerMask playerLayer;
+    public GameObject target = null;
     float weaponRange = 0f;
 
+    private void Awake()
+    {
+        playerLayer = LayerMask.GetMask("Player");
+    }
     private void Update()
     {
         UpdateTimers();
@@ -28,12 +34,13 @@ public class AIAggroManager : MonoBehaviour
     }
 
     public float chaseDistance = 5f;
-    public float distanceToPlayer = 0f;
+    public float distanceToTarget = 0f;
     public float timeSinceLastSawPlayer = Mathf.Infinity;
     public float timeSinceAggravated = Mathf.Infinity;
     public float aggroCooldownTime = 3f;
     public float suspicionTime = 3f;
     public bool isAggressive = false;
+
 
     public void Aggravate()
     {
@@ -41,12 +48,34 @@ public class AIAggroManager : MonoBehaviour
     }
     public bool IsAggravated()
     {
-        distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+        ScanForPlayerTarget();
+        if (!target) return false;
+
+        distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
         bool aggravated = timeSinceLastSawPlayer <= aggroCooldownTime;
 
-        if (distanceToPlayer <= chaseDistance) timeSinceLastSawPlayer = 0;
+        if (distanceToTarget <= chaseDistance) timeSinceLastSawPlayer = 0;
 
-        return distanceToPlayer <= chaseDistance || aggravated;
+        return distanceToTarget <= chaseDistance || aggravated;
+    }
+
+    private void ScanForPlayerTarget()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, chaseDistance, playerLayer);
+
+        float targetDistance = Mathf.Infinity;
+
+        // If player detected within range, then set playerTarget
+        foreach (Collider hit in hits)
+        {
+            float hitDistance = Vector3.Distance(transform.position, hit.transform.position);
+
+            if (hitDistance < targetDistance)
+            {
+                target = hit.gameObject;
+                targetDistance = hitDistance;
+            }
+        }
     }
 
     public bool IsSuspicious()
@@ -56,7 +85,7 @@ public class AIAggroManager : MonoBehaviour
 
     public bool WithinAttackRange()
     {
-        return distanceToPlayer <= weaponRange;
+        return distanceToTarget <= weaponRange;
     }
     public event Action OnStartAggression;
     public void StartAggression()
@@ -67,5 +96,6 @@ public class AIAggroManager : MonoBehaviour
     public void EndAggression()
     {
         isAggressive = false;
+        target = null;
     }
 }

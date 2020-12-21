@@ -9,8 +9,8 @@ namespace RPG.AI
     public class AIAttackManager : MonoBehaviour
     {
         AIManager AIManager;
+        AIAggroManager aggro;
         ObjectPooler objectPooler;
-        GameObject player;
         Stats stats;
         GameObject prefab;
         ProjectileLauncher projectileLauncher;
@@ -28,11 +28,11 @@ namespace RPG.AI
         public EffectPackage effectPackage;
         EnemyCharacter_SO script;
 
-        public void Initialize(EnemyCharacter_SO script, ObjectPooler objectPooler, GameObject player, Stats stats, GameObject prefab, ProjectileLauncher projectileLauncher)
+        public void Initialize(AIAggroManager aggro, EnemyCharacter_SO script, ObjectPooler objectPooler, Stats stats, GameObject prefab, ProjectileLauncher projectileLauncher)
         {
+            this.aggro = aggro;
             this.script = script;
             this.objectPooler = objectPooler;
-            this.player = player;
             this.stats = stats;
             this.prefab = prefab;
             this.projectileLauncher = projectileLauncher;
@@ -82,7 +82,7 @@ namespace RPG.AI
 
         private void ShootProjectile()
         {
-            projectileLauncher.Launch(stats, objectPooler, script.projectile_SO, hitboxPoint.position, player.transform.position, playerLayer, effectPackage);
+            projectileLauncher.Launch(stats, objectPooler, script.projectile_SO, hitboxPoint.position, aggro.target.transform.position, playerLayer, effectPackage);
         }
 
         public void AttackStart() { }
